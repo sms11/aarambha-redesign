@@ -1,26 +1,124 @@
 @import "tailwindcss";
 
+/* ============================================
+   Aarambha Design System — Premier Style
+   ============================================ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Colors */
+  --navy: #003E67;
+  --navy-deep: #153658;
+  --navy-light: #2D6A9F;
+  --gold: #F6CE6B;
+  --gold-light: #F9DC96;
+  --cream: #FEF7E6;
+  --white: #FFFFFF;
+  --charcoal: #2C2C2C;
+  --muted: #666666;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* Base */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body), system-ui, sans-serif;
+  color: var(--charcoal);
+  background-color: var(--cream);
+}
+
+/* Type Scale */
+.text-hero { font-size: 3rem; line-height: 1.1; }
+.text-title { font-size: 2.25rem; line-height: 1.2; }
+.text-subtitle { font-size: 1.25rem; line-height: 1.3; }
+.text-body { font-size: 1rem; line-height: 1.7; }
+.text-small { font-size: 0.875rem; line-height: 1.6; }
+.text-label { font-size: 0.75rem; line-height: 1.4; text-transform: uppercase; letter-spacing: 2px; }
+.text-tiny { font-size: 0.6875rem; line-height: 1.4; }
+
+.font-display { font-family: var(--font-display), Georgia, serif; }
+.font-body { font-family: var(--font-body), system-ui, sans-serif; }
+
+/* Buttons */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 32px;
+  background-color: var(--navy);
+  color: var(--white);
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.btn-primary:hover {
+  transform: scale(1.06);
+  box-shadow: 0 4px 12px rgba(0, 62, 103, 0.3);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 30px;
+  background-color: transparent;
+  border: 2px solid var(--gold);
+  color: var(--white);
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+.btn-secondary:hover {
+  transform: scale(1.06);
+  background-color: rgba(246, 206, 107, 0.1);
+}
+
+.btn-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 32px;
+  background-color: var(--gold);
+  color: var(--navy);
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.btn-cta:hover {
+  transform: scale(1.06);
+  box-shadow: 0 4px 12px rgba(246, 206, 107, 0.4);
+}
+
+/* Cards */
+.card {
+  background: var(--white);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* Decorative */
+.gold-line {
+  width: 40px;
+  height: 3px;
+  background-color: var(--gold);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--cream); }
+::-webkit-scrollbar-thumb { background: var(--navy-light); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--navy); }
+
+/* Selection */
+::selection {
+  background-color: var(--gold-light);
+  color: var(--navy);
 }
