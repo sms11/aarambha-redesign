@@ -112,7 +112,7 @@ function HeroSection() {
         className="object-cover"
         priority
       />
-      <div className="absolute inset-0 bg-[rgba(0,62,103,0.85)]" />
+      <div className="absolute inset-0 bg-[rgba(30,74,122,0.85)]" />
 
       <motion.div
         initial={{ opacity: 0, y: 30 }}

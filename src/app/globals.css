@@ -5,13 +5,13 @@
    ============================================ */
 
 :root {
-  /* Colors */
-  --navy: #003E67;
-  --navy-deep: #153658;
-  --navy-light: #2D6A9F;
-  --gold: #F6CE6B;
-  --gold-light: #F9DC96;
-  --cream: #FEF7E6;
+  /* Colors — matched to logo */
+  --navy: #1E4A7A;
+  --navy-deep: #132F50;
+  --navy-light: #4EAED8;
+  --gold: #F5A623;
+  --gold-light: #F7BF56;
+  --cream: #FFF8F0;
   --white: #FFFFFF;
   --charcoal: #2C2C2C;
   --muted: #666666;
@@ -52,7 +52,7 @@ body {
 }
 .btn-primary:hover {
   transform: scale(1.06);
-  box-shadow: 0 4px 12px rgba(0, 62, 103, 0.3);
+  box-shadow: 0 4px 12px rgba(30, 74, 122, 0.3);
 }
 
 .btn-secondary {
@@ -71,7 +71,7 @@ body {
 }
 .btn-secondary:hover {
   transform: scale(1.06);
-  background-color: rgba(246, 206, 107, 0.1);
+  background-color: rgba(245, 166, 35, 0.1);
 }
 
 .btn-cta {
@@ -89,7 +89,7 @@ body {
 }
 .btn-cta:hover {
   transform: scale(1.06);
-  box-shadow: 0 4px 12px rgba(246, 206, 107, 0.4);
+  box-shadow: 0 4px 12px rgba(245, 166, 35, 0.4);
 }
 
 /* Cards */

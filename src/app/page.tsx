@@ -112,7 +112,7 @@ function HeroSection() {
         priority
         style={{ objectFit: "cover" }}
       />
-      <div className="absolute inset-0 bg-[rgba(0,62,103,0.7)]" />
+      <div className="absolute inset-0 bg-[rgba(30,74,122,0.7)]" />
 
       <motion.div
         className="relative z-10 text-center px-6 max-w-3xl mx-auto"
