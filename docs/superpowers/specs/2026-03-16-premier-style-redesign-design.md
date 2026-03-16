@@ -29,7 +29,9 @@
 | `--cream` | `#FEF7E6` | Page background |
 | `--white` | `#FFFFFF` | Cards, content sections |
 | `--charcoal` | `#2C2C2C` | Body text |
-| `--gray` | `#666666` | Secondary text, descriptions |
+| `--muted` | `#666666` | Secondary text, descriptions |
+
+> **Full replacement:** `globals.css` must be fully rewritten. All existing CSS variables (`--orange`, `--teal`, `--purple`, `--primary-blue`, etc.) and utility classes (`.blob`, `.wiggle`, `.bounce-soft`) are deleted. The new file contains only the tokens above.
 
 ### Typography
 
@@ -38,6 +40,25 @@
 | Display/Headlines | DM Serif Display (Google Fonts) | 400 | Page titles, section headings, hero text |
 | Body | Plus Jakarta Sans (Google Fonts) | 300-600 | Body text, labels, buttons, navigation |
 | Labels | Plus Jakarta Sans | 400-600 | Uppercase, letter-spacing: 2-3px |
+
+**Font loading:** Use `next/font/google` in `layout.tsx` (not CSS `@import`):
+```tsx
+import { DM_Serif_Display, Plus_Jakarta_Sans } from 'next/font/google';
+const dmSerif = DM_Serif_Display({ subsets: ['latin'], weight: '400', variable: '--font-display' });
+const plusJakarta = Plus_Jakarta_Sans({ subsets: ['latin'], weight: ['300','400','500','600','700'], variable: '--font-body' });
+```
+
+**Type scale:**
+
+| Element | Size | Line-height |
+|---------|------|-------------|
+| Hero headline | 48px (3rem) | 1.1 |
+| Page/section title (h2) | 36px (2.25rem) | 1.2 |
+| Card/subsection title (h3) | 20px (1.25rem) | 1.3 |
+| Body text | 16px (1rem) | 1.7 |
+| Small body / descriptions | 14px (0.875rem) | 1.6 |
+| Labels (uppercase) | 12px (0.75rem) | 1.4 |
+| Tiny labels | 11px (0.6875rem) | 1.4 |
 
 ### Buttons
 
@@ -62,7 +83,7 @@
 - **Hover transitions:** Scale 1.02-1.06, 0.3s ease
 - **No bouncing, wiggling, or emoji icons** — refined, restrained motion
 - **Logo carousel:** Seamless infinite horizontal scroll (if applicable)
-- **Testimonial carousel:** Dot indicators, auto-advance or manual
+- **Testimonial carousel:** Framer Motion `AnimatePresence` with fade transition. Manual dot navigation (no auto-advance). State-managed active index.
 
 ### Decorative Elements
 
@@ -78,7 +99,8 @@
 - **Navigation links:** About, Programs, Admissions, Facilities, Gallery, Contact
 - **Style:** Uppercase, letter-spacing 1-2px, font-size 13px
 - **Scroll behavior:** Transparent on hero → solid white with subtle shadow on scroll
-- **Mobile:** Hamburger menu, slide-in panel with staggered link animations
+- **Transparent state on dark heroes:** White logo, white nav links, white hamburger icon. Transitions to navy logo, charcoal links on solid white background after scrolling past hero.
+- **Mobile:** Hamburger menu, slide-in panel with staggered link animations, `aria-expanded` on hamburger button
 - **Sticky:** Fixed to top on scroll
 
 ## Footer Component
@@ -156,8 +178,8 @@
 ### Programs Page (/programs)
 
 1. **Hero Banner** — Gold label "Academics", title "Learning Journeys for Every Stage"
-2. **Program Tabs** — Pill-shaped tab switcher (Pre-School, Primary, Middle, High School)
-3. **Active Program Detail** — Two-column: image left, details right (title, description, 6 highlight bullets)
+2. **Program Tabs** — Pill-shaped tab switcher (Pre-School, Primary, Middle, High School). Default active: Pre-School. Uses `role="tablist"` / `role="tab"` / `aria-selected` with keyboard arrow-key navigation. Content swap uses Framer Motion fade (0.3s).
+3. **Active Program Detail** — Two-column: image left, details right (title, description, 6 highlight bullets). `role="tabpanel"` with `aria-labelledby`.
 4. **Curriculum Subjects** — Grid of 8 subject cards (Math, Science, English, Nepali, Social Studies, CS, Arts & Music, PE)
 5. **Extracurricular Activities** — 4 category sections (Sports, Arts, Clubs, Programs)
 6. **CTA** — Apply now
@@ -168,7 +190,7 @@
 2. **Admission Process** — 5 horizontal steps with numbered circles (Apply → Assess → Interview → Decision → Enroll)
 3. **Requirements** — Two cards side-by-side: documents needed + eligibility criteria
 4. **Fee Structure** — 4 cards with gold top border: Pre-School (NPR 1.2L), Primary (1.5L), Middle (1.8L), High (2.2L), each with included items
-5. **FAQ** — Expandable accordion, 4-6 questions
+5. **FAQ** — Expandable accordion using `<button>` triggers with `aria-expanded` and `aria-controls`. Framer Motion `AnimatePresence` for expand/collapse. 4-6 questions.
 6. **CTA** — Contact for admissions inquiry
 
 ### Facilities Page (/facilities)
@@ -183,7 +205,7 @@
 
 1. **Hero Banner** — Gold label "Life at Aarambha", title "Gallery"
 2. **Category Filters** — Pill buttons: All, Campus, Classrooms, Events, Sports, Labs
-3. **Photo Grid** — Masonry-style layout with Unsplash stock photos, hover overlay with category tag
+3. **Photo Grid** — CSS `columns-3` (md: columns-2, sm: columns-1) layout with Unsplash stock photos, hover overlay with category tag. Not true masonry — use CSS columns for simplicity.
 4. **Video Section** — Navy background, 3 video placeholder cards with play button overlay (Campus Tour, A Day at Aarambha, Student Testimonials)
 5. **CTA** — Visit us / Apply
 
@@ -198,13 +220,41 @@
 
 ---
 
+## Responsive Behavior
+
+| Section | Desktop (lg) | Tablet (md) | Mobile (sm) |
+|---------|-------------|-------------|-------------|
+| Header nav | Horizontal links | Horizontal links | Hamburger menu |
+| Hero | Full-width, 100vh | Full-width, 80vh | Full-width, 70vh, smaller text |
+| Two-column (Image+Text) | Side-by-side | Side-by-side | Stacked (image top) |
+| Stats bar | 4 columns | 2x2 grid | 2x2 grid |
+| Program cards | 4 columns | 2 columns | 1 column |
+| Why Aarambha features | 3 columns | 3 columns | 1 column |
+| Facilities grid | 3 columns | 2 columns | 1 column |
+| Admissions steps | 5 horizontal | 5 horizontal | Vertical stack |
+| Footer | 5 columns | 2 columns + full-width brand | Single column stacked |
+| Gallery grid | 3 CSS columns | 2 CSS columns | 1 CSS column |
+| Contact layout | 2 columns | 2 columns | Stacked (form top) |
+| Timeline | Horizontal | Horizontal scroll | Vertical stack |
+
+---
+
 ## Technical Notes
 
 - **Framework:** Next.js 15, App Router, TypeScript
 - **Styling:** Tailwind CSS v4 with CSS variables in globals.css
 - **Animation:** Framer Motion for scroll-triggered animations, hover states, page transitions
 - **Icons:** @heroicons/react (outline style)
-- **Images:** Unsplash stock photos via next/image with external domain config
-- **Fonts:** Google Fonts — DM Serif Display + Plus Jakarta Sans (loaded in layout.tsx)
-- **Responsive:** Mobile-first, breakpoints at sm/md/lg
+- **Images:** Unsplash stock photos via next/image. Add to `next.config.ts`:
+  ```ts
+  images: {
+    remotePatterns: [
+      { protocol: 'https', hostname: 'images.unsplash.com' },
+    ],
+  },
+  ```
+- **Fonts:** `next/font/google` — DM Serif Display + Plus Jakarta Sans (loaded in layout.tsx via font variables)
+- **Responsive:** Mobile-first, breakpoints at sm (640px), md (768px), lg (1024px)
 - **Components:** Header.tsx and Footer.tsx as shared components
+- **Google Maps:** Use `<iframe>` embed (no API key needed) for contact page
+- **Accessibility:** All interactive components follow WAI-ARIA authoring practices. Keyboard navigable tabs, accordions, and carousels.
