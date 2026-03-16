@@ -23,7 +23,7 @@ const programs = [
     name: "Early Years",
     desc: "Nurturing curiosity through play-based learning for ages 3-5.",
     image:
-      "https://images.unsplash.com/photo-1587654780291-39c9404d7dd0?w=600&q=80",
+      "https://images.unsplash.com/photo-1594608661623-aa0bd3a69d98?w=600&q=80",
   },
   {
     name: "Primary School",
@@ -41,7 +41,7 @@ const programs = [
     name: "High School",
     desc: "Preparing students for higher education and global citizenship.",
     image:
-      "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600&q=80",
+      "https://images.unsplash.com/photo-1627556704302-624286467c65?w=600&q=80",
   },
 ];
 

@@ -56,7 +56,7 @@ const facilities = [
     name: "Sports Complex",
     desc: "Multi-sport facilities including basketball, football, and athletics.",
     icon: TrophyIcon,
-    image: "https://images.unsplash.com/photo-1461896836934-bd45ba688b27?w=600&q=80",
+    image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&q=80",
   },
   {
     name: "Cafeteria",
