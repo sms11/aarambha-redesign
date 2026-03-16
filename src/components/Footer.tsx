@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
   MapPinIcon,
   PhoneIcon,
@@ -89,9 +90,13 @@ export default function Footer() {
           {/* Brand Column */}
           <div>
             <Link href="/" className="inline-block mb-4">
-              <h2 className="font-display text-2xl tracking-wide text-white">
-                AARAMBHA
-              </h2>
+              <Image
+                src="/logo.png"
+                alt="Aarambha Sanskar Vidyalaya"
+                width={160}
+                height={56}
+                className="h-14 w-auto brightness-0 invert"
+              />
             </Link>
             <p className="text-white/70 text-sm leading-relaxed mb-6">
               Nurturing tomorrow&apos;s leaders since 2008.

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
@@ -48,13 +49,16 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="relative z-50">
-          <span
-            className={`font-display text-xl font-bold tracking-wide transition-colors duration-300 ${
-              scrolled ? "text-[var(--navy)]" : "text-white"
+          <Image
+            src="/logo.png"
+            alt="Aarambha Sanskar Vidyalaya"
+            width={140}
+            height={50}
+            className={`h-10 w-auto transition-all duration-300 ${
+              scrolled ? "" : "brightness-0 invert"
             }`}
-          >
-            AARAMBHA
-          </span>
+            priority
+          />
         </Link>
 
         {/* Desktop Navigation */}
