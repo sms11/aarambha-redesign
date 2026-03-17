@@ -87,9 +87,9 @@ export default function Footer() {
               <Image
                 src="/logo.png"
                 alt="Aarambha Sanskar Vidyalaya"
-                width={56}
-                height={56}
-                className="h-14 w-auto brightness-0 invert"
+                width={72}
+                height={72}
+                className="h-18 w-auto brightness-0 invert"
               />
             </Link>
             <p className="text-white/70 text-sm leading-relaxed mb-6">
