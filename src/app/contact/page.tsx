@@ -20,13 +20,13 @@ const contactInfo = [
   {
     icon: MapPinIcon,
     label: "Address",
-    value: "Pipal Bot, Galko Pakha Marga, Kathmandu, Nepal",
+    value: "Thamel, Galko Pakha Marga, Kathmandu",
     color: "var(--coral)",
   },
   {
     icon: PhoneIcon,
     label: "Phone",
-    value: "+977 9823837865",
+    value: "014547650",
     color: "var(--mint)",
   },
   {
@@ -187,8 +187,8 @@ function HeroSection() {
   return (
     <section className="relative overflow-hidden min-h-[60vh] md:min-h-[70vh] lg:min-h-[80vh] flex items-center justify-center">
       <Image
-        src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=1920&q=80"
-        alt="Person working on laptop"
+        src="/images/facilities/beyond-classroom.webp"
+        alt="Aarambha School campus"
         fill
         className="object-cover"
         priority
@@ -236,8 +236,8 @@ function HeroSection() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
         >
-          We would love to hear from you. Whether you have a question about
-          admissions, programs, or anything else, our team is ready to help.
+          Stay Connected, We&apos;re Here to Help! Whether you have a question
+          about admissions, programs, or anything else, our team is ready to help.
         </motion.p>
       </motion.div>
     </section>
@@ -295,80 +295,55 @@ function FormAndInfoSection() {
               }}
               className="space-y-5"
             >
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div>
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-semibold text-[var(--charcoal)] mb-1.5"
-                  >
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    id="name"
-                    required
-                    placeholder="Your full name"
-                    className={inputClassName}
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-semibold text-[var(--charcoal)] mb-1.5"
-                  >
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    required
-                    placeholder="your@email.com"
-                    className={inputClassName}
-                  />
-                </div>
+              <div>
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-semibold text-[var(--charcoal)] mb-1.5"
+                >
+                  Name
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  id="name"
+                  required
+                  placeholder="Your full name"
+                  className={inputClassName}
+                />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div>
-                  <label
-                    htmlFor="phone"
-                    className="block text-sm font-semibold text-[var(--charcoal)] mb-1.5"
-                  >
-                    Phone
-                  </label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    id="phone"
-                    placeholder="+977 ..."
-                    className={inputClassName}
-                  />
-                </div>
+              <div>
+                <label
+                  htmlFor="phone"
+                  className="block text-sm font-semibold text-[var(--charcoal)] mb-1.5"
+                >
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  name="contact"
+                  id="phone"
+                  required
+                  placeholder="+977 ..."
+                  className={inputClassName}
+                />
+              </div>
 
-                <div>
-                  <label
-                    htmlFor="subject"
-                    className="block text-sm font-semibold text-[var(--charcoal)] mb-1.5"
-                  >
-                    Subject
-                  </label>
-                  <select
-                    name="subject"
-                    id="subject"
-                    className={inputClassName}
-                  >
-                    <option value="">Select a subject</option>
-                    <option>General Inquiry</option>
-                    <option>Admissions</option>
-                    <option>Programs</option>
-                    <option>Campus Tour</option>
-                    <option>Fee Information</option>
-                    <option>Other</option>
-                  </select>
-                </div>
+              <div>
+                <label
+                  htmlFor="purpose"
+                  className="block text-sm font-semibold text-[var(--charcoal)] mb-1.5"
+                >
+                  Purpose
+                </label>
+                <input
+                  type="text"
+                  name="purpose"
+                  id="purpose"
+                  required
+                  placeholder="e.g. Admissions, General Inquiry"
+                  className={inputClassName}
+                />
               </div>
 
               <div>
@@ -388,9 +363,24 @@ function FormAndInfoSection() {
                 />
               </div>
 
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="terms"
+                  required
+                  className="w-4 h-4 rounded border-gray-300 accent-[var(--gold)]"
+                />
+                <label
+                  htmlFor="terms"
+                  className="text-sm text-[var(--muted)]"
+                >
+                  I accept the Terms
+                </label>
+              </div>
+
               <button type="submit" className="btn-cta w-full mt-2 gap-2">
                 <PaperAirplaneIcon className="w-4 h-4" />
-                Send Message
+                Submit
               </button>
             </form>
           </motion.div>
@@ -448,7 +438,7 @@ function FormAndInfoSection() {
                 Give us a call or send us a WhatsApp message for a quick response.
               </p>
               <a
-                href="tel:+9779823837865"
+                href="tel:+977014547650"
                 className="inline-flex items-center gap-2 bg-[var(--gold)] text-[var(--navy)] px-5 py-2.5 rounded-full text-sm font-semibold hover:scale-105 transition-transform"
               >
                 <PhoneIcon className="w-4 h-4" />
@@ -512,7 +502,7 @@ function MapSection() {
         >
           <MapPinIcon className="w-4 h-4 text-[var(--coral)]" />
           <span className="text-small">
-            Pipal Bot, Galko Pakha Marga, Kathmandu, Nepal
+            Thamel, Galko Pakha Marga, Kathmandu
           </span>
         </motion.div>
       </div>
