@@ -36,12 +36,12 @@ const schoolLifeItems = [
 ];
 
 const teamMembers = [
-  { name: "Naresh Prasad Shrestha", role: "Chairman and Principal" },
-  { name: "Rossete Dela Rosa Tamang", role: "Vice Principal (Pre-school to Grade 5)" },
-  { name: "Dinesh Shrestha", role: "Vice Principal (Grade 6-12)" },
-  { name: "Sunita Maharjan", role: "Coordinator (Pre-school to Grade 5)" },
-  { name: "Deepika Shrestha", role: "Coordinator (Grade 6-10)" },
-  { name: "Kripa Bajracharya", role: "ECA Coordinator" },
+  { name: "Naresh Prasad Shrestha", role: "Chairman and Principal", image: "/images/team/naresh.webp" },
+  { name: "Rossete Dela Rosa Tamang", role: "Vice Principal (Pre-school to Grade 5)", image: "/images/team/rossete.webp" },
+  { name: "Dinesh Shrestha", role: "Vice Principal (Grade 6-12)", image: "/images/team/dinesh.webp" },
+  { name: "Sunita Maharjan", role: "Coordinator (Pre-school to Grade 5)", image: "/images/team/sunita.webp" },
+  { name: "Deepika Shrestha", role: "Coordinator (Grade 6-10)", image: "/images/team/deepika.webp" },
+  { name: "Kripa Bajracharya", role: "ECA Coordinator", image: "/images/team/kripa.webp" },
 ];
 
 const testimonials = [
@@ -50,39 +50,43 @@ const testimonials = [
       "Aarambha School has truly transformed my daughter\u2019s learning experience. The teachers are not only highly qualified but also genuinely care about each child\u2019s growth. The school\u2019s focus on values and creativity is unmatched!",
     name: "Sita Sharma",
     role: "Parent of Grade 4 Student",
+    image: "/images/testimonials/sita.webp",
   },
   {
     quote:
       "I love going to Aarambha School because learning here is fun! My teachers make every subject interesting, and I\u2019ve made lots of new friends. The playground and art classes are my favorite!",
     name: "Ramesh Karki",
     role: "Grade 3 Student",
+    image: "/images/testimonials/ramesh.webp",
   },
   {
     quote:
       "Aarambha School laid a strong foundation for my academic journey. The skills and discipline I learned there helped me succeed in higher studies and beyond. I\u2019m proud to be an Aarambha alumnus!",
     name: "Priyanka Adhikari",
     role: "Batch of 2018",
+    image: "/images/testimonials/priyanka.webp",
   },
   {
     quote:
       "As a teacher at Aarambha School, I\u2019ve seen how a nurturing and inclusive environment can inspire students to reach their full potential. The support from the administration and the passion from our students make teaching here incredibly rewarding.",
     name: "Mr. Rajan Shrestha",
     role: "Science Teacher",
+    image: "/images/testimonials/rajan.webp",
   },
 ];
 
 const partners = [
-  "FranklinCovey Education",
-  "Kalpavariksha Education Foundation",
-  "NYEF",
-  "Programiz",
-  "Duke of Edinburgh\u2019s Award",
-  "Digital Nepal",
-  "Robotics Association of Nepal",
-  "NCC Education",
-  "digiSchool",
-  "Code Himalaya",
-  "Techspire College",
+  { name: "FranklinCovey Education", logo: "/images/partners/franklincovey.webp" },
+  { name: "Kalpavariksha Education Foundation", logo: "/images/partners/kalpavariksha.webp" },
+  { name: "NYEF", logo: "/images/partners/nyef.webp" },
+  { name: "Programiz", logo: "/images/partners/programiz.webp" },
+  { name: "Duke of Edinburgh\u2019s Award", logo: "/images/partners/duke-edinburgh.webp" },
+  { name: "Digital Nepal", logo: "/images/partners/digital-nepal.webp" },
+  { name: "Robotics Association of Nepal", logo: "/images/partners/robotics-nepal.webp" },
+  { name: "NCC Education", logo: "/images/partners/ncc-education.webp" },
+  { name: "digiSchool", logo: "/images/partners/digischool.webp" },
+  { name: "Code Himalaya", logo: "/images/partners/code-himalaya.webp" },
+  { name: "Techspire College", logo: "/images/partners/techspire.webp" },
 ];
 
 const features = [
@@ -127,8 +131,8 @@ function HeroSection() {
   return (
     <section className="relative overflow-hidden min-h-[70vh] md:min-h-[80vh] lg:min-h-screen flex items-center justify-center">
       <Image
-        src="https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=1920&q=80"
-        alt="Students learning together"
+        src="/images/hero.webp"
+        alt="Aarambha School students"
         fill
         priority
         style={{ objectFit: "cover" }}
@@ -201,13 +205,22 @@ function PrincipalMessage() {
             environment where every child&apos;s potential blossoms.
           </p>
         </div>
-        <div className="mt-8">
-          <p className="font-display text-[var(--navy)] font-semibold">
-            Naresh Prasad Shrestha
-          </p>
-          <p className="text-small text-[var(--muted)]">
-            Chairman and Principal, Aarambha School
-          </p>
+        <div className="mt-8 flex items-center justify-center gap-4">
+          <Image
+            src="/images/principal.webp"
+            alt="Naresh Prasad Shrestha"
+            width={64}
+            height={64}
+            className="rounded-full object-cover w-16 h-16"
+          />
+          <div className="text-left">
+            <p className="font-display text-[var(--navy)] font-semibold">
+              Naresh Prasad Shrestha
+            </p>
+            <p className="text-small text-[var(--muted)]">
+              Chairman and Principal, Aarambha School
+            </p>
+          </div>
         </div>
       </motion.div>
     </section>
@@ -223,8 +236,8 @@ function AboutSection() {
       <div className="grid grid-cols-1 lg:grid-cols-2">
         <div className="relative h-[400px] lg:h-auto">
           <Image
-            src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=80"
-            alt="Young learners in the classroom"
+            src="/images/about-1.webp"
+            alt="Aarambha School campus life"
             fill
             style={{ objectFit: "cover" }}
           />
@@ -415,11 +428,13 @@ function TeamSection() {
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
             >
-              <div className="w-20 h-20 rounded-full bg-[var(--cream)] mx-auto mb-4 flex items-center justify-center">
-                <span className="font-display text-2xl text-[var(--navy)]">
-                  {member.name.charAt(0)}
-                </span>
-              </div>
+              <Image
+                src={member.image}
+                alt={member.name}
+                width={120}
+                height={120}
+                className="w-24 h-24 rounded-full object-cover mx-auto mb-4"
+              />
               <h3 className="font-display text-[var(--navy)] font-semibold">
                 {member.name}
               </h3>
@@ -464,10 +479,23 @@ function TestimonialSection() {
             <p className="text-subtitle font-display italic text-white">
               &ldquo;{testimonials[activeTestimonial].quote}&rdquo;
             </p>
-            <p className="text-small text-[var(--gold)] font-semibold mt-6">
-              {testimonials[activeTestimonial].name} &mdash;{" "}
-              {testimonials[activeTestimonial].role}
-            </p>
+            <div className="flex items-center justify-center gap-3 mt-6">
+              <Image
+                src={testimonials[activeTestimonial].image}
+                alt={testimonials[activeTestimonial].name}
+                width={48}
+                height={48}
+                className="w-12 h-12 rounded-full object-cover"
+              />
+              <div className="text-left">
+                <p className="text-small text-[var(--gold)] font-semibold">
+                  {testimonials[activeTestimonial].name}
+                </p>
+                <p className="text-tiny text-white/60">
+                  {testimonials[activeTestimonial].role}
+                </p>
+              </div>
+            </div>
           </motion.div>
         </AnimatePresence>
 
@@ -506,13 +534,19 @@ function PartnersSection() {
           </h2>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-6">
+        <div className="flex flex-wrap justify-center items-center gap-8">
           {partners.map((partner) => (
             <div
-              key={partner}
-              className="bg-white rounded-lg px-6 py-4 text-sm font-semibold text-[var(--navy)] shadow-sm"
+              key={partner.name}
+              className="bg-white rounded-lg px-6 py-4 shadow-sm flex items-center justify-center"
             >
-              {partner}
+              <Image
+                src={partner.logo}
+                alt={partner.name}
+                width={110}
+                height={44}
+                className="h-10 w-auto object-contain"
+              />
             </div>
           ))}
         </div>
