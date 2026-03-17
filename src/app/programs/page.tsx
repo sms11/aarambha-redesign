@@ -6,14 +6,11 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   CheckCircleIcon,
-  CalculatorIcon,
-  BeakerIcon,
-  BookOpenIcon,
-  LanguageIcon,
-  GlobeAltIcon,
-  ComputerDesktopIcon,
-  MusicalNoteIcon,
-  TrophyIcon,
+  ShieldCheckIcon,
+  UserGroupIcon,
+  AcademicCapIcon,
+  CpuChipIcon,
+  LightBulbIcon,
 } from "@heroicons/react/24/solid";
 import {
   SparklesIcon,
@@ -21,22 +18,22 @@ import {
 } from "@heroicons/react/24/outline";
 
 /* ──────────────────────────────────────────────
-   Data
+   Data — Real content from aarambha.school
    ────────────────────────────────────────────── */
 
 const programs = [
   {
     id: "preschool",
     name: "Pre-School",
-    desc: "Our early years program nurtures curiosity through play-based learning, creating a safe and stimulating environment for children aged 3-5.",
+    ages: "Ages 3–6",
+    grades: "Play Group to UKG",
+    desc: "In our Pre-School program, we focus on nurturing young minds through a play-based learning approach. Our Montessori-inspired and activity-driven curriculum helps children explore the world around them while building essential foundations for lifelong learning.",
     highlights: [
-      "Creative Play & Exploration",
-      "Language Development",
-      "Motor Skills Building",
-      "Social & Emotional Growth",
-      "Early Numeracy",
-      "Music & Movement",
+      "Learning Through Play — Engaging activities that make learning fun and natural",
+      "Holistic Development — Nurturing physical, emotional, social, and cognitive growth",
+      "Creative Activities — Art, music, and movement to spark imagination",
     ],
+    teaching: "Montessori & play-based approach that encourages exploration and discovery",
     image:
       "https://images.unsplash.com/photo-1594608661623-aa0bd3a69d98?w=800&q=80",
     color: "var(--coral)",
@@ -45,49 +42,49 @@ const programs = [
   {
     id: "primary",
     name: "Primary School",
-    desc: "Building strong foundations in literacy, numeracy, and character development through an engaging and supportive learning environment.",
+    ages: "Ages 6–11",
+    grades: "Grades 1–5",
+    desc: "Our Primary program builds strong academic foundations while fostering a love for learning. Through experiential and student-centered teaching methods, we ensure every child develops core skills in literacy, numeracy, and critical thinking alongside strong values.",
     highlights: [
-      "Core Academics",
-      "Reading & Writing",
-      "Mathematics",
-      "Science Discovery",
-      "Arts Integration",
-      "Physical Education",
+      "Core Skills — Building strong foundations in reading, writing, and mathematics",
+      "Interactive Learning — Hands-on projects and group activities that make concepts come alive",
+      "Values Education — Character building and ethical development integrated into daily learning",
     ],
+    teaching: "Experiential and student-centered methods that encourage active participation",
     image:
       "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800&q=80",
     color: "var(--mint)",
     emoji: "📚",
   },
   {
-    id: "middle",
-    name: "Middle School",
-    desc: "Developing critical thinking, leadership, and subject expertise as students prepare for the challenges of higher education.",
+    id: "lower-secondary",
+    name: "Lower Secondary",
+    ages: "Ages 11–14",
+    grades: "Grades 6–8",
+    desc: "Our Lower Secondary program empowers students to become independent thinkers and problem solvers. Through project-based learning and interactive discussions, students develop critical thinking, creativity, and collaboration skills essential for the modern world.",
     highlights: [
-      "Advanced Academics",
-      "Research Projects",
-      "Leadership Programs",
-      "Technology Skills",
-      "Community Service",
-      "Sports & Athletics",
+      "Project-Based Learning — Real-world projects that develop research and analytical skills",
+      "Skill Development — Building critical thinking, creativity, and collaborative abilities",
+      "Interactive Discussions — Engaging classroom dialogues that deepen understanding",
     ],
+    teaching: "Interactive discussions and project-based approach for deeper engagement",
     image:
       "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&q=80",
     color: "var(--lavender)",
     emoji: "🔬",
   },
   {
-    id: "high",
-    name: "High School",
-    desc: "Comprehensive preparation for university and beyond, with specialized tracks and real-world learning experiences.",
+    id: "secondary",
+    name: "Secondary School",
+    ages: "Ages 14–16",
+    grades: "Grades 9–10",
+    desc: "Our Secondary program provides comprehensive preparation for the SEE examinations and beyond. Using advanced multimedia tools and innovative teaching methods, we help students achieve academic excellence while planning for their future careers and higher education.",
     highlights: [
-      "University Prep",
-      "Career Counseling",
-      "Advanced Sciences",
-      "Global Perspectives",
-      "Internship Programs",
-      "Competitive Exams",
+      "SEE Exam Preparation — Structured preparation and practice for national examinations",
+      "Advanced Learning — In-depth study with multimedia tools and innovative methods",
+      "Future Planning — Career guidance and higher education counseling",
     ],
+    teaching: "Multimedia tools and advanced teaching approaches for exam readiness",
     image:
       "https://images.unsplash.com/photo-1627556704302-624286467c65?w=800&q=80",
     color: "var(--peach)",
@@ -95,55 +92,84 @@ const programs = [
   },
 ];
 
-const subjects = [
-  { name: "Mathematics", Icon: CalculatorIcon, color: "var(--coral)", bg: "#FF6B6B15" },
-  { name: "Science", Icon: BeakerIcon, color: "var(--mint)", bg: "#4ECDC415" },
-  { name: "English", Icon: BookOpenIcon, color: "var(--lavender)", bg: "#A78BFA15" },
-  { name: "Nepali", Icon: LanguageIcon, color: "var(--peach)", bg: "#FBBF7715" },
-  { name: "Social Studies", Icon: GlobeAltIcon, color: "var(--navy-light)", bg: "#4EAED815" },
-  { name: "Computer Science", Icon: ComputerDesktopIcon, color: "var(--coral)", bg: "#FF6B6B15" },
-  { name: "Arts & Music", Icon: MusicalNoteIcon, color: "var(--mint)", bg: "#4ECDC415" },
-  { name: "Physical Education", Icon: TrophyIcon, color: "var(--lavender)", bg: "#A78BFA15" },
+const specialFeatures = [
+  {
+    title: "Safe Environment",
+    desc: "A secure, nurturing space where children feel protected and encouraged to explore and learn without fear.",
+    icon: ShieldCheckIcon,
+    color: "var(--coral)",
+    bg: "#FF6B6B15",
+  },
+  {
+    title: "Experienced Teachers",
+    desc: "Dedicated and highly qualified educators who bring passion, creativity, and expertise to every classroom.",
+    icon: UserGroupIcon,
+    color: "var(--mint)",
+    bg: "#4ECDC415",
+  },
+  {
+    title: "Modern Facilities",
+    desc: "State-of-the-art classrooms, labs, and learning spaces designed to inspire and support 21st-century education.",
+    icon: AcademicCapIcon,
+    color: "var(--lavender)",
+    bg: "#A78BFA15",
+  },
+  {
+    title: "STEAM Education",
+    desc: "Integrated Science, Technology, Engineering, Arts, and Mathematics curriculum that prepares students for the future.",
+    icon: CpuChipIcon,
+    color: "var(--peach)",
+    bg: "#FBBF7715",
+  },
+  {
+    title: "Student-Centered Learning",
+    desc: "Every program is tailored to individual needs, ensuring each child receives personalized attention and support.",
+    icon: LightBulbIcon,
+    color: "var(--navy-light)",
+    bg: "#4EAED815",
+  },
 ];
 
-const extracurriculars = [
+const keyBenefits = [
   {
-    category: "Sports",
-    emoji: "🏅",
-    color: "var(--coral)",
-    bg: "#FF6B6B10",
-    border: "#FF6B6B30",
-    items: ["Football", "Basketball", "Cricket", "Swimming", "Athletics"],
-  },
-  {
-    category: "Arts",
-    emoji: "🎭",
-    color: "var(--lavender)",
-    bg: "#A78BFA10",
-    border: "#A78BFA30",
-    items: ["Painting", "Sculpture", "Drama", "Dance", "Photography"],
-  },
-  {
-    category: "Clubs",
-    emoji: "🧪",
+    emoji: "🌱",
+    title: "Personal Development Programs",
+    desc: "Comprehensive programs that build confidence, resilience, leadership skills, and emotional intelligence alongside academic growth.",
     color: "var(--mint)",
     bg: "#4ECDC410",
     border: "#4ECDC430",
-    items: ["Debate", "Science", "Literature", "Environment", "Robotics"],
   },
   {
-    category: "Programs",
-    emoji: "🌍",
+    emoji: "🏅",
+    title: "Extra-Curricular Activities",
+    desc: "A rich variety of sports, arts, clubs, and cultural activities that nurture talents, build character, and create lifelong memories.",
+    color: "var(--coral)",
+    bg: "#FF6B6B10",
+    border: "#FF6B6B30",
+  },
+  {
+    emoji: "💡",
+    title: "Modern Teaching Methods",
+    desc: "Innovative, research-backed teaching approaches including project-based learning, multimedia integration, and experiential education.",
+    color: "var(--lavender)",
+    bg: "#A78BFA10",
+    border: "#A78BFA30",
+  },
+  {
+    emoji: "⚖️",
+    title: "Balanced Academics & Life Skills",
+    desc: "Equal emphasis on academic excellence and essential life skills, ensuring students are prepared for both exams and the real world.",
     color: "var(--peach)",
     bg: "#FBBF7710",
     border: "#FBBF7730",
-    items: [
-      "Student Council",
-      "Community Service",
-      "Cultural Exchange",
-      "Annual Day",
-      "Field Trips",
-    ],
+  },
+  {
+    emoji: "👤",
+    title: "Individual Attention",
+    desc: "Small class sizes and dedicated mentoring ensure every student receives the personalized guidance they need to thrive.",
+    color: "var(--navy-light)",
+    bg: "#4EAED810",
+    border: "#4EAED830",
   },
 ];
 
@@ -251,11 +277,13 @@ export default function ProgramsPage() {
     <>
       <HeroSection />
       <WaveDivider color="white" />
+      <ThematicApproach />
+      <WaveDivider color="var(--cream)" flip />
       <ProgramTabs />
-      <WaveDivider color="var(--cream)" />
-      <CurriculumSection />
       <WaveDivider color="white" />
-      <ExtracurricularSection />
+      <SpecialFeaturesSection />
+      <WaveDivider color="var(--cream)" />
+      <KeyBenefitsSection />
       <WaveDivider color="var(--navy)" />
       <CTASection />
     </>
@@ -278,7 +306,6 @@ function HeroSection() {
       />
       <div className="absolute inset-0 bg-gradient-to-b from-[rgba(19,47,80,0.85)] via-[rgba(30,74,122,0.75)] to-[rgba(19,47,80,0.9)]" />
 
-      {/* Floating decorative shapes */}
       <FloatingShape color="#F5A623" size={90} top="8%" left="5%" shape="circle" delay={0} />
       <FloatingShape color="#4ECDC4" size={55} top="18%" left="88%" shape="triangle" delay={1} />
       <FloatingShape color="#FF6B6B" size={45} top="72%" left="8%" shape="star" delay={2} />
@@ -298,7 +325,7 @@ function HeroSection() {
           transition={{ delay: 0.3 }}
         >
           <SparklesIcon className="w-4 h-4" />
-          Academics
+          Academic Excellence
           <SparklesIcon className="w-4 h-4" />
         </motion.span>
 
@@ -318,8 +345,9 @@ function HeroSection() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
         >
-          From playful beginnings to ambitious futures, every program at
-          Aarambha is designed to inspire, challenge, and nurture.
+          Our programs are tailored for each age group, utilizing a thematic
+          approach in our academic teaching to shape well-rounded, future-ready
+          learners.
         </motion.p>
 
         <motion.div
@@ -341,7 +369,85 @@ function HeroSection() {
 }
 
 /* ──────────────────────────────────────────────
-   Section 2 — Program Tabs
+   Section 2 — Thematic Approach
+   ────────────────────────────────────────────── */
+
+function ThematicApproach() {
+  return (
+    <section className="bg-white py-24 px-6 relative overflow-hidden">
+      <FloatingShape color="#F5A623" size={60} top="10%" left="90%" shape="star" delay={0} />
+      <FloatingShape color="#4ECDC4" size={40} top="80%" left="5%" shape="circle" delay={1} />
+
+      <div className="max-w-5xl mx-auto relative z-10">
+        <motion.div
+          className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+        >
+          {/* Image */}
+          <motion.div
+            className="relative h-[350px] lg:h-[450px] rounded-3xl overflow-hidden shadow-2xl"
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <Image
+              src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=80"
+              alt="Children learning with thematic approach"
+              fill
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[var(--navy)]/30 to-transparent" />
+            <div className="absolute -bottom-3 -right-3 w-28 h-28 rounded-full bg-[var(--gold)] opacity-20 animate-blob" />
+          </motion.div>
+
+          {/* Text */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <SectionLabel>Our Approach</SectionLabel>
+            <h2 className="text-title font-display text-[var(--navy)] mb-5">
+              Thematic Teaching for{" "}
+              <span className="text-[var(--gold)]">Deeper Learning</span>
+            </h2>
+            <p className="text-body text-[var(--muted)] mb-5">
+              Aarambha School selects a relevant theme for each term and
+              integrates it into thoughtfully designed programs. This thematic
+              approach helps students make meaningful connections across subjects,
+              sparking curiosity and fostering deeper understanding.
+            </p>
+            <p className="text-body text-[var(--muted)] mb-8">
+              From the earliest years to secondary school, every program is
+              designed to match each developmental stage — ensuring students build
+              skills progressively while staying engaged, motivated, and excited
+              about learning.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              {["Play-Based", "Experiential", "Project-Based", "STEAM-Focused"].map(
+                (tag) => (
+                  <span
+                    key={tag}
+                    className="px-4 py-2 rounded-full bg-[var(--cream)] text-[var(--navy)] text-small font-semibold"
+                  >
+                    {tag}
+                  </span>
+                )
+              )}
+            </div>
+          </motion.div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+/* ──────────────────────────────────────────────
+   Section 3 — Program Tabs
    ────────────────────────────────────────────── */
 
 function ProgramTabs() {
@@ -363,7 +469,7 @@ function ProgramTabs() {
   const current = programs[activeTab];
 
   return (
-    <section className="bg-white py-24 px-6 relative overflow-hidden">
+    <section className="bg-[var(--cream)] py-24 px-6 relative overflow-hidden">
       <FloatingShape color="#F5A623" size={70} top="5%" left="90%" shape="star" delay={0} />
       <FloatingShape color="#4ECDC4" size={50} top="80%" left="3%" shape="circle" delay={1.5} />
 
@@ -371,11 +477,11 @@ function ProgramTabs() {
         <div className="text-center mb-14">
           <SectionLabel>Our Programs</SectionLabel>
           <h2 className="text-title font-display text-[var(--navy)]">
-            A Place for Every Learner
+            A Program for Every Stage
           </h2>
           <p className="text-body text-[var(--muted)] mt-3 max-w-lg mx-auto">
-            From curious toddlers to aspiring graduates, every stage of learning
-            is thoughtfully designed.
+            From curious toddlers to ambitious young adults, every stage of
+            learning is thoughtfully designed to match their developmental needs.
           </p>
         </div>
 
@@ -436,13 +542,20 @@ function ProgramTabs() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
               <div className="absolute bottom-6 left-6 right-6">
                 <div
-                  className="inline-block px-4 py-1.5 rounded-full text-white text-tiny font-semibold mb-3"
+                  className="inline-block px-4 py-1.5 rounded-full text-white text-tiny font-semibold mb-2"
                   style={{ backgroundColor: current.color }}
                 >
                   {current.emoji} {current.name}
                 </div>
+                <div className="flex gap-3 mt-1">
+                  <span className="text-white/80 text-sm bg-white/15 backdrop-blur-sm px-3 py-1 rounded-full">
+                    {current.grades}
+                  </span>
+                  <span className="text-white/80 text-sm bg-white/15 backdrop-blur-sm px-3 py-1 rounded-full">
+                    {current.ages}
+                  </span>
+                </div>
               </div>
-              {/* Decorative blob */}
               <div
                 className="absolute -top-4 -right-4 w-24 h-24 rounded-full animate-blob opacity-25"
                 style={{ backgroundColor: current.color }}
@@ -451,43 +564,81 @@ function ProgramTabs() {
 
             {/* Right: details */}
             <div>
-              <h2 className="text-title font-display text-[var(--navy)] mb-1">
-                {current.name}
-              </h2>
+              <div className="flex items-center gap-3 mb-1">
+                <h2 className="text-title font-display text-[var(--navy)]">
+                  {current.name}
+                </h2>
+              </div>
+              <div className="flex gap-3 mb-5">
+                <span
+                  className="text-tiny font-semibold px-3 py-1 rounded-full"
+                  style={{ backgroundColor: `${current.color}20`, color: current.color }}
+                >
+                  {current.grades}
+                </span>
+                <span
+                  className="text-tiny font-semibold px-3 py-1 rounded-full"
+                  style={{ backgroundColor: `${current.color}20`, color: current.color }}
+                >
+                  {current.ages}
+                </span>
+              </div>
               <div
                 className="w-12 h-1 rounded-full mb-5"
                 style={{ backgroundColor: current.color }}
               />
-              <p className="text-body text-[var(--muted)] mb-8">
+              <p className="text-body text-[var(--muted)] mb-6">
                 {current.desc}
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {current.highlights.map((highlight, i) => (
-                  <motion.div
-                    key={highlight}
-                    className="flex items-center gap-3 bg-[var(--cream)] rounded-2xl px-4 py-3"
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.06 }}
-                  >
-                    <CheckCircleIcon
-                      className="w-5 h-5 flex-shrink-0"
-                      style={{ color: current.color }}
-                    />
-                    <span className="text-small text-[var(--charcoal)] font-medium">
-                      {highlight}
-                    </span>
-                  </motion.div>
-                ))}
+
+              {/* Highlights */}
+              <div className="space-y-4 mb-6">
+                {current.highlights.map((highlight, i) => {
+                  const [title, description] = highlight.split(" — ");
+                  return (
+                    <motion.div
+                      key={title}
+                      className="flex items-start gap-3 bg-white rounded-2xl px-5 py-4"
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.08 }}
+                    >
+                      <CheckCircleIcon
+                        className="w-5 h-5 flex-shrink-0 mt-0.5"
+                        style={{ color: current.color }}
+                      />
+                      <div>
+                        <span className="text-small text-[var(--charcoal)] font-semibold block">
+                          {title}
+                        </span>
+                        <span className="text-small text-[var(--muted)]">
+                          {description}
+                        </span>
+                      </div>
+                    </motion.div>
+                  );
+                })}
               </div>
-              <motion.div className="mt-8">
-                <Link
-                  href="/admissions"
-                  className="btn-cta inline-flex items-center gap-2"
-                >
-                  Apply for {current.name}
-                </Link>
-              </motion.div>
+
+              {/* Teaching approach badge */}
+              <div
+                className="rounded-2xl px-5 py-3 mb-6"
+                style={{ backgroundColor: `${current.color}10`, borderLeft: `3px solid ${current.color}` }}
+              >
+                <span className="text-tiny font-semibold text-[var(--navy)] block mb-1">
+                  Teaching Approach
+                </span>
+                <span className="text-small text-[var(--muted)]">
+                  {current.teaching}
+                </span>
+              </div>
+
+              <Link
+                href="/admissions"
+                className="btn-cta inline-flex items-center gap-2"
+              >
+                Apply for {current.name}
+              </Link>
             </div>
           </motion.div>
         </AnimatePresence>
@@ -497,48 +648,51 @@ function ProgramTabs() {
 }
 
 /* ──────────────────────────────────────────────
-   Section 3 — Curriculum
+   Section 4 — Special Features
    ────────────────────────────────────────────── */
 
-function CurriculumSection() {
+function SpecialFeaturesSection() {
   return (
-    <section className="bg-[var(--cream)] py-24 px-6 relative overflow-hidden">
+    <section className="bg-white py-24 px-6 relative overflow-hidden">
       <FloatingShape color="#A78BFA" size={60} top="8%" left="88%" shape="triangle" delay={0} />
       <FloatingShape color="#FF6B6B" size={40} top="75%" left="5%" shape="star" delay={1} />
 
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="text-center mb-16">
-          <SectionLabel>Curriculum</SectionLabel>
+          <SectionLabel>What Makes Us Special</SectionLabel>
           <h2 className="text-title font-display text-[var(--navy)]">
-            What We Teach
+            The Aarambha Advantage
           </h2>
           <p className="text-body text-[var(--muted)] mt-3 max-w-lg mx-auto">
-            A well-rounded curriculum designed to develop academic excellence
-            alongside creative and physical abilities.
+            Every aspect of our school is designed with one goal — to provide
+            the best possible environment for your child to learn and grow.
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
-          {subjects.map(({ name, Icon, color, bg }, index) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          {specialFeatures.map(({ title, desc, icon: Icon, color, bg }, index) => (
             <motion.div
-              key={name}
-              className="bg-white rounded-3xl p-7 text-center shadow-sm cursor-pointer"
+              key={title}
+              className="bg-[var(--cream)] rounded-3xl p-8 text-center relative overflow-hidden"
               style={{ borderBottom: `3px solid ${color}` }}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.08, type: "spring", stiffness: 200 }}
-              whileHover={{ y: -6, scale: 1.03 }}
+              whileHover={{ y: -6, scale: 1.02 }}
             >
               <div
-                className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
+                className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5"
                 style={{ backgroundColor: bg }}
               >
-                <Icon className="w-7 h-7" style={{ color }} />
+                <Icon className="w-8 h-8" style={{ color }} />
               </div>
-              <h3 className="font-display text-[var(--navy)] text-sm font-semibold">
-                {name}
+              <h3 className="font-display text-[var(--navy)] text-lg font-semibold mb-3">
+                {title}
               </h3>
+              <p className="text-small text-[var(--muted)] leading-relaxed">
+                {desc}
+              </p>
             </motion.div>
           ))}
         </div>
@@ -548,31 +702,31 @@ function CurriculumSection() {
 }
 
 /* ──────────────────────────────────────────────
-   Section 4 — Extracurriculars
+   Section 5 — Key Benefits
    ────────────────────────────────────────────── */
 
-function ExtracurricularSection() {
+function KeyBenefitsSection() {
   return (
-    <section className="bg-white py-24 px-6 relative overflow-hidden">
+    <section className="bg-[var(--cream)] py-24 px-6 relative overflow-hidden">
       <FloatingShape color="#FBBF77" size={70} top="5%" left="3%" shape="circle" delay={0} />
       <FloatingShape color="#4ECDC4" size={50} top="80%" left="92%" shape="square" delay={1} />
 
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="text-center mb-16">
-          <SectionLabel>Beyond Academics</SectionLabel>
+          <SectionLabel>Why Aarambha</SectionLabel>
           <h2 className="text-title font-display text-[var(--navy)]">
-            Beyond the Classroom
+            Key Benefits for Your Child
           </h2>
           <p className="text-body text-[var(--muted)] mt-3 max-w-lg mx-auto">
-            We nurture talents, build character, and create lifelong memories
-            through a vibrant extracurricular program.
+            We go beyond academics to ensure every child is equipped with the
+            skills, confidence, and values they need to succeed in life.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          {extracurriculars.map(({ category, emoji, color, bg, border, items }, index) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          {keyBenefits.map(({ emoji, title, desc, color, bg, border }, index) => (
             <motion.div
-              key={category}
+              key={title}
               className="rounded-3xl p-8 relative overflow-hidden"
               style={{
                 backgroundColor: bg,
@@ -584,7 +738,6 @@ function ExtracurricularSection() {
               transition={{ delay: index * 0.1, type: "spring", stiffness: 180 }}
               whileHover={{ y: -4 }}
             >
-              {/* Decorative emoji background */}
               <span
                 className="absolute top-4 right-4 text-6xl opacity-10 select-none"
                 aria-hidden="true"
@@ -593,23 +746,13 @@ function ExtracurricularSection() {
               </span>
 
               <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-5">
-                  <span className="text-3xl">{emoji}</span>
-                  <h3 className="text-subtitle font-display text-[var(--navy)]">
-                    {category}
-                  </h3>
-                </div>
-                <ul className="space-y-3">
-                  {items.map((item) => (
-                    <li key={item} className="flex items-center gap-3 text-body text-[var(--charcoal)]">
-                      <span
-                        className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-                        style={{ backgroundColor: color }}
-                      />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
+                <span className="text-3xl mb-4 block">{emoji}</span>
+                <h3 className="text-subtitle font-display text-[var(--navy)] mb-3">
+                  {title}
+                </h3>
+                <p className="text-small text-[var(--muted)] leading-relaxed">
+                  {desc}
+                </p>
               </div>
             </motion.div>
           ))}
@@ -620,13 +763,12 @@ function ExtracurricularSection() {
 }
 
 /* ──────────────────────────────────────────────
-   Section 5 — CTA
+   Section 6 — CTA
    ────────────────────────────────────────────── */
 
 function CTASection() {
   return (
     <section className="relative bg-[var(--navy)] py-28 px-6 overflow-hidden">
-      {/* Playful background shapes */}
       <FloatingShape color="#F5A623" size={120} top="10%" left="5%" shape="circle" delay={0} />
       <FloatingShape color="#4ECDC4" size={80} top="60%" left="85%" shape="triangle" delay={0.5} />
       <FloatingShape color="#FF6B6B" size={50} top="20%" left="75%" shape="star" delay={1} />
@@ -641,11 +783,12 @@ function CTASection() {
       >
         <span className="text-5xl mb-4 block">🎓</span>
         <h2 className="text-title font-display text-white mb-4">
-          Ready to Start Your Application?
+          Ready to Start Your Child&apos;s Journey?
         </h2>
         <p className="text-body text-white/70 mt-4 mb-10 max-w-xl mx-auto">
           Join a community of learners where every child is encouraged to
-          explore, grow, and achieve their fullest potential.
+          explore, grow, and achieve their fullest potential through our
+          thematic, student-centered approach.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
           <Link href="/admissions" className="btn-cta">
