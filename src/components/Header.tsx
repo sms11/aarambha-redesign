@@ -52,8 +52,8 @@ export default function Header() {
           <Image
             src="/logo.png"
             alt="Aarambha Sanskar Vidyalaya"
-            width={140}
-            height={50}
+            width={40}
+            height={40}
             className={`h-10 w-auto transition-all duration-300 ${
               scrolled ? "" : "brightness-0 invert"
             }`}
