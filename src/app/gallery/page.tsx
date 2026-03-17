@@ -4,41 +4,162 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { PlayCircleIcon, SparklesIcon } from "@heroicons/react/24/outline";
+import { SparklesIcon } from "@heroicons/react/24/outline";
+import { StarIcon } from "@heroicons/react/24/outline";
 
 /* ──────────────────────────────────────────────
-   Data
+   Data — All real images from the website
    ────────────────────────────────────────────── */
 
-const categories = ["All", "Campus", "Classrooms", "Events", "Sports", "Labs"] as const;
+const categories = [
+  "All",
+  "School Life",
+  "Campus",
+  "Labs",
+  "Community",
+  "Team",
+] as const;
 
 const categoryColors: Record<string, string> = {
   All: "var(--gold)",
-  Campus: "var(--coral)",
-  Classrooms: "var(--mint)",
-  Events: "var(--lavender)",
-  Sports: "var(--peach)",
-  Labs: "var(--navy-light)",
+  "School Life": "var(--coral)",
+  Campus: "var(--mint)",
+  Labs: "var(--lavender)",
+  Community: "var(--peach)",
+  Team: "var(--navy-light)",
 };
 
 const galleryItems = [
-  { src: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=600&q=80", alt: "School building exterior", category: "Campus" },
-  { src: "https://images.unsplash.com/photo-1562774053-701939374585?w=600&q=80", alt: "Campus grounds", category: "Campus" },
-  { src: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=600&q=80", alt: "School entrance", category: "Campus" },
-  { src: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600&q=80", alt: "Students in classroom", category: "Classrooms" },
-  { src: "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&q=80", alt: "Interactive learning", category: "Classrooms" },
-  { src: "https://images.unsplash.com/photo-1627556704302-624286467c65?w=600&q=80", alt: "Graduation ceremony", category: "Events" },
-  { src: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80", alt: "Annual day celebration", category: "Events" },
-  { src: "https://images.unsplash.com/photo-1577896851231-70ef18881754?w=600&q=80", alt: "Cultural program", category: "Events" },
-  { src: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&q=80", alt: "Sports ground", category: "Sports" },
-  { src: "https://images.unsplash.com/photo-1594608661623-aa0bd3a69d98?w=600&q=80", alt: "Athletics event", category: "Sports" },
-  { src: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=600&q=80", alt: "Science laboratory", category: "Labs" },
-  { src: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&q=80", alt: "Computer lab", category: "Labs" },
+  // School Life
+  {
+    src: "/images/facilities/club-activities.webp",
+    alt: "Club Activities — Science, IT, Sports & Leo Club",
+    category: "School Life",
+  },
+  {
+    src: "/images/facilities/public-speaking.webp",
+    alt: "Public Speaking — Debates & Elocutions",
+    category: "School Life",
+  },
+  {
+    src: "/images/facilities/arts-dramatics.webp",
+    alt: "Arts and Dramatics — Visual Arts & Drama",
+    category: "School Life",
+  },
+  {
+    src: "/images/facilities/field-trips.webp",
+    alt: "Field Trips and Outings",
+    category: "School Life",
+  },
+  {
+    src: "/images/facilities/physical-education.webp",
+    alt: "Physical Education — Sports & Fitness",
+    category: "School Life",
+  },
+  {
+    src: "/images/facilities/eca.webp",
+    alt: "Extra-Curricular Activities",
+    category: "School Life",
+  },
+
+  // Campus
+  {
+    src: "/images/facilities/beyond-classroom.webp",
+    alt: "Learning Beyond the Classroom",
+    category: "Campus",
+  },
+  {
+    src: "/images/facilities/convenience-1.webp",
+    alt: "School Campus & Infrastructure",
+    category: "Campus",
+  },
+  {
+    src: "/images/facilities/convenience-2.webp",
+    alt: "School Building & Grounds",
+    category: "Campus",
+  },
+  {
+    src: "/images/facilities/digital-education.webp",
+    alt: "Digital Education & Smart Classrooms",
+    category: "Campus",
+  },
+  {
+    src: "/images/facilities/medicare.webp",
+    alt: "Health Unit & Medicare Facility",
+    category: "Campus",
+  },
+  {
+    src: "/images/about-1.webp",
+    alt: "About Aarambha — Our School",
+    category: "Campus",
+  },
+
+  // Labs
+  {
+    src: "/images/facilities/science-lab.webp",
+    alt: "Science Lab — Physics, Chemistry & Biology",
+    category: "Labs",
+  },
+  {
+    src: "/images/facilities/abacus.webp",
+    alt: "Abacus — Mental Mathematics Program",
+    category: "Labs",
+  },
+  {
+    src: "/images/facilities/math-lab.webp",
+    alt: "Math Lab — Hands-on Learning",
+    category: "Labs",
+  },
+
+  // Community
+  {
+    src: "/images/community/regular-meetings.webp",
+    alt: "Parent-Teacher Regular Meetings",
+    category: "Community",
+  },
+  {
+    src: "/images/community/partnerships-1.webp",
+    alt: "Community Partnership Events",
+    category: "Community",
+  },
+  {
+    src: "/images/community/partnerships-2.webp",
+    alt: "Students in Community Programs",
+    category: "Community",
+  },
+
+  // Team
+  {
+    src: "/images/team/naresh.webp",
+    alt: "Naresh Prasad Shrestha — Chairman & Principal",
+    category: "Team",
+  },
+  {
+    src: "/images/team/rossete.webp",
+    alt: "Rossete Dela Rosa Tamang — VP Pre-school to Grade 5",
+    category: "Team",
+  },
+  {
+    src: "/images/team/dinesh.webp",
+    alt: "Dinesh Shrestha — VP Grade 6-12",
+    category: "Team",
+  },
+  {
+    src: "/images/team/sunita.webp",
+    alt: "Sunita Maharjan — Coordinator Pre-school to Grade 5",
+    category: "Team",
+  },
+  {
+    src: "/images/team/deepika.webp",
+    alt: "Deepika Shrestha — Coordinator Grade 6-10",
+    category: "Team",
+  },
+  {
+    src: "/images/team/kripa.webp",
+    alt: "Kripa Bajracharya — ECA Coordinator",
+    category: "Team",
+  },
 ];
-
-const videoItems = ["Campus Tour", "A Day at Aarambha", "Student Testimonials"];
-
-const videoColors = ["var(--coral)", "var(--mint)", "var(--lavender)"];
 
 /* ──────────────────────────────────────────────
    Decorative Components
@@ -94,6 +215,13 @@ function FloatingShape({
       />
     );
   }
+  if (shape === "star") {
+    return (
+      <div className="animate-wiggle" style={shapeStyles}>
+        <StarIcon style={{ width: size, height: size, color }} />
+      </div>
+    );
+  }
   return (
     <div
       className="animate-float"
@@ -136,7 +264,10 @@ export default function GalleryPage() {
   return (
     <>
       <HeroSection />
+      <WaveDivider color="white" />
       <GallerySection />
+      <WaveDivider color="var(--navy)" />
+      <CTASection />
     </>
   );
 }
@@ -149,7 +280,7 @@ function HeroSection() {
   return (
     <section className="relative overflow-hidden min-h-[60vh] md:min-h-[70vh] lg:min-h-[80vh] flex items-center justify-center">
       <Image
-        src="https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=1920&q=80"
+        src="/images/facilities/club-activities.webp"
         alt="Life at Aarambha"
         fill
         className="object-cover"
@@ -157,12 +288,11 @@ function HeroSection() {
       />
       <div className="absolute inset-0 bg-gradient-to-b from-[rgba(19,47,80,0.85)] via-[rgba(30,74,122,0.75)] to-[rgba(19,47,80,0.9)]" />
 
-      {/* Floating decorative shapes */}
       <FloatingShape color="#F5A623" size={90} top="8%" left="5%" shape="circle" delay={0} />
       <FloatingShape color="#4ECDC4" size={55} top="18%" left="88%" shape="triangle" delay={1} />
-      <FloatingShape color="#FF6B6B" size={40} top="72%" left="8%" shape="square" delay={2} />
-      <FloatingShape color="#A78BFA" size={65} top="65%" left="82%" shape="circle" delay={0.5} />
-      <FloatingShape color="#FBBF77" size={35} top="40%" left="93%" shape="triangle" delay={1.5} />
+      <FloatingShape color="#FF6B6B" size={40} top="72%" left="8%" shape="star" delay={2} />
+      <FloatingShape color="#A78BFA" size={65} top="65%" left="82%" shape="square" delay={0.5} />
+      <FloatingShape color="#FBBF77" size={35} top="40%" left="93%" shape="circle" delay={1.5} />
 
       <motion.div
         className="relative z-10 text-center px-6 max-w-4xl mx-auto"
@@ -211,200 +341,167 @@ function GallerySection() {
       ? galleryItems
       : galleryItems.filter((item) => item.category === activeFilter);
 
+  const counts = galleryItems.reduce(
+    (acc, item) => {
+      acc[item.category] = (acc[item.category] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
+
   return (
-    <>
-      {/* Filter Pills */}
-      <section className="relative bg-white py-24 px-6 overflow-hidden">
-        <FloatingShape color="#F5A623" size={70} top="3%" left="92%" shape="circle" delay={0} />
-        <FloatingShape color="#4ECDC4" size={45} top="90%" left="4%" shape="triangle" delay={1} />
+    <section className="relative bg-white py-24 px-6 overflow-hidden">
+      <FloatingShape color="#F5A623" size={70} top="3%" left="92%" shape="star" delay={0} />
+      <FloatingShape color="#4ECDC4" size={45} top="90%" left="4%" shape="circle" delay={1} />
 
-        <div className="max-w-6xl mx-auto relative z-10">
-          <div className="text-center mb-12">
-            <SectionLabel>Explore Moments</SectionLabel>
-            <h2 className="text-title font-display text-[var(--navy)]">
-              Browse Our Photo Gallery
-            </h2>
-            <p className="text-body text-[var(--muted)] mt-4 max-w-2xl mx-auto">
-              Filter by category to explore different aspects of campus life, events,
-              and learning at Aarambha.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap justify-center gap-3 mb-16">
-            {categories.map((category) => {
-              const isActive = activeFilter === category;
-              const accentColor = categoryColors[category];
-              return (
-                <motion.button
-                  key={category}
-                  onClick={() => setActiveFilter(category)}
-                  aria-pressed={isActive}
-                  className="px-6 py-2.5 rounded-full text-sm font-semibold transition-all cursor-pointer border-2"
-                  style={{
-                    backgroundColor: isActive ? accentColor : "transparent",
-                    borderColor: isActive ? accentColor : "#e5e7eb",
-                    color: isActive ? "#fff" : "var(--muted)",
-                  }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.97 }}
-                >
-                  {category}
-                </motion.button>
-              );
-            })}
-          </div>
-
-          {/* Masonry Photo Grid */}
-          <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 max-w-6xl mx-auto">
-            <AnimatePresence mode="popLayout">
-              {filtered.map((item, index) => (
-                <motion.div
-                  key={item.src}
-                  layout
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ delay: index * 0.04, type: "spring", stiffness: 300, damping: 25 }}
-                  className="break-inside-avoid mb-5 relative group rounded-2xl overflow-hidden cursor-pointer"
-                >
-                  <Image
-                    src={item.src}
-                    alt={item.alt}
-                    width={600}
-                    height={400}
-                    className="w-full h-auto group-hover:scale-110 transition-transform duration-500"
-                  />
-                  {/* Gradient overlay on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[rgba(19,47,80,0.8)] via-[rgba(30,74,122,0.3)] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-start justify-end p-5">
-                    <span
-                      className="px-3 py-1 rounded-full text-white text-tiny font-semibold mb-2"
-                      style={{ backgroundColor: categoryColors[item.category] }}
-                    >
-                      {item.category}
-                    </span>
-                    <span className="text-small font-display text-white font-semibold">
-                      {item.alt}
-                    </span>
-                  </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
+      <div className="max-w-6xl mx-auto relative z-10">
+        <div className="text-center mb-12">
+          <SectionLabel>Explore Moments</SectionLabel>
+          <h2 className="text-title font-display text-[var(--navy)]">
+            Browse Our Photo Gallery
+          </h2>
+          <p className="text-body text-[var(--muted)] mt-4 max-w-2xl mx-auto">
+            Filter by category to explore different aspects of campus life,
+            activities, and learning at Aarambha.
+          </p>
         </div>
-      </section>
 
-      {/* Video Section */}
-      <WaveDivider color="var(--navy)" />
-      <section className="bg-[var(--navy)] py-24 px-6 relative overflow-hidden">
-        <FloatingShape color="#F5A623" size={80} top="10%" left="5%" shape="circle" delay={0} />
-        <FloatingShape color="#FF6B6B" size={50} top="70%" left="90%" shape="square" delay={1} />
-
-        <div className="max-w-5xl mx-auto relative z-10">
-          <div className="text-center mb-16">
-            <SectionLabel>Watch & Discover</SectionLabel>
-            <h2 className="text-title font-display text-white">
-              Video Gallery
-            </h2>
-            <p className="text-body text-white/60 mt-4 max-w-xl mx-auto">
-              Experience Aarambha through our collection of video stories and campus highlights.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {videoItems.map((title, index) => (
-              <motion.div
-                key={title}
-                className="group relative rounded-3xl overflow-hidden cursor-pointer"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.15 }}
-                whileHover={{ y: -6 }}
+        {/* Filter Pills */}
+        <div className="flex flex-wrap justify-center gap-3 mb-16">
+          {categories.map((category) => {
+            const isActive = activeFilter === category;
+            const accentColor = categoryColors[category];
+            const count =
+              category === "All"
+                ? galleryItems.length
+                : counts[category] || 0;
+            return (
+              <motion.button
+                key={category}
+                onClick={() => setActiveFilter(category)}
+                aria-pressed={isActive}
+                className="px-6 py-2.5 rounded-full text-sm font-semibold transition-all cursor-pointer border-2"
+                style={{
+                  backgroundColor: isActive ? accentColor : "transparent",
+                  borderColor: isActive ? accentColor : "#e5e7eb",
+                  color: isActive ? "#fff" : "var(--muted)",
+                }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.97 }}
               >
-                <div
-                  className="h-56 flex items-center justify-center relative"
-                  style={{
-                    background: `linear-gradient(135deg, ${videoColors[index]}22, ${videoColors[index]}11)`,
-                  }}
+                {category}
+                <span
+                  className="ml-2 text-xs opacity-70"
+                  style={{ color: isActive ? "#fff" : "var(--muted)" }}
                 >
-                  {/* Decorative accent corner */}
-                  <div
-                    className="absolute top-0 right-0 w-20 h-20 rounded-bl-[40px] opacity-20"
-                    style={{ backgroundColor: videoColors[index] }}
-                  />
-                  <div
-                    className="absolute bottom-0 left-0 w-16 h-16 rounded-tr-[32px] opacity-15"
-                    style={{ backgroundColor: videoColors[index] }}
-                  />
+                  ({count})
+                </span>
+              </motion.button>
+            );
+          })}
+        </div>
 
-                  <motion.div
-                    className="w-20 h-20 rounded-full flex items-center justify-center"
+        {/* Masonry Photo Grid */}
+        <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 max-w-6xl mx-auto">
+          <AnimatePresence mode="popLayout">
+            {filtered.map((item, index) => (
+              <motion.div
+                key={item.src}
+                layout
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{
+                  delay: index * 0.04,
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 25,
+                }}
+                className="break-inside-avoid mb-5 relative group rounded-2xl overflow-hidden cursor-pointer"
+              >
+                <Image
+                  src={item.src}
+                  alt={item.alt}
+                  width={600}
+                  height={400}
+                  className="w-full h-auto group-hover:scale-110 transition-transform duration-500"
+                />
+                {/* Gradient overlay on hover */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[rgba(19,47,80,0.85)] via-[rgba(30,74,122,0.3)] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-start justify-end p-5">
+                  <span
+                    className="px-3 py-1 rounded-full text-white text-tiny font-semibold mb-2"
                     style={{
-                      backgroundColor: `${videoColors[index]}30`,
-                      border: `2px solid ${videoColors[index]}60`,
+                      backgroundColor: categoryColors[item.category],
                     }}
-                    whileHover={{ scale: 1.1 }}
-                    transition={{ type: "spring", stiffness: 300 }}
                   >
-                    <PlayCircleIcon
-                      className="w-12 h-12"
-                      style={{ color: videoColors[index] }}
-                    />
-                  </motion.div>
-                </div>
-
-                <div className="p-5 bg-white/5 backdrop-blur-sm border-t border-white/10">
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="w-2 h-2 rounded-full"
-                      style={{ backgroundColor: videoColors[index] }}
-                    />
-                    <h3 className="text-small font-display text-white font-semibold">
-                      {title}
-                    </h3>
-                  </div>
+                    {item.category}
+                  </span>
+                  <span className="text-small font-display text-white font-semibold">
+                    {item.alt}
+                  </span>
                 </div>
               </motion.div>
             ))}
-          </div>
+          </AnimatePresence>
         </div>
-      </section>
-      <WaveDivider flip color="var(--navy)" />
 
-      {/* CTA Section */}
-      <section className="relative bg-[var(--cream)] py-28 px-6 overflow-hidden">
-        <FloatingShape color="#F5A623" size={100} top="10%" left="5%" shape="circle" delay={0} />
-        <FloatingShape color="#4ECDC4" size={70} top="60%" left="88%" shape="triangle" delay={0.5} />
-        <FloatingShape color="#FF6B6B" size={45} top="20%" left="78%" shape="square" delay={1} />
-        <FloatingShape color="#A78BFA" size={60} top="70%" left="12%" shape="circle" delay={1.5} />
-
-        <motion.div
-          className="max-w-3xl mx-auto text-center relative z-10"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+        {/* Count indicator */}
+        <motion.p
+          className="text-center text-small text-[var(--muted)] mt-10"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          key={activeFilter}
         >
-          <span className="text-5xl mb-4 block">📸</span>
-          <h2 className="text-title font-display text-[var(--navy)] mb-4">
-            Want to See More?
-          </h2>
-          <p className="text-body text-[var(--muted)] max-w-2xl mx-auto mb-10">
-            Photos capture moments, but nothing compares to experiencing our campus
-            in person. Schedule a visit or start your application today.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link href="/contact" className="btn-cta">
-              Schedule a Visit
-            </Link>
-            <Link
-              href="/admissions"
-              className="btn-secondary text-[var(--navy)] border-[var(--navy)]"
+          Showing {filtered.length} of {galleryItems.length} photos
+          {activeFilter !== "All" && (
+            <button
+              onClick={() => setActiveFilter("All")}
+              className="ml-2 text-[var(--navy)] font-semibold underline underline-offset-2 cursor-pointer"
             >
-              Apply Now
-            </Link>
-          </div>
-        </motion.div>
-      </section>
-    </>
+              Show all
+            </button>
+          )}
+        </motion.p>
+      </div>
+    </section>
+  );
+}
+
+/* ──────────────────────────────────────────────
+   Section 3 — CTA
+   ────────────────────────────────────────────── */
+
+function CTASection() {
+  return (
+    <section className="relative bg-[var(--navy)] py-28 px-6 overflow-hidden">
+      <FloatingShape color="#F5A623" size={120} top="10%" left="5%" shape="circle" delay={0} />
+      <FloatingShape color="#4ECDC4" size={80} top="60%" left="85%" shape="triangle" delay={0.5} />
+      <FloatingShape color="#FF6B6B" size={50} top="20%" left="78%" shape="star" delay={1} />
+      <FloatingShape color="#A78BFA" size={70} top="70%" left="12%" shape="square" delay={1.5} />
+
+      <motion.div
+        className="max-w-3xl mx-auto text-center relative z-10"
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+      >
+        <span className="text-5xl mb-4 block">📸</span>
+        <h2 className="text-title font-display text-white mb-4">
+          Want to See More?
+        </h2>
+        <p className="text-body text-white/70 max-w-2xl mx-auto mb-10">
+          Photos capture moments, but nothing compares to experiencing our campus
+          in person. Schedule a visit or start your application today.
+        </p>
+        <div className="flex flex-wrap justify-center gap-4">
+          <Link href="/contact" className="btn-cta">
+            Schedule a Visit
+          </Link>
+          <Link href="/admissions" className="btn-secondary">
+            Apply Now
+          </Link>
+        </div>
+      </motion.div>
+    </section>
   );
 }
