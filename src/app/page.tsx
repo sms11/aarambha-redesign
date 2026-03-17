@@ -131,8 +131,8 @@ function HeroSection() {
   return (
     <section className="relative overflow-hidden min-h-[70vh] md:min-h-[80vh] lg:min-h-screen flex items-center justify-center">
       <Image
-        src="/images/hero.webp"
-        alt="Aarambha School students"
+        src="https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=1920&q=80"
+        alt="Students learning together"
         fill
         priority
         style={{ objectFit: "cover" }}
@@ -145,21 +145,22 @@ function HeroSection() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        <span className="text-label text-[var(--gold)]">Since 2008</span>
+        <span className="text-label text-[var(--gold)]">
+          Aarambha Sanskar Vidyalaya
+        </span>
         <h1 className="text-hero font-display text-white mt-4 mb-6">
-          Nurturing Tomorrow&apos;s Leaders
+          Empowering a Journey of Learning, Growth, and Leadership
         </h1>
         <p className="text-body text-white/80 max-w-xl mx-auto mb-10">
-          Aarambha Sanskar Vidyalaya blends timeless Eastern wisdom with
-          contemporary education, preparing students to excel as thoughtful,
-          capable global citizens.
+          Where Eastern Values Meet 21st-Century Innovation to Shape
+          Future-Ready Leaders
         </p>
         <div className="flex flex-wrap justify-center gap-4">
           <Link href="/admissions" className="btn-cta">
-            Apply Now
+            Enroll Now
           </Link>
-          <Link href="/programs" className="btn-secondary">
-            Discover More
+          <Link href="/about" className="btn-secondary">
+            Learn More
           </Link>
         </div>
       </motion.div>
