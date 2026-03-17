@@ -433,7 +433,7 @@ function TeamSection() {
                 alt={member.name}
                 width={120}
                 height={120}
-                className="w-24 h-24 rounded-full object-cover mx-auto mb-4"
+                className="w-24 h-24 rounded-full object-cover object-top mx-auto mb-4"
               />
               <h3 className="font-display text-[var(--navy)] font-semibold">
                 {member.name}
