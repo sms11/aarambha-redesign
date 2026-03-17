@@ -7,52 +7,182 @@ import {
   PhoneIcon,
   EnvelopeIcon,
   ClockIcon,
+  SparklesIcon,
+  PaperAirplaneIcon,
+  StarIcon,
 } from "@heroicons/react/24/outline";
+
+/* ──────────────────────────────────────────────
+   Data
+   ────────────────────────────────────────────── */
 
 const contactInfo = [
   {
     icon: MapPinIcon,
     label: "Address",
     value: "Pipal Bot, Galko Pakha Marga, Kathmandu, Nepal",
+    color: "var(--coral)",
   },
   {
     icon: PhoneIcon,
     label: "Phone",
     value: "+977 9823837865",
+    color: "var(--mint)",
   },
   {
     icon: EnvelopeIcon,
     label: "Email",
     value: "info@aarambha.school",
+    color: "var(--lavender)",
   },
   {
     icon: ClockIcon,
     label: "Office Hours",
     value: "Sunday - Friday: 7:00 AM - 4:00 PM",
+    color: "var(--peach)",
   },
 ];
 
 const socialLinks = [
-  { name: "Facebook", href: "#" },
-  { name: "Instagram", href: "#" },
-  { name: "YouTube", href: "#" },
-  { name: "LinkedIn", href: "#" },
+  {
+    name: "Facebook",
+    href: "https://www.facebook.com/profile.php?id=61572480778405",
+    color: "#1877F2",
+    hoverBg: "hover:bg-[#1877F2]",
+  },
+  {
+    name: "Instagram",
+    href: "https://www.instagram.com/aarambha_school",
+    color: "#E4405F",
+    hoverBg: "hover:bg-[#E4405F]",
+  },
+  {
+    name: "TikTok",
+    href: "https://www.tiktok.com/@aarambha.school",
+    color: "#000000",
+    hoverBg: "hover:bg-[#000000]",
+  },
 ];
+
+/* ──────────────────────────────────────────────
+   Decorative Components
+   ────────────────────────────────────────────── */
+
+function FloatingShape({
+  color,
+  size,
+  top,
+  left,
+  delay = 0,
+  shape = "circle",
+}: {
+  color: string;
+  size: number;
+  top: string;
+  left: string;
+  delay?: number;
+  shape?: "circle" | "triangle" | "star" | "square";
+}) {
+  const shapeStyles: React.CSSProperties = {
+    position: "absolute",
+    top,
+    left,
+    width: size,
+    height: size,
+    opacity: 0.15,
+    zIndex: 0,
+    animationDelay: `${delay}s`,
+  };
+
+  if (shape === "circle") {
+    return (
+      <div
+        className="animate-float-slow"
+        style={{ ...shapeStyles, borderRadius: "50%", backgroundColor: color }}
+      />
+    );
+  }
+  if (shape === "triangle") {
+    return (
+      <div
+        className="animate-float"
+        style={{
+          ...shapeStyles,
+          width: 0,
+          height: 0,
+          backgroundColor: "transparent",
+          borderLeft: `${size / 2}px solid transparent`,
+          borderRight: `${size / 2}px solid transparent`,
+          borderBottom: `${size}px solid ${color}`,
+        }}
+      />
+    );
+  }
+  if (shape === "star") {
+    return (
+      <div className="animate-wiggle" style={shapeStyles}>
+        <StarIcon style={{ width: size, height: size, color }} />
+      </div>
+    );
+  }
+  return (
+    <div
+      className="animate-float"
+      style={{
+        ...shapeStyles,
+        borderRadius: "4px",
+        backgroundColor: color,
+        transform: "rotate(15deg)",
+      }}
+    />
+  );
+}
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="text-label text-[var(--gold)] block mb-3 tracking-[3px]">
+      {children}
+    </span>
+  );
+}
+
+function WaveDivider({ flip = false, color = "var(--cream)" }: { flip?: boolean; color?: string }) {
+  return (
+    <div className={`w-full overflow-hidden leading-[0] ${flip ? "rotate-180" : ""}`}>
+      <svg viewBox="0 0 1440 80" preserveAspectRatio="none" className="w-full h-[50px] md:h-[80px]">
+        <path
+          d="M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,80 L0,80 Z"
+          fill={color}
+        />
+      </svg>
+    </div>
+  );
+}
+
+/* ──────────────────────────────────────────────
+   Page
+   ────────────────────────────────────────────── */
 
 export default function ContactPage() {
   return (
     <>
       <HeroSection />
+      <WaveDivider color="var(--white)" />
       <FormAndInfoSection />
+      <WaveDivider color="var(--cream)" />
+      <MapSection />
+      <WaveDivider color="var(--navy)" />
       <SocialLinksSection />
+      <WaveDivider flip color="var(--navy)" />
       <WhatsAppCTA />
     </>
   );
 }
 
-/* ------------------------------------------------
+/* ──────────────────────────────────────────────
    Hero Banner
-   ------------------------------------------------ */
+   ────────────────────────────────────────────── */
+
 function HeroSection() {
   return (
     <section className="relative overflow-hidden min-h-[60vh] md:min-h-[70vh] lg:min-h-[80vh] flex items-center justify-center">
@@ -63,223 +193,393 @@ function HeroSection() {
         className="object-cover"
         priority
       />
-      <div className="absolute inset-0 bg-[var(--navy)]/80" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[rgba(19,47,80,0.88)] via-[rgba(30,74,122,0.78)] to-[rgba(19,47,80,0.92)]" />
+
+      {/* Floating decorative shapes */}
+      <FloatingShape color="#F5A623" size={90} top="8%" left="5%" shape="circle" delay={0} />
+      <FloatingShape color="#4ECDC4" size={55} top="18%" left="88%" shape="triangle" delay={1} />
+      <FloatingShape color="#FF6B6B" size={40} top="72%" left="8%" shape="star" delay={2} />
+      <FloatingShape color="#A78BFA" size={65} top="62%" left="82%" shape="square" delay={0.5} />
+      <FloatingShape color="#4EAED8" size={35} top="38%" left="93%" shape="circle" delay={1.5} />
+      <FloatingShape color="#FBBF77" size={50} top="75%" left="70%" shape="circle" delay={0.8} />
 
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="relative text-center px-6"
+        className="relative z-10 text-center px-6 max-w-3xl mx-auto"
       >
-        <span className="text-label font-semibold text-[var(--gold)] tracking-widest mb-4 block">
+        <motion.span
+          className="text-label text-[var(--gold)] inline-flex items-center gap-2 tracking-[3px]"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+        >
+          <SparklesIcon className="w-4 h-4" />
           Reach Out
-        </span>
-        <h1 className="text-hero font-display text-white">Get in Touch</h1>
+          <SparklesIcon className="w-4 h-4" />
+        </motion.span>
+
+        <motion.h1
+          className="text-hero font-display text-white mt-6 mb-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+        >
+          Get in{" "}
+          <span className="text-[var(--gold)]">Touch</span>
+        </motion.h1>
+
+        <motion.p
+          className="text-body text-white/75 max-w-lg mx-auto"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+        >
+          We would love to hear from you. Whether you have a question about
+          admissions, programs, or anything else, our team is ready to help.
+        </motion.p>
       </motion.div>
     </section>
   );
 }
 
-/* ------------------------------------------------
-   Two-Column: Contact Form + Info Cards / Map
-   ------------------------------------------------ */
+/* ──────────────────────────────────────────────
+   Two-Column: Contact Form + Info Cards
+   ────────────────────────────────────────────── */
+
 function FormAndInfoSection() {
   const inputClassName =
-    "w-full bg-[var(--cream)] rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--gold)]";
+    "w-full bg-[var(--cream)] border border-transparent rounded-xl px-5 py-3.5 text-sm text-[var(--charcoal)] placeholder:text-[var(--muted)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--gold)] focus:border-transparent transition-all duration-200";
 
   return (
-    <section className="py-20 px-6">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
-        {/* Left -- Contact Form */}
-        <motion.div
-          initial={{ opacity: 0, x: -30 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          className="bg-white rounded-xl p-8"
-        >
-          <h2 className="text-subtitle font-display text-[var(--navy)] mb-6">
-            Send Us a Message
+    <section className="bg-white py-24 px-6 relative overflow-hidden">
+      <FloatingShape color="#F5A623" size={70} top="5%" left="90%" shape="circle" delay={0} />
+      <FloatingShape color="#4ECDC4" size={45} top="80%" left="3%" shape="triangle" delay={1} />
+      <FloatingShape color="#A78BFA" size={35} top="50%" left="95%" shape="star" delay={0.5} />
+
+      <div className="max-w-6xl mx-auto relative z-10">
+        <div className="text-center mb-16">
+          <SectionLabel>Contact Us</SectionLabel>
+          <h2 className="text-title font-display text-[var(--navy)]">
+            Let&apos;s Start a Conversation
           </h2>
+          <p className="text-body text-[var(--muted)] mt-4 max-w-2xl mx-auto">
+            Fill out the form below and we will get back to you as soon as
+            possible, or use our contact details to reach us directly.
+          </p>
+        </div>
 
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              alert("Thank you! We'll get back to you soon.");
-            }}
-            className="space-y-4"
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          {/* Left -- Contact Form Card */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="bg-white rounded-3xl p-8 md:p-10 shadow-[0_8px_40px_rgba(0,0,0,0.08)] border border-[var(--cream)]"
           >
-            <div>
-              <label
-                htmlFor="name"
-                className="block text-sm font-semibold text-[var(--charcoal)] mb-1"
-              >
-                Full Name
-              </label>
-              <input
-                type="text"
-                name="name"
-                id="name"
-                required
-                placeholder="Your full name"
-                className={inputClassName}
-              />
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-10 h-10 rounded-xl bg-[var(--gold)]/10 flex items-center justify-center">
+                <PaperAirplaneIcon className="w-5 h-5 text-[var(--gold)]" />
+              </div>
+              <h3 className="text-subtitle font-display text-[var(--navy)]">
+                Send Us a Message
+              </h3>
             </div>
 
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-semibold text-[var(--charcoal)] mb-1"
-              >
-                Email
-              </label>
-              <input
-                type="email"
-                name="email"
-                id="email"
-                required
-                placeholder="your@email.com"
-                className={inputClassName}
-              />
-            </div>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                alert("Thank you! We'll get back to you soon.");
+              }}
+              className="space-y-5"
+            >
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-semibold text-[var(--charcoal)] mb-1.5"
+                  >
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    id="name"
+                    required
+                    placeholder="Your full name"
+                    className={inputClassName}
+                  />
+                </div>
 
-            <div>
-              <label
-                htmlFor="phone"
-                className="block text-sm font-semibold text-[var(--charcoal)] mb-1"
-              >
-                Phone
-              </label>
-              <input
-                type="tel"
-                name="phone"
-                id="phone"
-                placeholder="+977 ..."
-                className={inputClassName}
-              />
-            </div>
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-semibold text-[var(--charcoal)] mb-1.5"
+                  >
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    required
+                    placeholder="your@email.com"
+                    className={inputClassName}
+                  />
+                </div>
+              </div>
 
-            <div>
-              <label
-                htmlFor="subject"
-                className="block text-sm font-semibold text-[var(--charcoal)] mb-1"
-              >
-                Subject
-              </label>
-              <select
-                name="subject"
-                id="subject"
-                className={inputClassName}
-              >
-                <option value="">Select a subject</option>
-                <option>General Inquiry</option>
-                <option>Admissions</option>
-                <option>Programs</option>
-                <option>Campus Tour</option>
-                <option>Fee Information</option>
-                <option>Other</option>
-              </select>
-            </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label
+                    htmlFor="phone"
+                    className="block text-sm font-semibold text-[var(--charcoal)] mb-1.5"
+                  >
+                    Phone
+                  </label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    id="phone"
+                    placeholder="+977 ..."
+                    className={inputClassName}
+                  />
+                </div>
 
-            <div>
-              <label
-                htmlFor="message"
-                className="block text-sm font-semibold text-[var(--charcoal)] mb-1"
-              >
-                Message
-              </label>
-              <textarea
-                name="message"
-                id="message"
-                rows={5}
-                required
-                placeholder="Your message..."
-                className={inputClassName}
-              />
-            </div>
+                <div>
+                  <label
+                    htmlFor="subject"
+                    className="block text-sm font-semibold text-[var(--charcoal)] mb-1.5"
+                  >
+                    Subject
+                  </label>
+                  <select
+                    name="subject"
+                    id="subject"
+                    className={inputClassName}
+                  >
+                    <option value="">Select a subject</option>
+                    <option>General Inquiry</option>
+                    <option>Admissions</option>
+                    <option>Programs</option>
+                    <option>Campus Tour</option>
+                    <option>Fee Information</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+              </div>
 
-            <button type="submit" className="btn-primary w-full mt-2">
-              Send Message
-            </button>
-          </form>
-        </motion.div>
+              <div>
+                <label
+                  htmlFor="message"
+                  className="block text-sm font-semibold text-[var(--charcoal)] mb-1.5"
+                >
+                  Message
+                </label>
+                <textarea
+                  name="message"
+                  id="message"
+                  rows={5}
+                  required
+                  placeholder="Your message..."
+                  className={inputClassName}
+                />
+              </div>
 
-        {/* Right -- Info Cards + Map */}
-        <motion.div
-          initial={{ opacity: 0, x: 30 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-        >
-          <div className="space-y-4">
-            {contactInfo.map((item) => {
+              <button type="submit" className="btn-cta w-full mt-2 gap-2">
+                <PaperAirplaneIcon className="w-4 h-4" />
+                Send Message
+              </button>
+            </form>
+          </motion.div>
+
+          {/* Right -- Info Cards */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="flex flex-col gap-5"
+          >
+            {contactInfo.map((item, index) => {
               const Icon = item.icon;
               return (
-                <div
+                <motion.div
                   key={item.label}
-                  className="bg-white rounded-xl p-5 flex items-start gap-4"
+                  className="bg-white rounded-2xl p-6 flex items-start gap-5 shadow-[0_4px_20px_rgba(0,0,0,0.06)] border border-[var(--cream)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)] transition-all duration-300"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1, duration: 0.4 }}
+                  whileHover={{ y: -4 }}
                 >
-                  <Icon className="w-6 h-6 text-[var(--gold)] flex-shrink-0 mt-1" />
+                  <div
+                    className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
+                    style={{ backgroundColor: "var(--gold)", opacity: 0.9 }}
+                  >
+                    <Icon className="w-5 h-5 text-white" />
+                  </div>
                   <div>
-                    <p className="font-display text-[var(--navy)] font-semibold">
+                    <p className="font-display text-[var(--navy)] font-semibold text-lg">
                       {item.label}
                     </p>
-                    <p className="text-small text-[var(--muted)]">{item.value}</p>
+                    <p className="text-small text-[var(--muted)] mt-0.5">
+                      {item.value}
+                    </p>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
-          </div>
 
+            {/* Quick contact CTA */}
+            <motion.div
+              className="bg-gradient-to-br from-[var(--navy)] to-[var(--navy-deep)] rounded-2xl p-6 mt-auto"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4, duration: 0.4 }}
+            >
+              <h3 className="font-display text-white font-semibold text-lg mb-2">
+                Prefer to Talk?
+              </h3>
+              <p className="text-small text-white/70 mb-4">
+                Give us a call or send us a WhatsApp message for a quick response.
+              </p>
+              <a
+                href="tel:+9779823837865"
+                className="inline-flex items-center gap-2 bg-[var(--gold)] text-[var(--navy)] px-5 py-2.5 rounded-full text-sm font-semibold hover:scale-105 transition-transform"
+              >
+                <PhoneIcon className="w-4 h-4" />
+                Call Now
+              </a>
+            </motion.div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ──────────────────────────────────────────────
+   Google Maps Section
+   ────────────────────────────────────────────── */
+
+function MapSection() {
+  return (
+    <section className="bg-[var(--cream)] py-24 px-6 relative overflow-hidden">
+      <FloatingShape color="#FF6B6B" size={50} top="10%" left="5%" shape="triangle" delay={0.5} />
+      <FloatingShape color="#4EAED8" size={40} top="80%" left="92%" shape="circle" delay={1} />
+
+      <div className="max-w-6xl mx-auto relative z-10">
+        <div className="text-center mb-12">
+          <SectionLabel>Find Us</SectionLabel>
+          <h2 className="text-title font-display text-[var(--navy)]">
+            Visit Our Campus
+          </h2>
+          <p className="text-body text-[var(--muted)] mt-4 max-w-xl mx-auto">
+            Located in the heart of Kathmandu, our campus is easily accessible.
+            We welcome you to visit and experience the Aarambha difference.
+          </p>
+        </div>
+
+        <motion.div
+          className="rounded-2xl overflow-hidden shadow-[0_8px_40px_rgba(0,0,0,0.1)] border border-white"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
           <iframe
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532.8!2d85.3!3d27.7!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjfCsDQyJzAwLjAiTiA4NcKwMTgnMDAuMCJF!5e0!3m2!1sen!2snp!4v1"
             width="100%"
-            height="250"
-            style={{ border: 0, borderRadius: "12px" }}
+            height="400"
+            style={{ border: 0 }}
             allowFullScreen
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
             title="Aarambha location"
-            className="mt-6"
           />
+        </motion.div>
+
+        <motion.div
+          className="flex items-center justify-center gap-2 mt-6 text-[var(--muted)]"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3 }}
+        >
+          <MapPinIcon className="w-4 h-4 text-[var(--coral)]" />
+          <span className="text-small">
+            Pipal Bot, Galko Pakha Marga, Kathmandu, Nepal
+          </span>
         </motion.div>
       </div>
     </section>
   );
 }
 
-/* ------------------------------------------------
+/* ──────────────────────────────────────────────
    Social Links
-   ------------------------------------------------ */
+   ────────────────────────────────────────────── */
+
 function SocialLinksSection() {
   return (
-    <section className="py-12 px-6 text-center">
-      <h2 className="text-subtitle font-display text-[var(--navy)] mb-6">
-        Follow Us
-      </h2>
-      <div className="flex justify-center gap-4">
-        {socialLinks.map((social) => (
-          <a
-            key={social.name}
-            href={social.href}
-            className="bg-white px-5 py-3 rounded-full text-sm font-semibold text-[var(--navy)] hover:bg-[var(--navy)] hover:text-white transition-all"
-          >
-            {social.name}
-          </a>
-        ))}
+    <section className="bg-[var(--navy)] py-24 px-6 relative overflow-hidden">
+      <FloatingShape color="#F5A623" size={70} top="10%" left="5%" shape="circle" delay={0} />
+      <FloatingShape color="#4ECDC4" size={50} top="65%" left="90%" shape="star" delay={1} />
+      <FloatingShape color="#A78BFA" size={40} top="80%" left="15%" shape="square" delay={0.5} />
+
+      <div className="max-w-4xl mx-auto text-center relative z-10">
+        <SectionLabel>Stay Connected</SectionLabel>
+        <h2 className="text-title font-display text-white mb-4">
+          Follow Us Online
+        </h2>
+        <p className="text-body text-white/60 mb-12 max-w-lg mx-auto">
+          Stay updated with the latest news, events, and stories from the
+          Aarambha community.
+        </p>
+
+        <div className="flex flex-wrap justify-center gap-5">
+          {socialLinks.map((social, index) => (
+            <motion.a
+              key={social.name}
+              href={social.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative bg-white/10 backdrop-blur-sm border border-white/10 px-8 py-4 rounded-full text-sm font-semibold text-white hover:text-white transition-all duration-300 overflow-hidden"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              whileHover={{ scale: 1.06, y: -2 }}
+            >
+              <span
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full"
+                style={{ backgroundColor: social.color }}
+              />
+              <span className="relative z-10">{social.name}</span>
+            </motion.a>
+          ))}
+        </div>
       </div>
     </section>
   );
 }
 
-/* ------------------------------------------------
+/* ──────────────────────────────────────────────
    WhatsApp Floating CTA
-   ------------------------------------------------ */
+   ────────────────────────────────────────────── */
+
 function WhatsAppCTA() {
   return (
     <a
       href="https://wa.me/9779823837865"
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-6 right-6 z-40 w-14 h-14 bg-green-500 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform relative"
+      className="fixed bottom-6 right-6 z-40 w-14 h-14 bg-green-500 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
+      aria-label="Chat on WhatsApp"
     >
       <span className="absolute inset-0 rounded-full bg-green-500 animate-ping opacity-25" />
       <svg
