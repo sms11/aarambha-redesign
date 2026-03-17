@@ -27,7 +27,7 @@ const involvementItems = [
   {
     title: "Regular Meetings",
     desc: "Creating opportunities for open discussions allows for meaningful collaboration between students, parents, educators, and stakeholders. These discussions focus on evaluating student progress, identifying areas for improvement, and celebrating achievements. Additionally, they provide a platform to discuss and brainstorm new school initiatives that align with the institution's goals and values. Such transparent communication fosters a sense of community, encourages collective problem-solving, and ensures that everyone is aligned toward enhancing the overall educational experience.",
-    image: "https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?w=800&q=80",
+    image: "/images/community/regular-meetings.webp",
     color: "var(--coral)",
   },
 ];
@@ -240,8 +240,8 @@ function HeroSection() {
   return (
     <section className="relative overflow-hidden min-h-[60vh] md:min-h-[70vh] lg:min-h-[80vh] flex items-center justify-center">
       <Image
-        src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1920&q=80"
-        alt="Community members collaborating together"
+        src="/images/community/partnerships-1.webp"
+        alt="Aarambha School community partnerships"
         fill
         className="object-cover"
         priority
@@ -399,86 +399,117 @@ function PartnershipsSection() {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Business Partnerships */}
-          <motion.div
-            className="bg-white rounded-3xl p-8 md:p-10 shadow-sm relative overflow-hidden"
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            whileHover={{ y: -4 }}
-          >
-            <div
-              className="absolute top-0 left-0 right-0 h-1.5 rounded-t-3xl"
-              style={{ background: "linear-gradient(90deg, var(--mint), var(--navy-light))" }}
-            />
-            <div className="w-14 h-14 rounded-2xl bg-[rgba(78,205,196,0.1)] flex items-center justify-center mb-6">
-              <AcademicCapIcon className="w-7 h-7 text-[var(--mint)]" />
-            </div>
-            <h3 className="text-subtitle font-display text-[var(--navy)] mb-6">
-              Business Partnerships
-            </h3>
-            <div className="space-y-6">
-              {businessPartnerships.map((item) => (
-                <div key={item.title} className="flex items-start gap-4">
-                  <div
-                    className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 mt-1"
-                    style={{ backgroundColor: item.bg }}
-                  >
-                    <item.icon className="w-5 h-5" style={{ color: item.color }} />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+          {/* Left: Partnership cards */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Business Partnerships */}
+            <motion.div
+              className="bg-white rounded-3xl p-8 md:p-10 shadow-sm relative overflow-hidden"
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              whileHover={{ y: -4 }}
+            >
+              <div
+                className="absolute top-0 left-0 right-0 h-1.5 rounded-t-3xl"
+                style={{ background: "linear-gradient(90deg, var(--mint), var(--navy-light))" }}
+              />
+              <div className="w-14 h-14 rounded-2xl bg-[rgba(78,205,196,0.1)] flex items-center justify-center mb-6">
+                <AcademicCapIcon className="w-7 h-7 text-[var(--mint)]" />
+              </div>
+              <h3 className="text-subtitle font-display text-[var(--navy)] mb-6">
+                Business Partnerships
+              </h3>
+              <div className="space-y-6">
+                {businessPartnerships.map((item) => (
+                  <div key={item.title} className="flex items-start gap-4">
+                    <div
+                      className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 mt-1"
+                      style={{ backgroundColor: item.bg }}
+                    >
+                      <item.icon className="w-5 h-5" style={{ color: item.color }} />
+                    </div>
+                    <div>
+                      <h4 className="text-small font-semibold text-[var(--navy)] mb-1">
+                        {item.title}
+                      </h4>
+                      <p className="text-small text-[var(--muted)] leading-relaxed">
+                        {item.desc}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="text-small font-semibold text-[var(--navy)] mb-1">
-                      {item.title}
-                    </h4>
-                    <p className="text-small text-[var(--muted)] leading-relaxed">
-                      {item.desc}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
+                ))}
+              </div>
+            </motion.div>
 
-          {/* Educational Partnerships */}
+            {/* Educational Partnerships */}
+            <motion.div
+              className="bg-white rounded-3xl p-8 md:p-10 shadow-sm relative overflow-hidden"
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              whileHover={{ y: -4 }}
+            >
+              <div
+                className="absolute top-0 left-0 right-0 h-1.5 rounded-t-3xl"
+                style={{ background: "linear-gradient(90deg, var(--lavender), var(--peach))" }}
+              />
+              <div className="w-14 h-14 rounded-2xl bg-[rgba(167,139,250,0.1)] flex items-center justify-center mb-6">
+                <AcademicCapIcon className="w-7 h-7 text-[var(--lavender)]" />
+              </div>
+              <h3 className="text-subtitle font-display text-[var(--navy)] mb-6">
+                Educational Partnerships
+              </h3>
+              <div className="space-y-6">
+                {educationalPartnerships.map((item) => (
+                  <div key={item.title} className="flex items-start gap-4">
+                    <div
+                      className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 mt-1"
+                      style={{ backgroundColor: item.bg }}
+                    >
+                      <item.icon className="w-5 h-5" style={{ color: item.color }} />
+                    </div>
+                    <div>
+                      <h4 className="text-small font-semibold text-[var(--navy)] mb-1">
+                        {item.title}
+                      </h4>
+                      <p className="text-small text-[var(--muted)] leading-relaxed">
+                        {item.desc}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Right: Partnership images */}
           <motion.div
-            className="bg-white rounded-3xl p-8 md:p-10 shadow-sm relative overflow-hidden"
+            className="space-y-6"
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            whileHover={{ y: -4 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <div
-              className="absolute top-0 left-0 right-0 h-1.5 rounded-t-3xl"
-              style={{ background: "linear-gradient(90deg, var(--lavender), var(--peach))" }}
-            />
-            <div className="w-14 h-14 rounded-2xl bg-[rgba(167,139,250,0.1)] flex items-center justify-center mb-6">
-              <AcademicCapIcon className="w-7 h-7 text-[var(--lavender)]" />
+            <div className="relative h-[280px] rounded-3xl overflow-hidden shadow-lg">
+              <Image
+                src="/images/community/partnerships-1.webp"
+                alt="Aarambha community partnership event"
+                fill
+                className="object-cover"
+              />
+              <div className="absolute -top-3 -left-3 w-16 h-16 rounded-full bg-[var(--gold)] opacity-20 animate-blob" />
             </div>
-            <h3 className="text-subtitle font-display text-[var(--navy)] mb-6">
-              Educational Partnerships
-            </h3>
-            <div className="space-y-6">
-              {educationalPartnerships.map((item) => (
-                <div key={item.title} className="flex items-start gap-4">
-                  <div
-                    className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 mt-1"
-                    style={{ backgroundColor: item.bg }}
-                  >
-                    <item.icon className="w-5 h-5" style={{ color: item.color }} />
-                  </div>
-                  <div>
-                    <h4 className="text-small font-semibold text-[var(--navy)] mb-1">
-                      {item.title}
-                    </h4>
-                    <p className="text-small text-[var(--muted)] leading-relaxed">
-                      {item.desc}
-                    </p>
-                  </div>
-                </div>
-              ))}
+            <div className="relative h-[280px] rounded-3xl overflow-hidden shadow-lg">
+              <Image
+                src="/images/community/partnerships-2.webp"
+                alt="Aarambha students in community program"
+                fill
+                className="object-cover"
+              />
+              <div className="absolute -bottom-3 -right-3 w-16 h-16 rounded-full bg-[var(--mint)] opacity-20 animate-blob" />
             </div>
           </motion.div>
         </div>
