@@ -1,64 +1,118 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  ChevronDownIcon,
-  CheckIcon,
   SparklesIcon,
-  ClipboardDocumentListIcon,
-  AcademicCapIcon,
-  ChatBubbleLeftRightIcon,
-  CheckBadgeIcon,
-  UserPlusIcon,
-  DocumentTextIcon,
-  ShieldCheckIcon,
   StarIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
 } from "@heroicons/react/24/outline";
+import {
+  UserGroupIcon,
+  AcademicCapIcon,
+  HandRaisedIcon,
+  BuildingOfficeIcon,
+  LightBulbIcon,
+  PresentationChartBarIcon,
+} from "@heroicons/react/24/solid";
 
 /* ──────────────────────────────────────────────
-   Data
+   Data — Real content from aarambha.school/community
    ────────────────────────────────────────────── */
 
-const steps = [
-  { num: 1, title: "Apply", desc: "Submit online application form", icon: ClipboardDocumentListIcon, color: "var(--coral)" },
-  { num: 2, title: "Assessment", desc: "Age-appropriate entrance evaluation", icon: AcademicCapIcon, color: "var(--mint)" },
-  { num: 3, title: "Interview", desc: "Parent and student interaction", icon: ChatBubbleLeftRightIcon, color: "var(--lavender)" },
-  { num: 4, title: "Decision", desc: "Admission decision communicated", icon: CheckBadgeIcon, color: "var(--peach)" },
-  { num: 5, title: "Enrollment", desc: "Complete enrollment formalities", icon: UserPlusIcon, color: "var(--gold)" },
+const involvementItems = [
+  {
+    title: "Regular Meetings",
+    desc: "Creating opportunities for open discussions allows for meaningful collaboration between students, parents, educators, and stakeholders. These discussions focus on evaluating student progress, identifying areas for improvement, and celebrating achievements. Additionally, they provide a platform to discuss and brainstorm new school initiatives that align with the institution's goals and values. Such transparent communication fosters a sense of community, encourages collective problem-solving, and ensures that everyone is aligned toward enhancing the overall educational experience.",
+    image: "https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?w=800&q=80",
+    color: "var(--coral)",
+  },
 ];
 
-const documents = [
-  "Birth Certificate",
-  "Previous Report Cards (last 2 years)",
-  "Passport-size Photos (4 copies)",
-  "Transfer Certificate (if applicable)",
-  "Immunization Records",
+const businessPartnerships = [
+  {
+    title: "Collaboration on Student Internships and Mentorships",
+    desc: "Partner with schools to offer internships and mentorship programs, providing students hands-on experience, career guidance, and skill development.",
+    icon: HandRaisedIcon,
+    color: "var(--mint)",
+    bg: "#4ECDC415",
+  },
+  {
+    title: "Sponsorship of Events and Facilities",
+    desc: "Support school events and facilities through sponsorships, enhancing learning opportunities, infrastructure, and community engagement.",
+    icon: BuildingOfficeIcon,
+    color: "var(--coral)",
+    bg: "#FF6B6B15",
+  },
 ];
 
-const eligibility = [
-  "Age-appropriate for grade level",
-  "Entrance assessment clearance",
-  "Parent/guardian interview",
-  "Previous academic records review",
-  "Willingness to abide by school values",
+const educationalPartnerships = [
+  {
+    title: "Workshops and Expert Sessions",
+    desc: "Partner institutions offer workshops and expert-led sessions to enhance skills and provide real-world insights.",
+    icon: PresentationChartBarIcon,
+    color: "var(--lavender)",
+    bg: "#A78BFA15",
+  },
+  {
+    title: "Joint Programs and Resources",
+    desc: "Collaborative programs and shared resources empower students with advanced learning opportunities and specialized knowledge.",
+    icon: LightBulbIcon,
+    color: "var(--peach)",
+    bg: "#FBBF7715",
+  },
 ];
 
-const fees = [
-  { level: "Pre-School", fee: "NPR 1,20,000", items: ["Tuition", "Books & Materials", "Activities", "Snacks"], color: "var(--coral)", popular: false },
-  { level: "Primary", fee: "NPR 1,50,000", items: ["Tuition", "Books & Materials", "Lab Access", "Activities", "Library"], color: "var(--mint)", popular: true },
-  { level: "Middle School", fee: "NPR 1,80,000", items: ["Tuition", "Books & Materials", "Lab Access", "Activities", "Library", "Sports"], color: "var(--lavender)", popular: false },
-  { level: "High School", fee: "NPR 2,20,000", items: ["Tuition", "Books & Materials", "Lab Access", "Activities", "Library", "Sports", "Career Counseling"], color: "var(--navy)", popular: false },
+const partners = [
+  { name: "FranklinCovey Education", logo: "/images/partners/franklincovey.webp" },
+  { name: "Kalpavariksha Education Foundation", logo: "/images/partners/kalpavariksha.webp" },
+  { name: "NYEF", logo: "/images/partners/nyef.webp" },
+  { name: "Programiz", logo: "/images/partners/programiz.webp" },
+  { name: "Duke of Edinburgh", logo: "/images/partners/duke.webp" },
+  { name: "Digital Nepal", logo: "/images/partners/digitalnepal.webp" },
+  { name: "Robotics Association of Nepal", logo: "/images/partners/ran.webp" },
+  { name: "NCC Education", logo: "/images/partners/ncc.webp" },
+  { name: "DigiSchool", logo: "/images/partners/digischool.webp" },
+  { name: "Code Himalaya", logo: "/images/partners/codehimalaya.webp" },
+  { name: "Techspire College", logo: "/images/partners/techspire.webp" },
 ];
 
-const faqs = [
-  { q: "When does the academic year begin?", a: "The academic year begins in mid-April and ends in March. Admissions for the new session typically open in January." },
-  { q: "Is transportation available?", a: "Yes, we provide bus services covering major routes across Kathmandu valley. Routes and schedules are shared upon enrollment." },
-  { q: "What is the student-teacher ratio?", a: "We maintain a ratio of approximately 20:1, ensuring personalized attention for every student." },
-  { q: "Are scholarships available?", a: "Yes, merit-based and need-based scholarships are available for students from Grade 1 onwards. Contact admissions for details." },
-  { q: "What is the admission timeline?", a: "Applications open in January, assessments in February, interviews in March, and results by late March." },
+const testimonials = [
+  {
+    quote: "Aarambha School has truly transformed my daughter's learning experience. The teachers are not only highly qualified but also genuinely care about each child's growth. The school's focus on values and creativity is unmatched!",
+    name: "Sita Sharma",
+    role: "Parent of Grade 4 Student",
+    image: "/images/testimonials/sita.webp",
+    stars: 5,
+    color: "var(--coral)",
+  },
+  {
+    quote: "I love going to Aarambha School because learning here is fun! My teachers make every subject interesting, and I've made lots of new friends. The playground and art classes are my favorite!",
+    name: "Ramesh Karki",
+    role: "Grade 3 Student",
+    image: "/images/testimonials/ramesh.webp",
+    stars: 5,
+    color: "var(--mint)",
+  },
+  {
+    quote: "Aarambha School laid a strong foundation for my academic journey. The skills and discipline I learned there helped me succeed in higher studies and beyond. I'm proud to be an Aarambha alumnus!",
+    name: "Priyanka Adhikari",
+    role: "Batch of 2018",
+    image: "/images/testimonials/priyanka.webp",
+    stars: 5,
+    color: "var(--lavender)",
+  },
+  {
+    quote: "As a teacher at Aarambha School, I've seen how a nurturing and inclusive environment can inspire students to reach their full potential. The support from the administration and the passion from our students make teaching here incredibly rewarding.",
+    name: "Mr. Rajan Shrestha",
+    role: "Science Teacher",
+    image: "/images/testimonials/rajan.webp",
+    stars: 5,
+    color: "var(--peach)",
+  },
 ];
 
 /* ──────────────────────────────────────────────
@@ -160,18 +214,18 @@ function WaveDivider({ flip = false, color = "var(--cream)" }: { flip?: boolean;
    Page
    ────────────────────────────────────────────── */
 
-export default function AdmissionsPage() {
+export default function CommunityPage() {
   return (
     <>
       <HeroSection />
       <WaveDivider color="white" />
-      <ProcessSection />
-      <WaveDivider color="var(--cream)" />
-      <RequirementsSection />
+      <InvolvementSection />
+      <WaveDivider color="var(--cream)" flip />
+      <PartnershipsSection />
       <WaveDivider color="white" />
-      <FeeStructureSection />
+      <PartnersMarquee />
       <WaveDivider color="var(--cream)" />
-      <FAQSection />
+      <TestimonialsSection />
       <WaveDivider color="var(--navy)" />
       <CTASection />
     </>
@@ -187,7 +241,7 @@ function HeroSection() {
     <section className="relative overflow-hidden min-h-[60vh] md:min-h-[70vh] lg:min-h-[80vh] flex items-center justify-center">
       <Image
         src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1920&q=80"
-        alt="Students collaborating in a classroom"
+        alt="Community members collaborating together"
         fill
         className="object-cover"
         priority
@@ -213,191 +267,143 @@ function HeroSection() {
           transition={{ delay: 0.3 }}
         >
           <SparklesIcon className="w-4 h-4" />
-          Join Our Family
+          Community
           <SparklesIcon className="w-4 h-4" />
         </motion.span>
 
         <h1 className="text-hero font-display text-white mt-6 mb-4">
-          Begin Your Journey With Us
+          Stronger <span className="text-[var(--gold)]">Together</span>
         </h1>
 
         <motion.p
-          className="text-body text-white/80 max-w-xl mx-auto mb-8"
+          className="text-body text-white/80 max-w-xl mx-auto mb-10"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
         >
-          Take the first step toward a transformative education that blends
-          Eastern values with 21st-century innovation.
+          We promote active collaboration between parents, teachers, and the
+          community through regular meetings, events, and initiatives, fostering
+          a supportive environment for student success.
         </motion.p>
 
         <motion.div
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[var(--gold)] bg-[rgba(246,206,107,0.12)] backdrop-blur-sm"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.7, type: "spring", stiffness: 200 }}
-        >
-          <span className="w-2.5 h-2.5 rounded-full bg-green-400 animate-pulse" />
-          <span className="text-sm font-semibold text-[var(--gold)]">
-            Admissions Open 2026-27
-          </span>
-        </motion.div>
-
-        <motion.div
-          className="flex flex-wrap justify-center gap-4 mt-8"
+          className="flex flex-wrap justify-center gap-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.9 }}
+          transition={{ delay: 0.8 }}
         >
           <Link href="/contact" className="btn-cta">
-            Apply Now
+            Get Involved
           </Link>
-          <a href="#process" className="btn-secondary">
-            Learn the Process
+          <a href="#testimonials" className="btn-secondary">
+            Hear Our Stories
           </a>
         </motion.div>
-      </motion.div>
-
-      <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
-        animate={{ y: [0, 10, 0] }}
-        transition={{ duration: 2, repeat: Infinity }}
-      >
-        <ChevronDownIcon className="w-8 h-8 text-white/70" />
       </motion.div>
     </section>
   );
 }
 
 /* ──────────────────────────────────────────────
-   Section 2 — Admission Process
+   Section 2 — Parent-Teacher & Community Involvement
    ────────────────────────────────────────────── */
 
-function ProcessSection() {
+function InvolvementSection() {
   return (
-    <section id="process" className="relative bg-white py-24 px-6 overflow-hidden">
+    <section className="bg-white py-24 px-6 relative overflow-hidden">
       <FloatingShape color="#F5A623" size={70} top="5%" left="90%" shape="star" delay={0} />
       <FloatingShape color="#4ECDC4" size={50} top="80%" left="4%" shape="circle" delay={1} />
 
-      <div className="max-w-5xl mx-auto relative z-10">
+      <div className="max-w-6xl mx-auto relative z-10">
         <div className="text-center mb-16">
-          <SectionLabel>How It Works</SectionLabel>
+          <SectionLabel>Involvement</SectionLabel>
           <h2 className="text-title font-display text-[var(--navy)]">
-            Admission Process
+            Parent-Teacher Associations &<br />Community Involvement
           </h2>
-          <p className="text-body text-[var(--muted)] mt-3 max-w-lg mx-auto">
-            A simple, transparent five-step journey from application to enrollment.
+          <p className="text-body text-[var(--muted)] mt-3 max-w-2xl mx-auto">
+            We promote active collaboration between parents, teachers, and the
+            community through regular meetings, events, and initiatives,
+            fostering a supportive environment for student success.
           </p>
         </div>
 
-        <div className="relative">
-          {/* Connecting line (desktop) */}
-          <div className="hidden md:block absolute top-16 left-[10%] right-[10%] h-[3px] bg-gradient-to-r from-[var(--coral)] via-[var(--mint)] to-[var(--gold)] rounded-full" />
+        {involvementItems.map((item, index) => (
+          <motion.div
+            key={item.title}
+            className={`grid grid-cols-1 lg:grid-cols-2 gap-12 items-center ${
+              index % 2 !== 0 ? "lg:direction-rtl" : ""
+            }`}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            {/* Image */}
+            <div className="relative h-[300px] lg:h-[400px] rounded-3xl overflow-hidden shadow-2xl">
+              <Image
+                src={item.image}
+                alt={item.title}
+                fill
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+              <div
+                className="absolute -bottom-3 -right-3 w-24 h-24 rounded-full animate-blob opacity-20"
+                style={{ backgroundColor: item.color }}
+              />
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-8 md:gap-4">
-            {steps.map((step, index) => (
-              <motion.div
-                key={step.num}
-                className="flex flex-col items-center text-center relative"
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{
-                  delay: index * 0.12,
-                  type: "spring",
-                  stiffness: 200,
-                  damping: 20,
-                }}
-              >
-                <motion.div
-                  className="w-16 h-16 rounded-full flex items-center justify-center shadow-lg relative z-10"
-                  style={{ backgroundColor: step.color }}
-                  whileHover={{ scale: 1.15, rotate: 5 }}
-                  transition={{ type: "spring", stiffness: 300 }}
+            {/* Text */}
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <div
+                  className="w-12 h-12 rounded-2xl flex items-center justify-center"
+                  style={{ backgroundColor: `${item.color}15` }}
                 >
-                  <step.icon className="w-7 h-7 text-white" />
-                </motion.div>
-
-                <div className="mt-5">
-                  <span
-                    className="inline-block text-tiny font-bold px-2.5 py-0.5 rounded-full mb-2"
-                    style={{ backgroundColor: `color-mix(in srgb, ${step.color} 15%, white)`, color: step.color }}
-                  >
-                    Step {step.num}
-                  </span>
-                  <h3 className="text-subtitle font-display text-[var(--navy)]">
-                    {step.title}
-                  </h3>
-                  <p className="text-small text-[var(--muted)] mt-1 max-w-[180px] mx-auto">
-                    {step.desc}
-                  </p>
+                  <UserGroupIcon className="w-6 h-6" style={{ color: item.color }} />
                 </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
+                <h3 className="text-subtitle font-display text-[var(--navy)]">
+                  {item.title}
+                </h3>
+              </div>
+              <div
+                className="w-12 h-1 rounded-full mb-5"
+                style={{ backgroundColor: item.color }}
+              />
+              <p className="text-body text-[var(--muted)] leading-relaxed">
+                {item.desc}
+              </p>
+            </div>
+          </motion.div>
+        ))}
       </div>
     </section>
   );
 }
 
 /* ──────────────────────────────────────────────
-   Section 3 — Requirements
+   Section 3 — Partnerships
    ────────────────────────────────────────────── */
 
-function RequirementsSection() {
+function PartnershipsSection() {
   return (
-    <section className="relative bg-[var(--cream)] py-24 px-6 overflow-hidden">
-      <FloatingShape color="#A78BFA" size={60} top="10%" left="88%" shape="triangle" delay={0} />
+    <section className="bg-[var(--cream)] py-24 px-6 relative overflow-hidden">
+      <FloatingShape color="#A78BFA" size={60} top="8%" left="88%" shape="triangle" delay={0} />
       <FloatingShape color="#FF6B6B" size={45} top="75%" left="5%" shape="square" delay={1.5} />
 
-      <div className="max-w-5xl mx-auto relative z-10">
+      <div className="max-w-6xl mx-auto relative z-10">
         <div className="text-center mb-16">
-          <SectionLabel>What You Need</SectionLabel>
+          <SectionLabel>Involvement</SectionLabel>
           <h2 className="text-title font-display text-[var(--navy)]">
-            Requirements
+            Partnerships with Local Businesses &<br />Educational Institutions
           </h2>
-          <p className="text-body text-[var(--muted)] mt-3 max-w-lg mx-auto">
-            Gather the following documents and ensure eligibility before applying.
-          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Documents Card */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          {/* Business Partnerships */}
           <motion.div
-            className="bg-white rounded-3xl p-8 md:p-10 shadow-sm hover:shadow-xl transition-shadow relative overflow-hidden"
+            className="bg-white rounded-3xl p-8 md:p-10 shadow-sm relative overflow-hidden"
             initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            whileHover={{ y: -4 }}
-          >
-            <div
-              className="absolute top-0 left-0 right-0 h-1.5 rounded-t-3xl"
-              style={{ background: "linear-gradient(90deg, var(--coral), var(--peach))" }}
-            />
-            <div className="w-14 h-14 rounded-2xl bg-[rgba(255,107,107,0.1)] flex items-center justify-center mb-6">
-              <DocumentTextIcon className="w-7 h-7 text-[var(--coral)]" />
-            </div>
-            <h3 className="text-subtitle font-display text-[var(--navy)] mb-5">
-              Documents Required
-            </h3>
-            <ul className="space-y-3.5">
-              {documents.map((doc) => (
-                <li key={doc} className="flex items-start gap-3 text-body text-[var(--muted)]">
-                  <span className="mt-1 w-5 h-5 rounded-full bg-[rgba(255,107,107,0.1)] flex items-center justify-center shrink-0">
-                    <CheckIcon className="w-3 h-3 text-[var(--coral)]" />
-                  </span>
-                  {doc}
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-
-          {/* Eligibility Card */}
-          <motion.div
-            className="bg-white rounded-3xl p-8 md:p-10 shadow-sm hover:shadow-xl transition-shadow relative overflow-hidden"
-            initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
@@ -408,21 +414,72 @@ function RequirementsSection() {
               style={{ background: "linear-gradient(90deg, var(--mint), var(--navy-light))" }}
             />
             <div className="w-14 h-14 rounded-2xl bg-[rgba(78,205,196,0.1)] flex items-center justify-center mb-6">
-              <ShieldCheckIcon className="w-7 h-7 text-[var(--mint)]" />
+              <AcademicCapIcon className="w-7 h-7 text-[var(--mint)]" />
             </div>
-            <h3 className="text-subtitle font-display text-[var(--navy)] mb-5">
-              Eligibility Criteria
+            <h3 className="text-subtitle font-display text-[var(--navy)] mb-6">
+              Business Partnerships
             </h3>
-            <ul className="space-y-3.5">
-              {eligibility.map((item) => (
-                <li key={item} className="flex items-start gap-3 text-body text-[var(--muted)]">
-                  <span className="mt-1 w-5 h-5 rounded-full bg-[rgba(78,205,196,0.1)] flex items-center justify-center shrink-0">
-                    <CheckIcon className="w-3 h-3 text-[var(--mint)]" />
-                  </span>
-                  {item}
-                </li>
+            <div className="space-y-6">
+              {businessPartnerships.map((item) => (
+                <div key={item.title} className="flex items-start gap-4">
+                  <div
+                    className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 mt-1"
+                    style={{ backgroundColor: item.bg }}
+                  >
+                    <item.icon className="w-5 h-5" style={{ color: item.color }} />
+                  </div>
+                  <div>
+                    <h4 className="text-small font-semibold text-[var(--navy)] mb-1">
+                      {item.title}
+                    </h4>
+                    <p className="text-small text-[var(--muted)] leading-relaxed">
+                      {item.desc}
+                    </p>
+                  </div>
+                </div>
               ))}
-            </ul>
+            </div>
+          </motion.div>
+
+          {/* Educational Partnerships */}
+          <motion.div
+            className="bg-white rounded-3xl p-8 md:p-10 shadow-sm relative overflow-hidden"
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            whileHover={{ y: -4 }}
+          >
+            <div
+              className="absolute top-0 left-0 right-0 h-1.5 rounded-t-3xl"
+              style={{ background: "linear-gradient(90deg, var(--lavender), var(--peach))" }}
+            />
+            <div className="w-14 h-14 rounded-2xl bg-[rgba(167,139,250,0.1)] flex items-center justify-center mb-6">
+              <AcademicCapIcon className="w-7 h-7 text-[var(--lavender)]" />
+            </div>
+            <h3 className="text-subtitle font-display text-[var(--navy)] mb-6">
+              Educational Partnerships
+            </h3>
+            <div className="space-y-6">
+              {educationalPartnerships.map((item) => (
+                <div key={item.title} className="flex items-start gap-4">
+                  <div
+                    className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 mt-1"
+                    style={{ backgroundColor: item.bg }}
+                  >
+                    <item.icon className="w-5 h-5" style={{ color: item.color }} />
+                  </div>
+                  <div>
+                    <h4 className="text-small font-semibold text-[var(--navy)] mb-1">
+                      {item.title}
+                    </h4>
+                    <p className="text-small text-[var(--muted)] leading-relaxed">
+                      {item.desc}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </motion.div>
         </div>
       </div>
@@ -431,97 +488,39 @@ function RequirementsSection() {
 }
 
 /* ──────────────────────────────────────────────
-   Section 4 — Fee Structure
+   Section 4 — Partners Marquee
    ────────────────────────────────────────────── */
 
-function FeeStructureSection() {
-  return (
-    <section className="relative bg-white py-24 px-6 overflow-hidden">
-      <FloatingShape color="#FBBF77" size={80} top="5%" left="3%" shape="circle" delay={0} />
-      <FloatingShape color="#4ECDC4" size={50} top="80%" left="92%" shape="triangle" delay={1} />
+function PartnersMarquee() {
+  const doubled = [...partners, ...partners];
 
+  return (
+    <section className="bg-white py-20 px-6 relative overflow-hidden">
       <div className="max-w-6xl mx-auto relative z-10">
-        <div className="text-center mb-16">
-          <SectionLabel>Investment in Education</SectionLabel>
+        <div className="text-center mb-14">
+          <SectionLabel>School Life</SectionLabel>
           <h2 className="text-title font-display text-[var(--navy)]">
-            Fee Structure
+            Meet Our Partners
           </h2>
-          <p className="text-body text-[var(--muted)] mt-3 max-w-lg mx-auto">
-            Transparent pricing for every level of your child&apos;s academic journey.
-          </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {fees.map((fee, index) => (
-            <motion.div
-              key={fee.level}
-              className={`relative bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all ${
-                fee.popular ? "ring-2 ring-[var(--mint)] md:scale-105" : ""
-              }`}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{
-                delay: index * 0.1,
-                type: "spring",
-                stiffness: 200,
-                damping: 20,
-              }}
-              whileHover={{ y: -8 }}
-            >
-              {/* Colored top accent */}
+        <div className="overflow-hidden">
+          <div className="marquee-track flex items-center gap-16 w-max">
+            {doubled.map((partner, i) => (
               <div
-                className="h-2"
-                style={{ backgroundColor: fee.color }}
-              />
-
-              {/* Popular badge */}
-              {fee.popular && (
-                <div className="absolute top-5 right-4 bg-[var(--mint)] text-white text-tiny font-bold px-3 py-1 rounded-full">
-                  Recommended
-                </div>
-              )}
-
-              <div className="p-7 text-center">
-                <h3 className="text-subtitle font-display text-[var(--navy)]">
-                  {fee.level}
-                </h3>
-                <div className="mt-4 mb-1">
-                  <span className="text-title font-display" style={{ color: fee.color }}>
-                    {fee.fee}
-                  </span>
-                </div>
-                <span className="text-small text-[var(--muted)]">per year</span>
-
-                <div className="w-full h-px bg-gray-100 my-5" />
-
-                <ul className="text-left space-y-2.5">
-                  {fee.items.map((item) => (
-                    <li key={item} className="flex items-center gap-2.5 text-small text-[var(--muted)]">
-                      <span
-                        className="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
-                        style={{ backgroundColor: `color-mix(in srgb, ${fee.color} 12%, white)` }}
-                      >
-                        <CheckIcon className="w-3 h-3" style={{ color: fee.color }} />
-                      </span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-
-                <Link
-                  href="/contact"
-                  className="inline-flex items-center justify-center w-full mt-6 py-3 rounded-xl text-small font-semibold transition-colors"
-                  style={{
-                    backgroundColor: `color-mix(in srgb, ${fee.color} 10%, white)`,
-                    color: fee.color,
-                  }}
-                >
-                  Get Started
-                </Link>
+                key={`${partner.name}-${i}`}
+                className="flex items-center justify-center h-16 w-32 shrink-0 grayscale hover:grayscale-0 opacity-60 hover:opacity-100 transition-all duration-300"
+              >
+                <Image
+                  src={partner.logo}
+                  alt={partner.name}
+                  width={110}
+                  height={44}
+                  className="object-contain h-full w-auto"
+                />
               </div>
-            </motion.div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -529,91 +528,132 @@ function FeeStructureSection() {
 }
 
 /* ──────────────────────────────────────────────
-   Section 5 — FAQ
+   Section 5 — Testimonials
    ────────────────────────────────────────────── */
 
-function FAQSection() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+function TestimonialsSection() {
+  const [active, setActive] = useState(0);
+  const [autoPlay, setAutoPlay] = useState(true);
 
-  const accentColors = ["var(--coral)", "var(--mint)", "var(--lavender)", "var(--peach)", "var(--navy-light)"];
+  const next = useCallback(() => {
+    setActive((prev) => (prev + 1) % testimonials.length);
+  }, []);
+
+  const prev = useCallback(() => {
+    setActive((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+  }, []);
+
+  useEffect(() => {
+    if (!autoPlay) return;
+    const timer = setInterval(next, 5000);
+    return () => clearInterval(timer);
+  }, [autoPlay, next]);
+
+  const current = testimonials[active];
 
   return (
-    <section className="relative bg-[var(--cream)] py-24 px-6 overflow-hidden">
-      <FloatingShape color="#A78BFA" size={55} top="8%" left="5%" shape="star" delay={0} />
-      <FloatingShape color="#FF6B6B" size={40} top="85%" left="90%" shape="circle" delay={1} />
+    <section id="testimonials" className="bg-[var(--cream)] py-24 px-6 relative overflow-hidden">
+      <FloatingShape color="#FBBF77" size={70} top="5%" left="3%" shape="circle" delay={0} />
+      <FloatingShape color="#4ECDC4" size={50} top="80%" left="92%" shape="square" delay={1} />
 
-      <div className="max-w-3xl mx-auto relative z-10">
-        <div className="text-center mb-16">
-          <SectionLabel>Got Questions?</SectionLabel>
+      <div className="max-w-4xl mx-auto relative z-10">
+        <div className="text-center mb-14">
+          <SectionLabel>Testimonial</SectionLabel>
           <h2 className="text-title font-display text-[var(--navy)]">
-            Frequently Asked Questions
+            Hear From Our Community
           </h2>
-          <p className="text-body text-[var(--muted)] mt-3 max-w-lg mx-auto">
-            Everything you need to know about admissions at Aarambha School.
+          <p className="text-body text-[var(--muted)] mt-3">
+            Stories of Growth, Impact, and Connection
           </p>
         </div>
 
-        <div className="space-y-4">
-          {faqs.map((faq, index) => {
-            const isOpen = openIndex === index;
-            const accentColor = accentColors[index % accentColors.length];
+        <div
+          className="relative"
+          onMouseEnter={() => setAutoPlay(false)}
+          onMouseLeave={() => setAutoPlay(true)}
+        >
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={active}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4, type: "spring", stiffness: 200, damping: 25 }}
+              className="bg-white rounded-3xl p-8 md:p-12 shadow-lg relative overflow-hidden"
+            >
+              {/* Accent line */}
+              <div
+                className="absolute top-0 left-0 right-0 h-1.5 rounded-t-3xl"
+                style={{ backgroundColor: current.color }}
+              />
 
-            return (
-              <motion.div
-                key={index}
-                className="bg-white rounded-2xl overflow-hidden shadow-sm transition-shadow"
-                style={{
-                  boxShadow: isOpen ? "0 8px 30px rgba(0,0,0,0.08)" : undefined,
-                }}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.06 }}
-              >
-                <button
-                  onClick={() => setOpenIndex(isOpen ? null : index)}
-                  className="w-full px-6 py-5 flex items-center gap-4 text-left cursor-pointer"
-                  aria-expanded={isOpen}
-                  aria-controls={`faq-answer-${index}`}
-                >
-                  <div
-                    className="w-1 h-8 rounded-full shrink-0 transition-all duration-300"
-                    style={{
-                      backgroundColor: isOpen ? accentColor : "transparent",
-                    }}
+              {/* Stars */}
+              <div className="flex gap-1 mb-6">
+                {Array.from({ length: current.stars }).map((_, i) => (
+                  <svg key={i} className="w-5 h-5 text-[var(--gold)]" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                ))}
+              </div>
+
+              {/* Quote */}
+              <blockquote className="text-lg md:text-xl font-display text-[var(--navy)] leading-relaxed mb-8">
+                &ldquo;{current.quote}&rdquo;
+              </blockquote>
+
+              {/* Author */}
+              <div className="flex items-center gap-4">
+                <div className="relative w-14 h-14 rounded-full overflow-hidden ring-3 ring-offset-2 ring-[var(--gold)]">
+                  <Image
+                    src={current.image}
+                    alt={current.name}
+                    fill
+                    className="object-cover object-top"
                   />
-                  <span className="text-subtitle font-display text-[var(--navy)] flex-1">
-                    {faq.q}
-                  </span>
-                  <motion.div
-                    animate={{ rotate: isOpen ? 180 : 0 }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
-                    className="shrink-0"
-                  >
-                    <ChevronDownIcon className="w-5 h-5 text-[var(--muted)]" />
-                  </motion.div>
-                </button>
+                </div>
+                <div>
+                  <h4 className="font-display font-semibold text-[var(--navy)]">
+                    {current.name}
+                  </h4>
+                  <p className="text-small text-[var(--muted)]">{current.role}</p>
+                </div>
+              </div>
+            </motion.div>
+          </AnimatePresence>
 
-                <AnimatePresence>
-                  {isOpen && (
-                    <motion.div
-                      id={`faq-answer-${index}`}
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
-                    >
-                      <div className="px-6 pb-5 pl-11">
-                        <p className="text-body text-[var(--muted)] leading-relaxed">
-                          {faq.a}
-                        </p>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-            );
-          })}
+          {/* Navigation */}
+          <div className="flex items-center justify-center gap-4 mt-8">
+            <button
+              onClick={prev}
+              className="w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-[var(--cream)] transition-colors cursor-pointer"
+              aria-label="Previous testimonial"
+            >
+              <ChevronLeftIcon className="w-5 h-5 text-[var(--navy)]" />
+            </button>
+
+            <div className="flex gap-2">
+              {testimonials.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActive(i)}
+                  className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
+                    active === i
+                      ? "w-8 bg-[var(--gold)]"
+                      : "w-2.5 bg-gray-300 hover:bg-gray-400"
+                  }`}
+                  aria-label={`Go to testimonial ${i + 1}`}
+                />
+              ))}
+            </div>
+
+            <button
+              onClick={next}
+              className="w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-[var(--cream)] transition-colors cursor-pointer"
+              aria-label="Next testimonial"
+            >
+              <ChevronRightIcon className="w-5 h-5 text-[var(--navy)]" />
+            </button>
+          </div>
         </div>
       </div>
     </section>
@@ -638,21 +678,21 @@ function CTASection() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
       >
-        <span className="text-5xl mb-4 block">📞</span>
+        <span className="text-5xl mb-4 block">🤝</span>
         <h2 className="text-title font-display text-white mb-4">
-          Have Questions? We&apos;re Here to Help
+          Join the Aarambha Community
         </h2>
         <p className="text-body text-white/70 mt-4 mb-10 max-w-xl mx-auto">
-          Our admissions team is ready to guide you through every step of the
-          process. Reach out and we will get back to you promptly.
+          Be part of a vibrant community where parents, teachers, students, and
+          partners come together to create an extraordinary learning environment.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
-          <a href="mailto:info@aarambha.school" className="btn-cta">
-            Email Us
-          </a>
-          <a href="tel:+9779823837865" className="btn-secondary">
-            Call Us
-          </a>
+          <Link href="/contact" className="btn-cta">
+            Get in Touch
+          </Link>
+          <Link href="/admissions" className="btn-secondary">
+            Admission Process
+          </Link>
         </div>
       </motion.div>
     </section>
