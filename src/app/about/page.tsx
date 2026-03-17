@@ -4,43 +4,75 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  LightBulbIcon,
-  ShieldCheckIcon,
-  ArrowTrendingUpIcon,
-  HeartIcon,
   SparklesIcon,
-  FireIcon,
   StarIcon,
   EyeIcon,
   RocketLaunchIcon,
+  ShieldCheckIcon,
+  LightBulbIcon,
+  HeartIcon,
+  AcademicCapIcon,
+  GlobeAltIcon,
+  ArrowTrendingUpIcon,
+  PaintBrushIcon,
+  BookOpenIcon,
 } from "@heroicons/react/24/outline";
 
 /* ──────────────────────────────────────────────
-   Data
+   Data (from aarambha.school/about)
    ────────────────────────────────────────────── */
 
-const milestones = [
-  { year: "2008", title: "Founded", desc: "Aarambha Sanskar Vidyalaya established with a vision for holistic education.", color: "var(--coral)", emoji: "🌱" },
-  { year: "2012", title: "Expanded to K-8", desc: "Added middle school grades with specialized subject teaching.", color: "var(--mint)", emoji: "📚" },
-  { year: "2015", title: "STEAM Program", desc: "Introduced hands-on STEAM education across all grades.", color: "var(--lavender)", emoji: "🔬" },
-  { year: "2018", title: "Full K-12", desc: "Launched high school program with comprehensive curriculum.", color: "var(--gold)", emoji: "🎓" },
-  { year: "2021", title: "New Laboratories", desc: "State-of-the-art science and computer labs opened.", color: "var(--navy-light)", emoji: "💻" },
-  { year: "2023", title: "Campus Expansion", desc: "New sports complex and auditorium completed.", color: "var(--peach)", emoji: "🏟️" },
+const coreValues = [
+  { icon: ArrowTrendingUpIcon, title: "Resilience & Adaptability", color: "var(--navy-light)", emoji: "💪" },
+  { icon: BookOpenIcon, title: "Lifelong Learning", color: "var(--coral)", emoji: "📖" },
+  { icon: HeartIcon, title: "Compassion & Community", color: "var(--mint)", emoji: "💚" },
+  { icon: GlobeAltIcon, title: "Cultural Awareness & Respect", color: "var(--gold)", emoji: "🌍" },
+  { icon: AcademicCapIcon, title: "Excellence in Education", color: "var(--lavender)", emoji: "🎓" },
+  { icon: SparklesIcon, title: "Holistic Development", color: "var(--peach)", emoji: "✨" },
+  { icon: PaintBrushIcon, title: "Innovation & Creativity", color: "var(--coral)", emoji: "🎨" },
+  { icon: ShieldCheckIcon, title: "Integrity & Ethics", color: "var(--navy-light)", emoji: "🛡️" },
 ];
 
-const values = [
-  { icon: LightBulbIcon, title: "Curiosity", description: "We celebrate questions and foster a lifelong love of learning.", color: "var(--gold)", emoji: "💡" },
-  { icon: ShieldCheckIcon, title: "Integrity", description: "We uphold honesty and ethical behavior in all interactions.", color: "var(--navy-light)", emoji: "🛡️" },
-  { icon: ArrowTrendingUpIcon, title: "Growth", description: "We believe every child can grow with effort and support.", color: "var(--mint)", emoji: "📈" },
-  { icon: HeartIcon, title: "Respect", description: "We honor diverse perspectives and treat everyone with dignity.", color: "var(--coral)", emoji: "❤️" },
-  { icon: SparklesIcon, title: "Creativity", description: "We encourage original thinking and innovative problem-solving.", color: "var(--lavender)", emoji: "✨" },
-  { icon: FireIcon, title: "Resilience", description: "We teach students to embrace challenges and learn from setbacks.", color: "var(--peach)", emoji: "🔥" },
+const philosophy = [
+  {
+    title: "Every Child is Unique",
+    desc: "Every child is a unique and independent learner, capable of thriving in a nurturing, child-centered environment.",
+    emoji: "🌟",
+    color: "var(--gold)",
+  },
+  {
+    title: "Fostering Autonomy",
+    desc: "Our progressive approach emphasizes fostering autonomy, responsibility, and a love for learning through project-based experiential education.",
+    emoji: "🚀",
+    color: "var(--coral)",
+  },
+  {
+    title: "Real-World Connections",
+    desc: "By connecting classroom knowledge to real-world experiences, we create meaningful and engaging learning opportunities.",
+    emoji: "🌏",
+    color: "var(--mint)",
+  },
+  {
+    title: "Empowering Teachers",
+    desc: "We empower our teachers with continuous professional development and authentic resources, enabling them to guide and inspire students effectively.",
+    emoji: "👩‍🏫",
+    color: "var(--lavender)",
+  },
+  {
+    title: "Holistic Growth",
+    desc: "At the heart of our philosophy is the commitment to holistic growth, where each child\u2019s curiosity, creativity, and potential are celebrated and nurtured.",
+    emoji: "🌱",
+    color: "var(--peach)",
+  },
 ];
 
-const leaders = [
-  { name: "Dr. Suman Adhikari", role: "Principal", image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80" },
-  { name: "Mrs. Anita Gurung", role: "Vice Principal", image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80" },
-  { name: "Mr. Rajesh Shrestha", role: "Academic Director", image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80" },
+const teamMembers = [
+  { name: "Naresh Prasad Shrestha", role: "Chairman and Principal", image: "/images/team/naresh.webp" },
+  { name: "Rossete Dela Rosa Tamang", role: "Vice Principal (Pre-school to Grade 5)", image: "/images/team/rossete.webp" },
+  { name: "Dinesh Shrestha", role: "Vice Principal (Grade 6-12)", image: "/images/team/dinesh.webp" },
+  { name: "Sunita Maharjan", role: "Coordinator (Pre-school to Grade 5)", image: "/images/team/sunita.webp" },
+  { name: "Deepika Shrestha", role: "Coordinator (Grade 6-10)", image: "/images/team/deepika.webp" },
+  { name: "Kripa Bajracharya", role: "ECA Coordinator", image: "/images/team/kripa.webp" },
 ];
 
 /* ──────────────────────────────────────────────
@@ -74,12 +106,7 @@ function FloatingShape({
   };
 
   if (shape === "circle") {
-    return (
-      <div
-        className="animate-float-slow"
-        style={{ ...shapeStyles, borderRadius: "50%", backgroundColor: color }}
-      />
-    );
+    return <div className="animate-float-slow" style={{ ...shapeStyles, borderRadius: "50%", backgroundColor: color }} />;
   }
   if (shape === "triangle") {
     return (
@@ -107,12 +134,7 @@ function FloatingShape({
   return (
     <div
       className="animate-float"
-      style={{
-        ...shapeStyles,
-        borderRadius: "4px",
-        backgroundColor: color,
-        transform: "rotate(15deg)",
-      }}
+      style={{ ...shapeStyles, borderRadius: "4px", backgroundColor: color, transform: "rotate(15deg)" }}
     />
   );
 }
@@ -129,10 +151,7 @@ function WaveDivider({ flip = false, color = "var(--cream)" }: { flip?: boolean;
   return (
     <div className={`w-full overflow-hidden leading-[0] ${flip ? "rotate-180" : ""}`}>
       <svg viewBox="0 0 1440 80" preserveAspectRatio="none" className="w-full h-[50px] md:h-[80px]">
-        <path
-          d="M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,80 L0,80 Z"
-          fill={color}
-        />
+        <path d="M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,80 L0,80 Z" fill={color} />
       </svg>
     </div>
   );
@@ -146,14 +165,16 @@ export default function AboutPage() {
   return (
     <>
       <HeroSection />
+      <AboutSection />
+      <WaveDivider color="var(--white)" />
       <MissionVisionSection />
-      <WaveDivider color="var(--white)" />
-      <ValuesSection />
       <WaveDivider flip color="var(--white)" />
-      <HistorySection />
+      <CoreValuesSection />
       <WaveDivider color="var(--white)" />
-      <LeadershipSection />
+      <PhilosophySection />
       <WaveDivider flip color="var(--white)" />
+      <TeamSection />
+      <WaveDivider color="var(--navy)" />
       <CTASection />
     </>
   );
@@ -168,19 +189,17 @@ function HeroSection() {
     <section className="relative overflow-hidden min-h-[60vh] md:min-h-[70vh] lg:min-h-[80vh] flex items-center justify-center">
       <Image
         src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1920&q=80"
-        alt="University campus"
+        alt="School campus"
         fill
         className="object-cover"
         priority
       />
       <div className="absolute inset-0 bg-gradient-to-b from-[rgba(19,47,80,0.9)] via-[rgba(30,74,122,0.8)] to-[rgba(19,47,80,0.92)]" />
 
-      {/* Floating shapes */}
       <FloatingShape color="#F5A623" size={90} top="8%" left="5%" shape="circle" delay={0} />
       <FloatingShape color="#4ECDC4" size={55} top="15%" left="88%" shape="triangle" delay={1} />
       <FloatingShape color="#FF6B6B" size={40} top="72%" left="8%" shape="star" delay={2} />
       <FloatingShape color="#A78BFA" size={65} top="68%" left="82%" shape="square" delay={0.5} />
-      <FloatingShape color="#FBBF77" size={35} top="42%" left="93%" shape="circle" delay={1.5} />
 
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -195,13 +214,12 @@ function HeroSection() {
           transition={{ delay: 0.3 }}
         >
           <SparklesIcon className="w-4 h-4" />
-          Our Story
+          About Us
           <SparklesIcon className="w-4 h-4" />
         </motion.span>
 
         <h1 className="text-hero font-display text-white mt-6 mb-4">
-          Where Tradition Meets{" "}
-          <span className="text-[var(--gold)]">Innovation</span>
+          Aarambha <span className="text-[var(--gold)]">School</span>
         </h1>
 
         <motion.p
@@ -210,8 +228,7 @@ function HeroSection() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
         >
-          Since 2008, shaping curious minds and compassionate leaders through
-          holistic, values-driven education.
+          A progressive K-12 educational institution in the heart of Kathmandu
         </motion.p>
       </motion.div>
     </section>
@@ -219,21 +236,102 @@ function HeroSection() {
 }
 
 /* ──────────────────────────────────────────────
-   Section 2 — Mission & Vision
+   Section 2 — About Us (alternating layout)
+   ────────────────────────────────────────────── */
+
+function AboutSection() {
+  return (
+    <section className="bg-[var(--cream)] py-24 px-6 relative overflow-hidden">
+      <FloatingShape color="#A78BFA" size={70} top="10%" left="85%" shape="star" delay={0} />
+
+      <div className="max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          {/* Text side */}
+          <motion.div
+            initial={{ opacity: 0, x: -40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <SectionLabel>Aarambha School</SectionLabel>
+            <h2 className="text-title font-display text-[var(--navy)] mb-6">
+              About Us
+            </h2>
+            <div className="space-y-4 text-body text-[var(--muted)]">
+              <p>
+                Aarambha School is a progressive K-12 educational institution strategically
+                located in the heart of the city at Pipal Bot, Galko Pakha Marga, Ward Number
+                26, Kathmandu.
+              </p>
+              <p>
+                Aarambha School is a common vision of eminent academicians, successful
+                entrepreneurs, tech-leaders and successful personalities from different walks
+                of life. They joined hands together to provide a student-centered,
+                inquiry-based, and interdisciplinary education that fosters the holistic
+                development of each individual.
+              </p>
+              <p>
+                As a pioneering institution, the school represents the convergence of Eastern
+                wisdom and modern educational innovation, creating a unique learning
+                environment that prepares students for the challenges and opportunities of the
+                21st century.
+              </p>
+              <p>
+                We prioritize hands-on, inquiry-based learning experiences that integrate the
+                core principles of Science, Technology, Engineering, Arts, and Mathematics
+                (STEAM). This approach equips our students with the tools they need to tackle
+                complex real-world challenges with confidence and enthusiasm.
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Image side */}
+          <motion.div
+            className="relative"
+            initial={{ opacity: 0, x: 40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl">
+              <Image
+                src="/images/about-1.webp"
+                alt="Aarambha School campus"
+                width={600}
+                height={500}
+                className="w-full h-[400px] lg:h-[500px] object-cover"
+              />
+            </div>
+            <div
+              className="absolute -bottom-6 -right-6 w-32 h-32 rounded-full animate-blob opacity-30"
+              style={{ backgroundColor: "var(--gold)" }}
+            />
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ──────────────────────────────────────────────
+   Section 3 — Empowered by Innovation: Vision & Mission
    ────────────────────────────────────────────── */
 
 function MissionVisionSection() {
   return (
-    <section className="py-24 px-6 bg-[var(--cream)] relative overflow-hidden">
-      <FloatingShape color="#A78BFA" size={60} top="10%" left="90%" shape="star" delay={0} />
+    <section className="py-24 px-6 bg-white relative overflow-hidden">
       <FloatingShape color="#FF6B6B" size={40} top="80%" left="5%" shape="triangle" delay={1} />
+      <FloatingShape color="#4ECDC4" size={50} top="10%" left="90%" shape="circle" delay={0} />
 
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="text-center mb-16">
-          <SectionLabel>What Drives Us</SectionLabel>
+          <SectionLabel>Empowered by Innovation</SectionLabel>
           <h2 className="text-title font-display text-[var(--navy)]">
-            Our Mission & Vision
+            Shaping the Future with Tradition and Innovation
           </h2>
+          <p className="text-body text-[var(--muted)] mt-4 max-w-2xl mx-auto">
+            Merging Eastern Wisdom with Modern Education for Holistic Growth
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -243,17 +341,18 @@ function MissionVisionSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
             whileHover={{ y: -4 }}
-            className="bg-white rounded-3xl p-8 md:p-10 shadow-sm hover:shadow-xl transition-shadow relative overflow-hidden"
+            className="bg-[var(--cream)] rounded-3xl p-8 md:p-10 shadow-sm hover:shadow-xl transition-shadow relative overflow-hidden"
           >
-            {/* Colored accent top */}
-            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[var(--coral)] via-[var(--gold)] to-[var(--peach)]" />
-            <div className="w-14 h-14 rounded-2xl bg-[var(--coral)]/10 flex items-center justify-center mb-6">
-              <RocketLaunchIcon className="w-7 h-7 text-[var(--coral)]" />
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[var(--mint)] via-[var(--navy-light)] to-[var(--lavender)]" />
+            <div className="w-14 h-14 rounded-2xl bg-[var(--mint)]/10 flex items-center justify-center mb-6">
+              <EyeIcon className="w-7 h-7 text-[var(--mint)]" />
             </div>
-            <h2 className="text-subtitle font-display text-[var(--navy)] mb-4">Our Mission</h2>
+            <h2 className="text-subtitle font-display text-[var(--navy)] mb-4">Our Vision</h2>
             <p className="text-body text-[var(--muted)]">
-              To nurture holistic development through academic excellence, character building, and
-              cultural values, empowering students to become responsible global citizens.
+              To create a transformative educational experience that blends Eastern values
+              and philosophy with 21st-century digital innovation, fostering the holistic
+              development of every student — intellectually, emotionally, ethically, and
+              physically — equipping them to thrive in a rapidly changing world.
             </p>
           </motion.div>
 
@@ -263,17 +362,18 @@ function MissionVisionSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
             whileHover={{ y: -4 }}
-            className="bg-white rounded-3xl p-8 md:p-10 shadow-sm hover:shadow-xl transition-shadow relative overflow-hidden"
+            className="bg-[var(--cream)] rounded-3xl p-8 md:p-10 shadow-sm hover:shadow-xl transition-shadow relative overflow-hidden"
           >
-            {/* Colored accent top */}
-            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[var(--mint)] via-[var(--navy-light)] to-[var(--lavender)]" />
-            <div className="w-14 h-14 rounded-2xl bg-[var(--mint)]/10 flex items-center justify-center mb-6">
-              <EyeIcon className="w-7 h-7 text-[var(--mint)]" />
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[var(--coral)] via-[var(--gold)] to-[var(--peach)]" />
+            <div className="w-14 h-14 rounded-2xl bg-[var(--coral)]/10 flex items-center justify-center mb-6">
+              <RocketLaunchIcon className="w-7 h-7 text-[var(--coral)]" />
             </div>
-            <h2 className="text-subtitle font-display text-[var(--navy)] mb-4">Our Vision</h2>
+            <h2 className="text-subtitle font-display text-[var(--navy)] mb-4">Our Mission</h2>
             <p className="text-body text-[var(--muted)]">
-              To be a leading institution that inspires lifelong learners, fosters innovation, and
-              cultivates leaders who make a positive impact on society.
+              Our mission is to blend digital technology with Eastern philosophy, fostering
+              lifelong learners and compassionate leaders through a STEAM-based, balanced
+              curriculum that promotes academic excellence, personal growth, and cultural
+              connection.
             </p>
           </motion.div>
         </div>
@@ -283,162 +383,60 @@ function MissionVisionSection() {
 }
 
 /* ──────────────────────────────────────────────
-   Section 3 — Core Values
+   Section 4 — Core Values
    ────────────────────────────────────────────── */
 
-function ValuesSection() {
+function CoreValuesSection() {
   return (
-    <section className="py-24 px-6 bg-white relative overflow-hidden">
+    <section className="py-24 px-6 bg-[var(--cream)] relative overflow-hidden">
       <FloatingShape color="#F5A623" size={70} top="5%" left="92%" shape="circle" delay={0} />
       <FloatingShape color="#4ECDC4" size={45} top="85%" left="3%" shape="square" delay={1.5} />
 
       <div className="max-w-6xl mx-auto relative z-10">
-        <div className="text-center mb-16">
-          <SectionLabel>What We Stand For</SectionLabel>
-          <h2 className="text-title font-display text-[var(--navy)]">
-            Our Core Values
-          </h2>
-          <p className="text-body text-[var(--muted)] mt-4 max-w-2xl mx-auto">
-            The principles that guide everything we do, from curriculum design
-            to how we treat one another.
-          </p>
-        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+          {/* Left: description */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+          >
+            <SectionLabel>About Us</SectionLabel>
+            <h2 className="text-title font-display text-[var(--navy)] mb-6">
+              Core Values and Guiding Principles
+            </h2>
+            <p className="text-body text-[var(--muted)]">
+              Based on our vision, mission, and values, the expectations from students
+              align with the goal of developing well-rounded, future-ready individuals who
+              can thrive in a fast-paced, globalized world while staying grounded in Eastern
+              values. These expectations focus on critical skills, mindsets, and behaviors
+              that reflect 21st-century competencies.
+            </p>
+          </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {values.map((value, index) => (
-            <motion.div
-              key={value.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1, type: "spring", stiffness: 200 }}
-              whileHover={{ y: -6 }}
-              className="bg-[var(--cream)] rounded-3xl p-7 relative overflow-hidden shadow-sm hover:shadow-lg transition-shadow cursor-default"
-            >
-              {/* Colored top border */}
-              <div
-                className="absolute top-0 left-0 right-0 h-1"
-                style={{ backgroundColor: value.color }}
-              />
-              <div className="flex items-start gap-4">
-                <div
-                  className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
-                  style={{ backgroundColor: `color-mix(in srgb, ${value.color} 15%, transparent)` }}
-                >
-                  <value.icon className="w-6 h-6" style={{ color: value.color }} />
-                </div>
-                <div>
-                  <h3 className="text-subtitle font-display text-[var(--navy)] mb-1 flex items-center gap-2">
-                    {value.title}
-                    <span className="text-base">{value.emoji}</span>
-                  </h3>
-                  <p className="text-small text-[var(--muted)]">{value.description}</p>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ──────────────────────────────────────────────
-   Section 4 — History Timeline
-   ────────────────────────────────────────────── */
-
-function HistorySection() {
-  return (
-    <section className="py-24 px-6 bg-[var(--cream)] relative overflow-hidden">
-      <FloatingShape color="#A78BFA" size={50} top="8%" left="5%" shape="triangle" delay={0} />
-      <FloatingShape color="#FF6B6B" size={60} top="75%" left="90%" shape="circle" delay={1} />
-
-      <div className="max-w-6xl mx-auto relative z-10">
-        <div className="text-center mb-16">
-          <SectionLabel>Our Journey</SectionLabel>
-          <h2 className="text-title font-display text-[var(--navy)]">
-            Milestones Along the Way
-          </h2>
-          <p className="text-body text-[var(--muted)] mt-4 max-w-2xl mx-auto">
-            From a small beginning to a thriving K-12 institution, every year
-            has brought new growth and possibilities.
-          </p>
-        </div>
-
-        {/* Desktop: horizontal timeline */}
-        <div className="hidden lg:block">
-          <div className="relative">
-            {/* Connecting line */}
-            <div className="absolute top-[28px] left-[8%] right-[8%] h-[3px] bg-gradient-to-r from-[var(--coral)] via-[var(--mint)] to-[var(--lavender)] rounded-full" />
-
-            <div className="flex justify-between">
-              {milestones.map((milestone, index) => (
-                <motion.div
-                  key={milestone.year}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.12, type: "spring", stiffness: 200 }}
-                  className="relative flex-1 px-3 text-center"
-                >
-                  {/* Colored dot */}
-                  <div className="relative mx-auto mb-5 w-14 h-14">
-                    <div
-                      className="w-14 h-14 rounded-full flex items-center justify-center text-xl relative z-10 shadow-md"
-                      style={{ backgroundColor: milestone.color }}
-                    >
-                      {milestone.emoji}
-                    </div>
-                    <div
-                      className="absolute inset-0 rounded-full animate-ping opacity-20"
-                      style={{ backgroundColor: milestone.color }}
-                    />
-                  </div>
-
-                  <p className="text-subtitle font-display" style={{ color: milestone.color }}>
-                    {milestone.year}
-                  </p>
-                  <h3 className="text-small font-display text-[var(--navy)] font-semibold mt-1 mb-1">
-                    {milestone.title}
-                  </h3>
-                  <p className="text-tiny text-[var(--muted)]">{milestone.desc}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile: vertical timeline */}
-        <div className="lg:hidden max-w-md mx-auto">
-          <div className="relative pl-12 space-y-10">
-            {/* Gradient vertical line */}
-            <div className="absolute left-[22px] top-0 bottom-0 w-[3px] bg-gradient-to-b from-[var(--coral)] via-[var(--mint)] to-[var(--lavender)] rounded-full" />
-
-            {milestones.map((milestone, index) => (
+          {/* Right: value cards grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {coreValues.map((value, index) => (
               <motion.div
-                key={milestone.year}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                key={value.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.08, type: "spring", stiffness: 200 }}
-                className="relative"
+                whileHover={{ y: -4 }}
+                className="bg-white rounded-2xl p-5 shadow-sm hover:shadow-lg transition-shadow relative overflow-hidden"
               >
-                {/* Colored dot on line */}
-                <div
-                  className="absolute -left-[26px] top-0 w-10 h-10 rounded-full flex items-center justify-center text-sm shadow-md"
-                  style={{ backgroundColor: milestone.color }}
-                >
-                  {milestone.emoji}
-                </div>
-
-                <div className="bg-white rounded-2xl p-5 shadow-sm">
-                  <p className="text-subtitle font-display" style={{ color: milestone.color }}>
-                    {milestone.year}
-                  </p>
-                  <h3 className="text-small font-display text-[var(--navy)] font-semibold mt-1 mb-1">
-                    {milestone.title}
+                <div className="absolute top-0 left-0 right-0 h-1" style={{ backgroundColor: value.color }} />
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+                    style={{ backgroundColor: `color-mix(in srgb, ${value.color} 15%, transparent)` }}
+                  >
+                    <value.icon className="w-5 h-5" style={{ color: value.color }} />
+                  </div>
+                  <h3 className="font-display text-[var(--navy)] font-semibold text-sm flex items-center gap-1.5">
+                    {value.title}
+                    <span className="text-sm">{value.emoji}</span>
                   </h3>
-                  <p className="text-tiny text-[var(--muted)]">{milestone.desc}</p>
                 </div>
               </motion.div>
             ))}
@@ -450,22 +448,103 @@ function HistorySection() {
 }
 
 /* ──────────────────────────────────────────────
-   Section 5 — Leadership
+   Section 5 — Our Philosophy (alternating layout)
    ────────────────────────────────────────────── */
 
-function LeadershipSection() {
-  const ringColors = ["var(--coral)", "var(--mint)", "var(--lavender)"];
-
+function PhilosophySection() {
   return (
     <section className="py-24 px-6 bg-white relative overflow-hidden">
+      <FloatingShape color="#A78BFA" size={50} top="8%" left="5%" shape="triangle" delay={0} />
+      <FloatingShape color="#FF6B6B" size={60} top="75%" left="90%" shape="circle" delay={1} />
+
+      <div className="max-w-6xl mx-auto relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          {/* Left: philosophy items */}
+          <motion.div
+            initial={{ opacity: 0, x: -40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+          >
+            <SectionLabel>Our Philosophy</SectionLabel>
+            <h2 className="text-title font-display text-[var(--navy)] mb-4">
+              What We Believe
+            </h2>
+            <p className="text-body text-[var(--muted)] mb-8">
+              At Aarambha Sanskar Vidyalaya, we believe:
+            </p>
+
+            <div className="space-y-5">
+              {philosophy.map((item, index) => (
+                <motion.div
+                  key={item.title}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  className="flex gap-4"
+                >
+                  <div
+                    className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 text-xl"
+                    style={{ backgroundColor: `color-mix(in srgb, ${item.color} 15%, transparent)` }}
+                  >
+                    {item.emoji}
+                  </div>
+                  <div>
+                    <h3 className="font-display text-[var(--navy)] font-semibold mb-1">
+                      {item.title}
+                    </h3>
+                    <p className="text-small text-[var(--muted)]">{item.desc}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Right: image */}
+          <motion.div
+            className="relative"
+            initial={{ opacity: 0, x: 40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="rounded-3xl overflow-hidden shadow-2xl">
+              <Image
+                src="/images/about-2.webp"
+                alt="Students at Aarambha School"
+                width={600}
+                height={625}
+                className="w-full h-[450px] lg:h-[550px] object-cover"
+              />
+            </div>
+            <div
+              className="absolute -top-4 -left-4 w-24 h-24 rounded-full animate-blob opacity-25"
+              style={{ backgroundColor: "var(--mint)" }}
+            />
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ──────────────────────────────────────────────
+   Section 6 — Meet Our Team
+   ────────────────────────────────────────────── */
+
+function TeamSection() {
+  const ringColors = ["var(--coral)", "var(--mint)", "var(--lavender)", "var(--gold)", "var(--peach)", "var(--navy-light)"];
+
+  return (
+    <section className="py-24 px-6 bg-[var(--cream)] relative overflow-hidden" id="team">
       <FloatingShape color="#F5A623" size={55} top="10%" left="8%" shape="star" delay={0} />
       <FloatingShape color="#4ECDC4" size={70} top="75%" left="88%" shape="circle" delay={1} />
 
-      <div className="max-w-5xl mx-auto relative z-10">
+      <div className="max-w-6xl mx-auto relative z-10">
         <div className="text-center mb-16">
           <SectionLabel>Our Team</SectionLabel>
           <h2 className="text-title font-display text-[var(--navy)]">
-            Meet Our Leadership
+            Meet Our Team
           </h2>
           <p className="text-body text-[var(--muted)] mt-4 max-w-2xl mx-auto">
             Dedicated professionals committed to inspiring, guiding, and
@@ -474,10 +553,10 @@ function LeadershipSection() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {leaders.map((leader, index) => (
+          {teamMembers.map((member, index) => (
             <motion.div
-              key={leader.name}
-              className="bg-[var(--cream)] rounded-3xl p-8 text-center shadow-sm hover:shadow-xl transition-shadow"
+              key={member.name}
+              className="bg-white rounded-3xl p-8 text-center shadow-sm hover:shadow-xl transition-shadow"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -486,16 +565,15 @@ function LeadershipSection() {
             >
               <div className="relative w-32 h-32 mx-auto mb-6">
                 <Image
-                  src={leader.image}
-                  alt={leader.name}
+                  src={member.image}
+                  alt={member.name}
                   width={128}
                   height={128}
-                  className="w-32 h-32 rounded-full object-cover"
+                  className="w-32 h-32 rounded-full object-cover object-top"
                   style={{
-                    boxShadow: `0 0 0 4px var(--cream), 0 0 0 8px ${ringColors[index % ringColors.length]}`,
+                    boxShadow: `0 0 0 4px white, 0 0 0 8px ${ringColors[index % ringColors.length]}`,
                   }}
                 />
-                {/* Star badge */}
                 <div
                   className="absolute -bottom-1 -right-1 w-9 h-9 rounded-full flex items-center justify-center shadow-md"
                   style={{ backgroundColor: "var(--gold)" }}
@@ -504,10 +582,10 @@ function LeadershipSection() {
                 </div>
               </div>
               <h3 className="font-display text-[var(--navy)] font-semibold text-lg">
-                {leader.name}
+                {member.name}
               </h3>
               <p className="text-small text-[var(--muted)] mt-1">
-                {leader.role}
+                {member.role}
               </p>
             </motion.div>
           ))}
@@ -518,13 +596,12 @@ function LeadershipSection() {
 }
 
 /* ──────────────────────────────────────────────
-   Section 6 — CTA
+   Section 7 — CTA
    ────────────────────────────────────────────── */
 
 function CTASection() {
   return (
     <section className="relative bg-[var(--navy)] py-28 px-6 overflow-hidden">
-      {/* Floating shapes */}
       <FloatingShape color="#F5A623" size={120} top="10%" left="5%" shape="circle" delay={0} />
       <FloatingShape color="#4ECDC4" size={80} top="60%" left="85%" shape="triangle" delay={0.5} />
       <FloatingShape color="#FF6B6B" size={50} top="20%" left="75%" shape="star" delay={1} />
