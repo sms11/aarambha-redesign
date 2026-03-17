@@ -131,8 +131,8 @@ function HeroSection() {
   return (
     <section className="relative overflow-hidden min-h-[70vh] md:min-h-[80vh] lg:min-h-screen flex items-center justify-center">
       <Image
-        src="https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=1920&q=80"
-        alt="Students learning together"
+        src="/images/hero.webp"
+        alt="Aarambha School students"
         fill
         priority
         style={{ objectFit: "cover" }}
