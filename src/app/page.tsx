@@ -9,6 +9,12 @@ import {
   BeakerIcon,
   GlobeAltIcon,
   AcademicCapIcon,
+  LightBulbIcon,
+  HeartIcon,
+  MusicalNoteIcon,
+  ChatBubbleLeftRightIcon,
+  UserGroupIcon,
+  PaintBrushIcon,
 } from "@heroicons/react/24/outline";
 
 const stats = [
@@ -18,69 +24,82 @@ const stats = [
   { value: "50+", label: "Faculty" },
 ];
 
-const programs = [
-  {
-    name: "Early Years",
-    desc: "Nurturing curiosity through play-based learning for ages 3-5.",
-    image:
-      "https://images.unsplash.com/photo-1594608661623-aa0bd3a69d98?w=600&q=80",
-  },
-  {
-    name: "Primary School",
-    desc: "Building strong foundations in literacy, numeracy, and character.",
-    image:
-      "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=600&q=80",
-  },
-  {
-    name: "Middle School",
-    desc: "Developing critical thinking and leadership skills.",
-    image:
-      "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&q=80",
-  },
-  {
-    name: "High School",
-    desc: "Preparing students for higher education and global citizenship.",
-    image:
-      "https://images.unsplash.com/photo-1627556704302-624286467c65?w=600&q=80",
-  },
+const schoolLifeItems = [
+  { title: "Explore Your Interests", icon: LightBulbIcon },
+  { title: "Get Active and Healthy", icon: HeartIcon },
+  { title: "Explore the World Around You", icon: GlobeAltIcon },
+  { title: "Express Yourself", icon: PaintBrushIcon },
+  { title: "Find Your Voice", icon: ChatBubbleLeftRightIcon },
+  { title: "Join the Club", icon: UserGroupIcon },
+  { title: "Make Beautiful Music", icon: MusicalNoteIcon },
+  { title: "Move and Groove", icon: BeakerIcon },
 ];
 
-const features = [
-  {
-    icon: BeakerIcon,
-    title: "STEAM Education",
-    desc: "Hands-on innovation labs integrating science, technology, engineering, arts, and mathematics into everyday learning.",
-  },
-  {
-    icon: GlobeAltIcon,
-    title: "Global Exposure",
-    desc: "International exchange programs and cultural immersion trips that broaden horizons and build global citizens.",
-  },
-  {
-    icon: AcademicCapIcon,
-    title: "Expert Faculty",
-    desc: "Dedicated educators trained in modern pedagogy, committed to nurturing each student's unique potential.",
-  },
+const teamMembers = [
+  { name: "Naresh Prasad Shrestha", role: "Chairman and Principal" },
+  { name: "Rossete Dela Rosa Tamang", role: "Vice Principal (Pre-school to Grade 5)" },
+  { name: "Dinesh Shrestha", role: "Vice Principal (Grade 6-12)" },
+  { name: "Sunita Maharjan", role: "Coordinator (Pre-school to Grade 5)" },
+  { name: "Deepika Shrestha", role: "Coordinator (Grade 6-10)" },
+  { name: "Kripa Bajracharya", role: "ECA Coordinator" },
 ];
 
 const testimonials = [
   {
     quote:
-      "Our child has flourished beyond our expectations. The teachers truly care about each student's growth and wellbeing.",
-    name: "Priya Sharma",
-    role: "Parent",
+      "Aarambha School has truly transformed my daughter\u2019s learning experience. The teachers are not only highly qualified but also genuinely care about each child\u2019s growth. The school\u2019s focus on values and creativity is unmatched!",
+    name: "Sita Sharma",
+    role: "Parent of Grade 4 Student",
   },
   {
     quote:
-      "Aarambha gave me the confidence to pursue my dreams. The mentorship here is unparalleled.",
-    name: "Aarav Thapa",
-    role: "Alumni, Class of 2022",
+      "I love going to Aarambha School because learning here is fun! My teachers make every subject interesting, and I\u2019ve made lots of new friends. The playground and art classes are my favorite!",
+    name: "Ramesh Karki",
+    role: "Grade 3 Student",
   },
   {
     quote:
-      "The perfect blend of academics and values. Our children love going to school every day.",
-    name: "Rajan Maharjan",
-    role: "Parent",
+      "Aarambha School laid a strong foundation for my academic journey. The skills and discipline I learned there helped me succeed in higher studies and beyond. I\u2019m proud to be an Aarambha alumnus!",
+    name: "Priyanka Adhikari",
+    role: "Batch of 2018",
+  },
+  {
+    quote:
+      "As a teacher at Aarambha School, I\u2019ve seen how a nurturing and inclusive environment can inspire students to reach their full potential. The support from the administration and the passion from our students make teaching here incredibly rewarding.",
+    name: "Mr. Rajan Shrestha",
+    role: "Science Teacher",
+  },
+];
+
+const partners = [
+  "FranklinCovey Education",
+  "Kalpavariksha Education Foundation",
+  "NYEF",
+  "Programiz",
+  "Duke of Edinburgh\u2019s Award",
+  "Digital Nepal",
+  "Robotics Association of Nepal",
+  "NCC Education",
+  "digiSchool",
+  "Code Himalaya",
+  "Techspire College",
+];
+
+const features = [
+  {
+    icon: BeakerIcon,
+    title: "STEAM & Experiential Learning",
+    desc: "A curriculum that integrates science, technology, engineering, arts, and mathematics with hands-on experiential learning and global exposure trips.",
+  },
+  {
+    icon: GlobeAltIcon,
+    title: "Global Exposure",
+    desc: "Study tours to USA, UK, China, India and other countries, plus a \u201cKnow Nepal Program\u201d with field visits, trekking, and industrial visits.",
+  },
+  {
+    icon: AcademicCapIcon,
+    title: "Academic Excellence",
+    desc: "A rigorous curriculum prescribed by the National Examinations Board with Aarambha Standard of Excellence and personalized attention.",
   },
 ];
 
@@ -88,12 +107,14 @@ export default function Home() {
   return (
     <>
       <HeroSection />
-      <IntroSection />
-      <TwoColumnSection />
+      <PrincipalMessage />
+      <AboutSection />
       <StatsBar />
-      <ProgramsSection />
-      <WhyAarambhaSection />
+      <WhyDifferentSection />
+      <SchoolLifeSection />
+      <TeamSection />
       <TestimonialSection />
+      <PartnersSection />
       <CTASection />
     </>
   );
@@ -120,21 +141,22 @@ function HeroSection() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        <span className="text-label text-[var(--gold)]">Since 2008</span>
+        <span className="text-label text-[var(--gold)]">
+          Aarambha Sanskar Vidyalaya
+        </span>
         <h1 className="text-hero font-display text-white mt-4 mb-6">
-          Nurturing Tomorrow&apos;s Leaders
+          Empowering a Journey of Learning, Growth, and Leadership
         </h1>
         <p className="text-body text-white/80 max-w-xl mx-auto mb-10">
-          Aarambha Sanskar Vidyalaya blends timeless Eastern wisdom with
-          contemporary education, preparing students to excel as thoughtful,
-          capable global citizens.
+          Where Eastern Values Meet 21st-Century Innovation to Shape
+          Future-Ready Leaders
         </p>
         <div className="flex flex-wrap justify-center gap-4">
           <Link href="/admissions" className="btn-cta">
-            Apply Now
+            Enroll Now
           </Link>
-          <Link href="/programs" className="btn-secondary">
-            Discover More
+          <Link href="/about" className="btn-secondary">
+            Learn More
           </Link>
         </div>
       </motion.div>
@@ -151,9 +173,9 @@ function HeroSection() {
 }
 
 /* ──────────────────────────────────────────────
-   Section 2 — Intro "A Place to Belong"
+   Section 2 — Principal Message
    ────────────────────────────────────────────── */
-function IntroSection() {
+function PrincipalMessage() {
   return (
     <section className="bg-[var(--cream)] py-20 px-6">
       <motion.div
@@ -162,25 +184,40 @@ function IntroSection() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
       >
-        <div className="gold-line mx-auto mb-6" />
-        <h2 className="text-title font-display text-[var(--navy)]">
-          A Place to Belong
+        <span className="text-label text-[var(--gold)] block mb-2">Welcome</span>
+        <h2 className="text-title font-display text-[var(--navy)] mb-8">
+          Message from Principal
         </h2>
-        <p className="text-body text-[var(--muted)] mt-6">
-          At Aarambha, every child is seen, heard, and valued. Our nurturing
-          community fosters confidence, creativity, and a deep love for
-          learning — empowering students to discover who they are and who they
-          aspire to become.
-        </p>
+        <div className="relative">
+          <span className="text-[80px] leading-none font-display text-[var(--gold)] absolute -top-8 -left-4">
+            &ldquo;
+          </span>
+          <p className="text-body text-[var(--muted)] italic px-8">
+            At Aarambha Sanskar Vidyalaya, we blend traditional values with
+            modern learning to nurture curious, creative, and compassionate
+            leaders. Our STEAM-rich curriculum and cultural roots prepare students
+            to excel academically and thrive as global citizens. With our
+            dedicated educators and innovative programs, we provide a supportive
+            environment where every child&apos;s potential blossoms.
+          </p>
+        </div>
+        <div className="mt-8">
+          <p className="font-display text-[var(--navy)] font-semibold">
+            Naresh Prasad Shrestha
+          </p>
+          <p className="text-small text-[var(--muted)]">
+            Chairman and Principal, Aarambha School
+          </p>
+        </div>
       </motion.div>
     </section>
   );
 }
 
 /* ──────────────────────────────────────────────
-   Section 3 — Two-Column Image + Text
+   Section 3 — About
    ────────────────────────────────────────────── */
-function TwoColumnSection() {
+function AboutSection() {
   return (
     <section className="bg-white">
       <div className="grid grid-cols-1 lg:grid-cols-2">
@@ -198,18 +235,38 @@ function TwoColumnSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <span className="text-label text-[var(--gold)]">Our Approach</span>
+          <span className="text-label text-[var(--gold)]">About Us</span>
           <h2 className="text-title font-display text-[var(--navy)] mt-4 mb-6">
-            A Nurturing Space for Young Learners
+            A Progressive K-12 Institution
           </h2>
-          <p className="text-body text-[var(--muted)] mb-8">
-            We believe the best learning happens when children feel safe,
-            inspired, and connected. Our inquiry-based curriculum encourages
-            exploration, critical thinking, and collaboration — skills that last
-            a lifetime.
+          <p className="text-body text-[var(--muted)] mb-4">
+            Welcome to Aarambha School, a progressive K-12 educational
+            institution strategically located in the heart of Kathmandu at Pipal
+            Bot, Galko Pakha Marga, Ward Number 26.
           </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+            <div>
+              <h3 className="font-display text-[var(--navy)] font-semibold mb-2">
+                Vision
+              </h3>
+              <p className="text-small text-[var(--muted)]">
+                To create a transformative educational experience that blends
+                Eastern values and philosophy with 21st-century digital
+                innovation.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-display text-[var(--navy)] font-semibold mb-2">
+                Mission
+              </h3>
+              <p className="text-small text-[var(--muted)]">
+                To cultivate a learning environment that combines advanced digital
+                technology with the timeless wisdom of Eastern philosophy.
+              </p>
+            </div>
+          </div>
           <Link
-            href="/programs"
+            href="/about"
             className="text-[var(--navy)] font-semibold hover:underline"
           >
             Learn More &rarr;
@@ -241,64 +298,22 @@ function StatsBar() {
 }
 
 /* ──────────────────────────────────────────────
-   Section 5 — Programs "Our Programs"
+   Section 5 — Why Different
    ────────────────────────────────────────────── */
-function ProgramsSection() {
-  return (
-    <section className="bg-[var(--cream)] py-20 px-6">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-12">
-          <div className="gold-line mx-auto mb-6" />
-          <h2 className="text-title font-display text-[var(--navy)]">
-            Our Programs
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {programs.map((program, index) => (
-            <motion.div
-              key={program.name}
-              className="card"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-            >
-              <div className="relative h-48">
-                <Image
-                  src={program.image}
-                  alt={program.name}
-                  fill
-                  style={{ objectFit: "cover" }}
-                />
-              </div>
-              <div className="p-5">
-                <span className="text-label text-[var(--muted)]">Program</span>
-                <h3 className="text-subtitle font-display text-[var(--navy)] mt-1 mb-2">
-                  {program.name}
-                </h3>
-                <p className="text-small text-[var(--muted)]">{program.desc}</p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ──────────────────────────────────────────────
-   Section 6 — Why Aarambha
-   ────────────────────────────────────────────── */
-function WhyAarambhaSection() {
+function WhyDifferentSection() {
   return (
     <section className="bg-white py-20 px-6">
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-12">
           <div className="gold-line mx-auto mb-6" />
           <h2 className="text-title font-display text-[var(--navy)]">
-            Why Aarambha
+            Why Are We Different
           </h2>
+          <p className="text-body text-[var(--muted)] mt-4 max-w-2xl mx-auto">
+            Following features make Aarambha School a standout choice for parents
+            seeking a transformative and future-focused education for their
+            children.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -322,7 +337,105 @@ function WhyAarambhaSection() {
 }
 
 /* ──────────────────────────────────────────────
-   Section 7 — Testimonial
+   Section 6 — School Life
+   ────────────────────────────────────────────── */
+function SchoolLifeSection() {
+  return (
+    <section className="bg-[var(--cream)] py-20 px-6">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-12">
+          <span className="text-label text-[var(--gold)] block mb-2">
+            School Life
+          </span>
+          <h2 className="text-title font-display text-[var(--navy)]">
+            Fun Beyond The Classroom
+          </h2>
+          <p className="text-body text-[var(--muted)] mt-4 max-w-2xl mx-auto">
+            At Aarambha School, we believe learning shouldn&apos;t stop at textbooks.
+            That&apos;s why we offer a variety of exciting activities to help your
+            child grow and develop outside the classroom!
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {schoolLifeItems.map((item, index) => (
+            <motion.div
+              key={item.title}
+              className="bg-white rounded-xl p-6 text-center"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.05 }}
+            >
+              <item.icon className="w-10 h-10 mx-auto mb-3 text-[var(--navy)]" />
+              <h3 className="font-display text-[var(--navy)] text-sm font-semibold">
+                {item.title}
+              </h3>
+            </motion.div>
+          ))}
+        </div>
+
+        <div className="text-center mt-10">
+          <Link href="/programs" className="btn-cta">
+            View Details &rarr;
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ──────────────────────────────────────────────
+   Section 7 — Meet Our Team
+   ────────────────────────────────────────────── */
+function TeamSection() {
+  return (
+    <section className="bg-white py-20 px-6">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-12">
+          <span className="text-label text-[var(--gold)] block mb-2">
+            Our Team
+          </span>
+          <h2 className="text-title font-display text-[var(--navy)]">
+            Meet Our Team
+          </h2>
+          <p className="text-body text-[var(--muted)] mt-4 max-w-2xl mx-auto">
+            Dedicated professionals committed to inspiring, guiding, and
+            empowering every learner.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {teamMembers.map((member, index) => (
+            <motion.div
+              key={member.name}
+              className="card p-6 text-center"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+            >
+              <div className="w-20 h-20 rounded-full bg-[var(--cream)] mx-auto mb-4 flex items-center justify-center">
+                <span className="font-display text-2xl text-[var(--navy)]">
+                  {member.name.charAt(0)}
+                </span>
+              </div>
+              <h3 className="font-display text-[var(--navy)] font-semibold">
+                {member.name}
+              </h3>
+              <p className="text-small text-[var(--muted)] mt-1">
+                {member.role}
+              </p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ──────────────────────────────────────────────
+   Section 8 — Testimonials
    ────────────────────────────────────────────── */
 function TestimonialSection() {
   const [activeTestimonial, setActiveTestimonial] = useState(0);
@@ -330,9 +443,15 @@ function TestimonialSection() {
   return (
     <section className="bg-[var(--navy)] py-20 px-6">
       <div className="max-w-3xl mx-auto text-center">
-        <div className="text-[80px] leading-none font-display text-[var(--gold)]">
-          &ldquo;
-        </div>
+        <span className="text-label text-[var(--gold)] block mb-2">
+          Testimonial
+        </span>
+        <h2 className="text-title font-display text-white mb-2">
+          Hear From Our Community
+        </h2>
+        <p className="text-small text-white/60 mb-10">
+          Stories of Growth, Impact, and Connection
+        </p>
 
         <AnimatePresence mode="wait">
           <motion.div
@@ -343,7 +462,7 @@ function TestimonialSection() {
             transition={{ duration: 0.4 }}
           >
             <p className="text-subtitle font-display italic text-white">
-              {testimonials[activeTestimonial].quote}
+              &ldquo;{testimonials[activeTestimonial].quote}&rdquo;
             </p>
             <p className="text-small text-[var(--gold)] font-semibold mt-6">
               {testimonials[activeTestimonial].name} &mdash;{" "}
@@ -358,7 +477,7 @@ function TestimonialSection() {
               key={index}
               onClick={() => setActiveTestimonial(index)}
               aria-label={`View testimonial ${index + 1}`}
-              className={`w-3 h-3 rounded-full transition-colors ${
+              className={`w-3 h-3 rounded-full transition-colors cursor-pointer ${
                 index === activeTestimonial
                   ? "bg-[var(--gold)]"
                   : "bg-white/30"
@@ -372,11 +491,42 @@ function TestimonialSection() {
 }
 
 /* ──────────────────────────────────────────────
-   Section 8 — CTA
+   Section 9 — Partners
+   ────────────────────────────────────────────── */
+function PartnersSection() {
+  return (
+    <section className="bg-[var(--cream)] py-20 px-6">
+      <div className="max-w-5xl mx-auto">
+        <div className="text-center mb-12">
+          <span className="text-label text-[var(--gold)] block mb-2">
+            School Life
+          </span>
+          <h2 className="text-title font-display text-[var(--navy)]">
+            Meet Our Partners
+          </h2>
+        </div>
+
+        <div className="flex flex-wrap justify-center gap-6">
+          {partners.map((partner) => (
+            <div
+              key={partner}
+              className="bg-white rounded-lg px-6 py-4 text-sm font-semibold text-[var(--navy)] shadow-sm"
+            >
+              {partner}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ──────────────────────────────────────────────
+   Section 10 — CTA
    ────────────────────────────────────────────── */
 function CTASection() {
   return (
-    <section className="bg-[var(--cream)] py-20 px-6">
+    <section className="bg-white py-20 px-6">
       <div className="max-w-3xl mx-auto text-center">
         <h2 className="text-title font-display text-[var(--navy)]">
           Ready to Begin Your Child&apos;s Journey?
@@ -385,8 +535,8 @@ function CTASection() {
           Admissions for the upcoming academic year are now open. Take the first
           step toward a transformative education for your child.
         </p>
-        <Link href="/contact" className="btn-cta">
-          Inquire Now
+        <Link href="/admissions" className="btn-cta">
+          Admission Form
         </Link>
       </div>
     </section>

@@ -7,24 +7,17 @@ import {
 } from "@heroicons/react/24/outline";
 
 const schoolLinks = [
-  { href: "/about", label: "About" },
-  { href: "/programs", label: "Programs" },
-  { href: "/facilities", label: "Facilities" },
+  { href: "/about", label: "About Us" },
+  { href: "/programs", label: "Academic Excellence" },
+  { href: "/facilities", label: "Facilities & Environment" },
   { href: "/gallery", label: "Gallery" },
 ];
 
-const admissionsLinks = [
-  { href: "/admissions", label: "Apply Now" },
-  { href: "/admissions#process", label: "Process" },
-  { href: "/admissions#fees", label: "Fees" },
-  { href: "/admissions#faq", label: "FAQ" },
-];
-
-const connectLinks = [
+const communityLinks = [
+  { href: "/admissions", label: "Community" },
+  { href: "/admissions", label: "Admission Process" },
+  { href: "/about#team", label: "Team Aarambha" },
   { href: "/contact", label: "Contact" },
-  { href: "#", label: "Careers" },
-  { href: "#", label: "News" },
-  { href: "#", label: "Events" },
 ];
 
 function LinkColumn({
@@ -67,26 +60,27 @@ function SocialIcon({ name }: { name: string }) {
         <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
       </svg>
     ),
-    youtube: (
+    tiktok: (
       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z" />
-      </svg>
-    ),
-    linkedin: (
-      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+        <path d="M16.6 5.82C15.9166 5.03953 15.5399 4.0374 15.54 3H12.45V15.4C12.4267 16.0712 12.1435 16.7071 11.6603 17.1735C11.1771 17.6399 10.5316 17.9004 9.86 17.9C8.44 17.9 7.26 16.74 7.26 15.3C7.26 13.58 8.92 12.29 10.63 12.82V9.66C7.18 9.2 4.16 11.88 4.16 15.3C4.16 18.63 6.92 21 9.85 21C12.99 21 15.54 18.45 15.54 15.3V9.01C16.793 9.90985 18.2974 10.3926 19.84 10.39V7.3C19.84 7.3 17.96 7.39 16.6 5.82Z" />
       </svg>
     ),
   };
   return icons[name] || null;
 }
 
+const socials = [
+  { name: "facebook", href: "https://www.facebook.com/profile.php?id=61572480778405" },
+  { name: "instagram", href: "https://www.instagram.com/aarambha_school" },
+  { name: "tiktok", href: "https://www.tiktok.com/@aarambha.school" },
+];
+
 export default function Footer() {
   return (
     <footer className="bg-[var(--navy-deep)] text-white">
       <div className="max-w-7xl mx-auto px-8 pt-20 pb-12">
         {/* Main Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           {/* Brand Column */}
           <div>
             <Link href="/" className="inline-block mb-4">
@@ -99,17 +93,19 @@ export default function Footer() {
               />
             </Link>
             <p className="text-white/70 text-sm leading-relaxed mb-6">
-              Nurturing tomorrow&apos;s leaders since 2008.
+              Where Eastern Values Meet 21st-Century Innovation to Shape Future-Ready Leaders.
             </p>
             <div className="flex gap-3">
-              {["instagram", "facebook", "youtube", "linkedin"].map((social) => (
+              {socials.map((social) => (
                 <a
-                  key={social}
-                  href="#"
-                  aria-label={social}
+                  key={social.name}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.name}
                   className="w-9 h-9 rounded-full border border-white/20 flex items-center justify-center text-white/70 hover:text-white hover:border-white transition-colors"
                 >
-                  <SocialIcon name={social} />
+                  <SocialIcon name={social.name} />
                 </a>
               ))}
             </div>
@@ -118,11 +114,8 @@ export default function Footer() {
           {/* School Links */}
           <LinkColumn title="School" links={schoolLinks} />
 
-          {/* Admissions Links */}
-          <LinkColumn title="Admissions" links={admissionsLinks} />
-
-          {/* Connect Links */}
-          <LinkColumn title="Connect" links={connectLinks} />
+          {/* Community Links */}
+          <LinkColumn title="Community" links={communityLinks} />
 
           {/* Contact Column */}
           <div>
@@ -130,15 +123,15 @@ export default function Footer() {
             <ul className="space-y-4">
               <li className="flex items-start gap-3 text-white/70 text-sm">
                 <MapPinIcon className="w-5 h-5 shrink-0 mt-0.5" />
-                <span>Pipal Bot, Galko Pakha Marga, Kathmandu</span>
+                <span>Thamel, Galko Pakha Marga, Kathmandu</span>
               </li>
               <li className="flex items-center gap-3 text-white/70 text-sm">
                 <PhoneIcon className="w-5 h-5 shrink-0" />
                 <a
-                  href="tel:+9779823837865"
+                  href="tel:+977014547650"
                   className="hover:text-white transition-colors"
                 >
-                  +977 9823837865
+                  014547650
                 </a>
               </li>
               <li className="flex items-center gap-3 text-white/70 text-sm">
@@ -156,7 +149,7 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-white/70">
-          <p>&copy; 2026 Aarambha Sanskar Vidyalaya. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Aarambha Sanskar Vidyalaya. All rights reserved.</p>
           <div className="flex gap-6">
             <Link href="#" className="hover:text-white transition-colors">
               Privacy Policy

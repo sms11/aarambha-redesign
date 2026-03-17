@@ -7,9 +7,9 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
   { href: "/about", label: "About" },
-  { href: "/programs", label: "Programs" },
-  { href: "/admissions", label: "Admissions" },
-  { href: "/facilities", label: "Facilities" },
+  { href: "/programs", label: "Academic Excellence" },
+  { href: "/admissions", label: "Community" },
+  { href: "/facilities", label: "Facilities & Environment" },
   { href: "/gallery", label: "Gallery" },
   { href: "/contact", label: "Contact" },
 ];
@@ -86,7 +86,7 @@ export default function Header() {
                 : "bg-[var(--gold)] text-[var(--navy)] hover:shadow-lg"
             }`}
           >
-            Apply Now
+            Admission Form
           </Link>
         </div>
 
@@ -181,7 +181,7 @@ export default function Header() {
                     onClick={() => setMobileMenuOpen(false)}
                     className="btn-primary w-full text-center"
                   >
-                    Apply Now
+                    Admission Form
                   </Link>
                 </motion.div>
               </nav>
