@@ -823,7 +823,7 @@ export default function HelpPage() {
       {/*  Hero Header                                                  */}
       {/* ============================================================ */}
       <div
-        className="relative mb-12 overflow-hidden rounded-2xl px-6 pb-10 pt-8 shadow-lg sm:px-10 sm:pt-10"
+        className="relative mb-12 rounded-2xl px-6 pb-10 pt-8 shadow-lg sm:px-10 sm:pt-10"
         style={{
           background: 'linear-gradient(135deg, #1B2A4A 0%, #223255 60%, #2a3f6b 100%)',
         }}
