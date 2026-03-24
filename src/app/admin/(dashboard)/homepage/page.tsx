@@ -288,6 +288,7 @@ function StatsSection() {
 
       {isFormOpen && (
         <FormPanel
+          key={editingItem?.id ?? 'new'}
           title={editingItem ? 'Edit Stat' : 'Add New Stat'}
           onSubmit={handleSubmit}
           onCancel={handleCancel}
@@ -472,6 +473,7 @@ function FeaturesSection() {
 
       {isFormOpen && (
         <FormPanel
+          key={editingItem?.id ?? 'new-feature'}
           title={editingItem ? 'Edit Feature' : 'Add New Feature'}
           onSubmit={handleSubmit}
           onCancel={handleCancel}
@@ -693,6 +695,7 @@ function SchoolLifeSection() {
 
       {isFormOpen && (
         <FormPanel
+          key={editingItem?.id ?? 'new-school-life'}
           title={editingItem ? 'Edit School Life Item' : 'Add School Life Item'}
           onSubmit={handleSubmit}
           onCancel={handleCancel}
