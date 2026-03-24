@@ -972,9 +972,9 @@ function CTASection() {
           <Link href="/contact" className="btn-cta">
             Get in Touch
           </Link>
-          <Link href="/admissions" className="btn-secondary">
-            Admission Process
-          </Link>
+          <a href="#enquiry-form" className="btn-secondary">
+            Admission Form
+          </a>
         </div>
       </motion.div>
     </section>
