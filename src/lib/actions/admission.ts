@@ -9,15 +9,15 @@ import { verifyRecaptcha } from '@/lib/recaptcha';
 import { headers } from 'next/headers';
 
 const enquirySchema = z.object({
-  studentName: z.string().min(1, 'Student name is required'),
-  age: z.string().min(1, 'Age is required'),
-  gender: z.string().min(1, 'Gender is required'),
-  gradeApplied: z.string().min(1, 'Grade is required'),
-  address: z.string().min(1, 'Address is required'),
-  previousSchool: z.string().optional().default(''),
-  guardianName: z.string().min(1, "Guardian's name is required"),
-  relation: z.string().min(1, 'Relation is required'),
-  contactNumber: z.string().min(1, 'Contact number is required'),
+  studentName: z.string().min(1, 'Student name is required').max(100),
+  age: z.string().min(1, 'Age is required').max(20).regex(/^\d+/, 'Age must start with a number'),
+  gender: z.enum(['Male', 'Female', 'Other']),
+  gradeApplied: z.enum(['Nursery', 'LKG', 'UKG', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10']),
+  address: z.string().min(1, 'Address is required').max(500),
+  previousSchool: z.string().max(200).optional().default(''),
+  guardianName: z.string().min(1, "Guardian's name is required").max(100),
+  relation: z.string().min(1, 'Relation is required').max(50),
+  contactNumber: z.string().min(1, 'Contact number is required').max(20).regex(/^[+\d\s\-()]+$/, 'Invalid phone number format'),
 });
 
 export async function submitEnquiry(formData: FormData) {

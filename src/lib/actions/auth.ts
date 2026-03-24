@@ -7,8 +7,8 @@ import { redirect } from 'next/navigation';
 import { z } from 'zod';
 
 const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1),
+  email: z.string().email().max(100),
+  password: z.string().min(1).max(100),
 });
 
 export async function login(

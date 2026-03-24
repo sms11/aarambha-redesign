@@ -10,10 +10,10 @@ import { verifyRecaptcha } from '@/lib/recaptcha';
 import { headers } from 'next/headers';
 
 const contactSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  phone: z.string().min(1, 'Phone is required'),
-  purpose: z.string().min(1, 'Purpose is required'),
-  message: z.string().min(1, 'Message is required'),
+  name: z.string().min(1, 'Name is required').max(100),
+  phone: z.string().min(1, 'Phone is required').max(20).regex(/^[+\d\s\-()]+$/, 'Invalid phone number format'),
+  purpose: z.string().min(1, 'Purpose is required').max(100),
+  message: z.string().min(1, 'Message is required').max(2000),
 });
 
 export async function submitContactForm(formData: FormData) {
