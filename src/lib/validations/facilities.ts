@@ -16,9 +16,7 @@ export const facilitySchema = z.object({
   subtitle: z.string().optional().default(''),
   description: z.string().min(1, 'Description is required'),
   image: z.string().url('A valid image URL is required').or(z.literal('')).default(''),
-  category: z.enum(['resource', 'lab', 'digital', 'health', 'convenience'], {
-    errorMap: () => ({ message: 'Please select a valid category' }),
-  }),
+  category: z.enum(['resource', 'lab', 'digital', 'health', 'convenience']),
   icon: z.string().optional().default(''),
   color: z.string().optional().default(''),
 });
