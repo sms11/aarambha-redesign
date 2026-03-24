@@ -195,7 +195,7 @@ export default function PartnersPage() {
                   <span className="text-4xl text-gray-300">🏢</span>
                 )}
               </div>
-              <SmartImageUpload value={logoUrl} onChange={setLogoUrl} hidePreview />
+              <ImageUpload value={logoUrl} onChange={setLogoUrl} hidePreview />
               {errors.logo && (
                 <p className="text-sm text-red-600">{errors.logo[0]}</p>
               )}
