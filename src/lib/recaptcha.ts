@@ -1,8 +1,8 @@
 export async function verifyRecaptcha(token: string): Promise<boolean> {
   const secretKey = process.env.RECAPTCHA_SECRET_KEY;
   if (!secretKey) {
-    console.warn('RECAPTCHA_SECRET_KEY is not set, skipping verification');
-    return true;
+    console.error('RECAPTCHA_SECRET_KEY is not set — blocking submission');
+    return false;
   }
 
   try {
