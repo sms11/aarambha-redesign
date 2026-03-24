@@ -128,16 +128,16 @@ function XIcon() {
 
 // Tailwind color presets for text and bg class selection
 const COLOR_PRESETS = [
-  { name: 'Blue', text: 'text-blue-600', bg: 'bg-blue-50', hex: '#2563eb', hexLight: '#eff6ff' },
-  { name: 'Purple', text: 'text-purple-600', bg: 'bg-purple-50', hex: '#9333ea', hexLight: '#faf5ff' },
-  { name: 'Teal', text: 'text-teal-600', bg: 'bg-teal-50', hex: '#0d9488', hexLight: '#f0fdfa' },
-  { name: 'Orange', text: 'text-orange-600', bg: 'bg-orange-50', hex: '#ea580c', hexLight: '#fff7ed' },
-  { name: 'Pink', text: 'text-pink-600', bg: 'bg-pink-50', hex: '#db2777', hexLight: '#fdf2f8' },
-  { name: 'Amber', text: 'text-amber-600', bg: 'bg-amber-50', hex: '#d97706', hexLight: '#fffbeb' },
-  { name: 'Emerald', text: 'text-emerald-600', bg: 'bg-emerald-50', hex: '#059669', hexLight: '#ecfdf5' },
-  { name: 'Red', text: 'text-red-600', bg: 'bg-red-50', hex: '#dc2626', hexLight: '#fef2f2' },
-  { name: 'Indigo', text: 'text-indigo-600', bg: 'bg-indigo-50', hex: '#4f46e5', hexLight: '#eef2ff' },
-  { name: 'Cyan', text: 'text-cyan-600', bg: 'bg-cyan-50', hex: '#0891b2', hexLight: '#ecfeff' },
+  { name: 'Blue', text: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-200', hex: '#2563eb', hexLight: '#eff6ff', hexBorder: '#bfdbfe' },
+  { name: 'Purple', text: 'text-purple-600', bg: 'bg-purple-50', border: 'border-purple-200', hex: '#9333ea', hexLight: '#faf5ff', hexBorder: '#e9d5ff' },
+  { name: 'Teal', text: 'text-teal-600', bg: 'bg-teal-50', border: 'border-teal-200', hex: '#0d9488', hexLight: '#f0fdfa', hexBorder: '#99f6e4' },
+  { name: 'Orange', text: 'text-orange-600', bg: 'bg-orange-50', border: 'border-orange-200', hex: '#ea580c', hexLight: '#fff7ed', hexBorder: '#fed7aa' },
+  { name: 'Pink', text: 'text-pink-600', bg: 'bg-pink-50', border: 'border-pink-200', hex: '#db2777', hexLight: '#fdf2f8', hexBorder: '#fbcfe8' },
+  { name: 'Amber', text: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-200', hex: '#d97706', hexLight: '#fffbeb', hexBorder: '#fde68a' },
+  { name: 'Emerald', text: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-200', hex: '#059669', hexLight: '#ecfdf5', hexBorder: '#a7f3d0' },
+  { name: 'Red', text: 'text-red-600', bg: 'bg-red-50', border: 'border-red-200', hex: '#dc2626', hexLight: '#fef2f2', hexBorder: '#fecaca' },
+  { name: 'Indigo', text: 'text-indigo-600', bg: 'bg-indigo-50', border: 'border-indigo-200', hex: '#4f46e5', hexLight: '#eef2ff', hexBorder: '#c7d2fe' },
+  { name: 'Cyan', text: 'text-cyan-600', bg: 'bg-cyan-50', border: 'border-cyan-200', hex: '#0891b2', hexLight: '#ecfeff', hexBorder: '#a5f3fc' },
 ];
 
 function TailwindColorPicker({
@@ -150,7 +150,7 @@ function TailwindColorPicker({
   label: string;
   value: string;
   onChange: (v: string) => void;
-  type: 'text' | 'bg';
+  type: 'text' | 'bg' | 'border';
   error?: string;
 }) {
   return (
@@ -158,8 +158,10 @@ function TailwindColorPicker({
       <label className="mb-1.5 block text-sm font-medium text-[#1B2A4A]">{label}</label>
       <div className="flex flex-wrap gap-2">
         {COLOR_PRESETS.map((c) => {
-          const val = type === 'text' ? c.text : c.bg;
+          const val = type === 'text' ? c.text : type === 'bg' ? c.bg : c.border;
           const isSelected = value === val;
+          const swatchColor = type === 'text' ? c.hex : type === 'bg' ? c.hexLight : c.hexBorder;
+          const checkColor = type === 'bg' || type === 'border' ? c.hex : '#fff';
           return (
             <button
               key={c.name}
@@ -171,12 +173,10 @@ function TailwindColorPicker({
                   ? 'border-[#8B5CF6] ring-2 ring-[#8B5CF6]/20 scale-110'
                   : 'border-gray-200 hover:border-gray-300 hover:scale-105'
               }`}
-              style={{
-                backgroundColor: type === 'bg' ? c.hexLight : c.hex,
-              }}
+              style={{ backgroundColor: swatchColor }}
             >
               {isSelected && (
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke={type === 'bg' ? c.hex : '#fff'} strokeWidth={3}>
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke={checkColor} strokeWidth={3}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                 </svg>
               )}
@@ -1019,9 +1019,16 @@ function KeyBenefitsSection() {
     loadData();
   }, []);
 
+  const [colorValue, setColorValue] = useState('');
+  const [bgValue, setBgValue] = useState('');
+  const [borderValue, setBorderValue] = useState('');
+
   function handleEdit(benefit: KeyBenefit) {
     setEditingItem(benefit);
     setEmojiValue(benefit.emoji || '');
+    setColorValue(benefit.color || '');
+    setBgValue(benefit.bg || '');
+    setBorderValue(benefit.border || '');
     setErrors({});
     setIsFormOpen(true);
   }
@@ -1029,6 +1036,9 @@ function KeyBenefitsSection() {
   function handleCreate() {
     setEditingItem(null);
     setEmojiValue('');
+    setColorValue('');
+    setBgValue('');
+    setBorderValue('');
     setErrors({});
     setIsFormOpen(true);
   }
@@ -1037,6 +1047,9 @@ function KeyBenefitsSection() {
     setIsFormOpen(false);
     setEditingItem(null);
     setEmojiValue('');
+    setColorValue('');
+    setBgValue('');
+    setBorderValue('');
     setErrors({});
   }
 
@@ -1047,6 +1060,9 @@ function KeyBenefitsSection() {
 
     const formData = new FormData(e.currentTarget);
     formData.set('emoji', emojiValue);
+    formData.set('color', colorValue);
+    formData.set('bg', bgValue);
+    formData.set('border', borderValue);
 
     const result = editingItem
       ? await updateKeyBenefit(editingItem.id, formData)
@@ -1141,29 +1157,26 @@ function KeyBenefitsSection() {
             />
 
             <div className="grid gap-4 sm:grid-cols-3">
-              <FormField
-                label="Color"
-                name="color"
-                required
-                value={editingItem?.color}
+              <TailwindColorPicker
+                label="Text Color"
+                value={colorValue}
+                onChange={setColorValue}
+                type="text"
                 error={errors.color?.[0]}
-                placeholder="e.g. text-purple-600"
               />
-              <FormField
+              <TailwindColorPicker
                 label="Background"
-                name="bg"
-                required
-                value={editingItem?.bg}
+                value={bgValue}
+                onChange={setBgValue}
+                type="bg"
                 error={errors.bg?.[0]}
-                placeholder="e.g. bg-purple-50"
               />
-              <FormField
+              <TailwindColorPicker
                 label="Border"
-                name="border"
-                required
-                value={editingItem?.border}
+                value={borderValue}
+                onChange={setBorderValue}
+                type="border"
                 error={errors.border?.[0]}
-                placeholder="e.g. border-purple-200"
               />
             </div>
           </div>
