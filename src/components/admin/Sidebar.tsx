@@ -113,7 +113,7 @@ export default function Sidebar({ unreadCount, enquiryUnreadCount }: SidebarProp
       </div>
 
       {/* Navigation sections */}
-      <nav className="overflow-y-auto px-3 py-2">
+      <nav className="flex-1 overflow-y-auto px-3 py-2">
         {navSections.map((section) => (
           <div key={section.label} className="mb-4">
             {!collapsed && (
@@ -148,58 +148,53 @@ export default function Sidebar({ unreadCount, enquiryUnreadCount }: SidebarProp
             </ul>
           </div>
         ))}
-      </nav>
-
-      {/* Bottom section */}
-      <div className="mt-auto border-t border-white/10 px-3 py-3 space-y-0.5">
-        <a
-          href="/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-gray-400 transition-all duration-200 hover:bg-white/[0.08] hover:text-white ${
-            collapsed ? 'justify-center' : ''
-          }`}
-        >
-          <ExternalLinkIcon className="h-[18px] w-[18px] shrink-0" />
-          {!collapsed && <span>View Site</span>}
-          {collapsed && (
-            <span className="pointer-events-none absolute left-full ml-3 whitespace-nowrap rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
-              View Site
-            </span>
-          )}
-        </a>
-        <form action={logout}>
-          <button
-            type="submit"
-            className={`group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-gray-400 transition-all duration-200 hover:bg-red-500/10 hover:text-red-400 ${
+        {/* View Site / Logout / Collapse — inside nav so they scroll together */}
+        <div className="mt-4 border-t border-white/10 pt-3 space-y-0.5">
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-gray-400 transition-all duration-200 hover:bg-white/[0.08] hover:text-white ${
               collapsed ? 'justify-center' : ''
             }`}
           >
-            <LogoutIcon className="h-[18px] w-[18px] shrink-0" />
-            {!collapsed && <span>Logout</span>}
+            <ExternalLinkIcon className="h-[18px] w-[18px] shrink-0" />
+            {!collapsed && <span>View Site</span>}
             {collapsed && (
               <span className="pointer-events-none absolute left-full ml-3 whitespace-nowrap rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
-                Logout
+                View Site
               </span>
             )}
+          </a>
+          <form action={logout}>
+            <button
+              type="submit"
+              className={`group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-gray-400 transition-all duration-200 hover:bg-red-500/10 hover:text-red-400 ${
+                collapsed ? 'justify-center' : ''
+              }`}
+            >
+              <LogoutIcon className="h-[18px] w-[18px] shrink-0" />
+              {!collapsed && <span>Logout</span>}
+              {collapsed && (
+                <span className="pointer-events-none absolute left-full ml-3 whitespace-nowrap rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
+                  Logout
+                </span>
+              )}
+            </button>
+          </form>
+          <button
+            type="button"
+            onClick={() => setCollapsed((prev) => !prev)}
+            className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-gray-400 transition-all duration-200 hover:bg-white/[0.08] hover:text-white ${
+              collapsed ? 'justify-center' : ''
+            }`}
+            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          >
+            <CollapseIcon className="h-[18px] w-[18px] shrink-0" collapsed={collapsed} />
+            {!collapsed && <span>Collapse</span>}
           </button>
-        </form>
-      </div>
-
-      {/* Collapse toggle */}
-      <div className="border-t border-white/10 px-3 py-3">
-        <button
-          type="button"
-          onClick={() => setCollapsed((prev) => !prev)}
-          className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-gray-400 transition-all duration-200 hover:bg-white/[0.08] hover:text-white ${
-            collapsed ? 'justify-center' : ''
-          }`}
-          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-        >
-          <CollapseIcon className="h-[18px] w-[18px] shrink-0" collapsed={collapsed} />
-          {!collapsed && <span>Collapse</span>}
-        </button>
-      </div>
+        </div>
+      </nav>
     </aside>
   );
 }
