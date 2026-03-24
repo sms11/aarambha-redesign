@@ -14,6 +14,19 @@ export async function ensureBucket() {
   const exists = await minioClient.bucketExists(BUCKET_NAME);
   if (!exists) {
     await minioClient.makeBucket(BUCKET_NAME);
+    // Set public read policy so uploaded images are accessible via URL
+    const policy = JSON.stringify({
+      Version: '2012-10-17',
+      Statement: [
+        {
+          Effect: 'Allow',
+          Principal: { AWS: ['*'] },
+          Action: ['s3:GetObject'],
+          Resource: [`arn:aws:s3:::${BUCKET_NAME}/*`],
+        },
+      ],
+    });
+    await minioClient.setBucketPolicy(BUCKET_NAME, policy);
   }
 }
 
