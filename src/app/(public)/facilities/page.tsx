@@ -13,7 +13,7 @@ export default async function FacilitiesPage() {
   ]);
 
   const settings = Object.fromEntries(
-    settingsRows.map((s) => [s.key, s.value])
+    settingsRows.map((s: { key: string; value: string }) => [s.key, s.value])
   );
 
   let counselingPoints: string[];
@@ -29,15 +29,17 @@ export default async function FacilitiesPage() {
   }
 
   /** Group facilities by category */
-  const resources = facilities.filter((f) => f.category === "resource");
-  const labs = facilities.filter((f) => f.category === "lab");
-  const digitalItems = facilities.filter((f) => f.category === "digital");
-  const healthItems = facilities.filter((f) => f.category === "health");
-  const conveniences = facilities.filter((f) => f.category === "convenience");
+  type FacilityRow = typeof facilities[number];
+  const resources = facilities.filter((f: FacilityRow) => f.category === "resource");
+  const labs = facilities.filter((f: FacilityRow) => f.category === "lab");
+  const digitalItems = facilities.filter((f: FacilityRow) => f.category === "digital");
+  const healthItems = facilities.filter((f: FacilityRow) => f.category === "health");
+  const conveniences = facilities.filter((f: FacilityRow) => f.category === "convenience");
 
   /** Serialize Prisma DateTime fields to plain objects for client component */
-  const serialize = <T extends Record<string, unknown>>(items: T[]) =>
-    JSON.parse(JSON.stringify(items)) as T[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const serialize = <T,>(items: T[]): T[] =>
+    JSON.parse(JSON.stringify(items));
 
   return (
     <FacilitiesPageClient

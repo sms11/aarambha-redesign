@@ -10,18 +10,19 @@ export default async function AdmissionsPage() {
 
   /** Group community involvement items by section */
   const involvementItems = communityItems.filter(
-    (item) => item.section === "involvement"
+    (item: typeof communityItems[number]) => item.section === "involvement"
   );
   const businessPartnerships = communityItems.filter(
-    (item) => item.section === "business"
+    (item: typeof communityItems[number]) => item.section === "business"
   );
   const educationalPartnerships = communityItems.filter(
-    (item) => item.section === "educational"
+    (item: typeof communityItems[number]) => item.section === "educational"
   );
 
   /** Serialize Prisma DateTime fields to plain objects for client component */
-  const serialize = <T extends Record<string, unknown>>(items: T[]) =>
-    JSON.parse(JSON.stringify(items)) as T[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const serialize = <T,>(items: T[]): T[] =>
+    JSON.parse(JSON.stringify(items));
 
   return (
     <AdmissionsPageClient

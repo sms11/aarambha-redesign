@@ -20,7 +20,7 @@ export default async function ContactPage() {
   ]);
 
   const settings = Object.fromEntries(
-    settingsRows.map((s) => [s.key, s.value])
+    settingsRows.map((s: { key: string; value: string }) => [s.key, s.value])
   );
 
   const mapEmbedUrl =

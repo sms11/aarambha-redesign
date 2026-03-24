@@ -9,8 +9,9 @@ export default async function ProgramsPage() {
   ]);
 
   /** Serialize Prisma DateTime fields to plain objects for client component */
-  const serialize = <T extends Record<string, unknown>>(items: T[]) =>
-    JSON.parse(JSON.stringify(items)) as T[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const serialize = <T,>(items: T[]): T[] =>
+    JSON.parse(JSON.stringify(items));
 
   return (
     <ProgramsPageClient

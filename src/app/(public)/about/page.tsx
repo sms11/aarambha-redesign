@@ -15,7 +15,7 @@ export default async function AboutPage() {
     ]);
 
   const settings = Object.fromEntries(
-    settingsRows.map((s) => [s.key, s.value])
+    settingsRows.map((s: { key: string; value: string }) => [s.key, s.value])
   );
 
   const mission =
@@ -39,8 +39,9 @@ export default async function AboutPage() {
   }
 
   /** Serialize Prisma DateTime fields to plain objects for client component */
-  const serialize = <T extends Record<string, unknown>>(items: T[]) =>
-    JSON.parse(JSON.stringify(items)) as T[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const serialize = <T,>(items: T[]): T[] =>
+    JSON.parse(JSON.stringify(items));
 
   return (
     <AboutPageClient
