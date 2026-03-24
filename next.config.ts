@@ -12,12 +12,9 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'aarambha.school',
       },
-      {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '9000',
-      },
     ],
+    // MinIO runs on localhost (private IP) which Next.js image optimizer blocks.
+    // MinIO images use unoptimized mode in the components instead.
   },
 };
 
