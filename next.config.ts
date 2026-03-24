@@ -8,6 +8,15 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'images.unsplash.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'aarambha.school',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '9000',
+      },
     ],
   },
 };
