@@ -217,3 +217,18 @@ model SiteSettings {
   value     String
   updatedAt DateTime @updatedAt
 }
+
+model AdmissionEnquiry {
+  id             Int      @id @default(autoincrement())
+  studentName    String
+  age            String
+  gender         String
+  gradeApplied   String
+  address        String
+  previousSchool String?
+  guardianName   String
+  relation       String
+  contactNumber  String
+  read           Boolean  @default(false)
+  createdAt      DateTime @default(now())
+}
