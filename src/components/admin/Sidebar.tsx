@@ -113,7 +113,7 @@ export default function Sidebar({ unreadCount, enquiryUnreadCount }: SidebarProp
       </div>
 
       {/* Navigation sections */}
-      <nav className="flex-1 overflow-y-auto px-3 py-2">
+      <nav className="overflow-y-auto px-3 py-2">
         {navSections.map((section) => (
           <div key={section.label} className="mb-4">
             {!collapsed && (
@@ -151,7 +151,7 @@ export default function Sidebar({ unreadCount, enquiryUnreadCount }: SidebarProp
       </nav>
 
       {/* Bottom section */}
-      <div className="border-t border-white/10 px-3 py-3 space-y-0.5">
+      <div className="mt-auto border-t border-white/10 px-3 py-3 space-y-0.5">
         <a
           href="/"
           target="_blank"
