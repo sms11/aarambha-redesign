@@ -507,11 +507,11 @@ function PhilosophySection() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h2 className="text-lg font-semibold text-[#1B2A4A]">Philosophy</h2>
-          <span className={`text-xs font-medium rounded-full px-2 py-0.5 ${data.length >= 6 ? 'bg-red-100 text-red-600' : 'bg-teal-50 text-teal-600'}`}>
-            {data.length}/6
+          <span className={`text-xs font-medium rounded-full px-2 py-0.5 ${data.length >= 5 ? 'bg-red-100 text-red-600' : 'bg-teal-50 text-teal-600'}`}>
+            {data.length}/5
           </span>
         </div>
-        {!isFormOpen && data.length < 6 && (
+        {!isFormOpen && data.length < 5 && (
           <button
             type="button"
             onClick={handleCreate}
@@ -522,7 +522,7 @@ function PhilosophySection() {
           </button>
         )}
         {!isFormOpen && data.length >= 6 && (
-          <span className="text-xs text-gray-400">Maximum 6 philosophy items reached</span>
+          <span className="text-xs text-gray-400">Maximum 5 philosophy items reached</span>
         )}
       </div>
 
