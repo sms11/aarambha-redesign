@@ -164,9 +164,16 @@ export default function AdmissionsPageClient({
   useEffect(() => {
     if (window.location.hash) {
       const id = window.location.hash.slice(1);
-      setTimeout(() => {
-        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-      }, 500);
+      // Try multiple times as page content loads progressively
+      const attempts = [300, 800, 1500];
+      attempts.forEach((delay) => {
+        setTimeout(() => {
+          const el = document.getElementById(id);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, delay);
+      });
     }
   }, []);
 
