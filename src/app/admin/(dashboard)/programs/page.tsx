@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import DataTable from '@/components/admin/DataTable';
 import FormField from '@/components/admin/FormField';
 import ImageUpload from '@/components/admin/ImageUpload';
+import SmartImage from '@/components/SmartImage';
 import {
   getAllPrograms,
   createProgram,
@@ -60,54 +60,98 @@ interface KeyBenefit {
 const TABS = ['Programs', 'Special Features', 'Key Benefits'] as const;
 type TabName = (typeof TABS)[number];
 
-const programColumns = [
-  { key: 'emoji', label: 'Emoji' },
-  { key: 'name', label: 'Name' },
-  { key: 'ages', label: 'Ages' },
-  { key: 'grades', label: 'Grades' },
-  { key: 'color', label: 'Color' },
+const TAB_EMOJIS: Record<TabName, string> = {
+  Programs: '\u{1F393}',
+  'Special Features': '\u2B50',
+  'Key Benefits': '\u{1F3C6}',
+};
+
+const PRESET_COLORS = [
+  '#8B5CF6',
+  '#FF6B35',
+  '#14B8A6',
+  '#EC4899',
+  '#F59E0B',
+  '#3B82F6',
 ];
 
-const featureColumns = [
-  { key: 'icon', label: 'Icon' },
-  { key: 'title', label: 'Title' },
-  { key: 'color', label: 'Color' },
-  { key: 'bg', label: 'Background' },
-];
+function PlusIcon() {
+  return (
+    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+    </svg>
+  );
+}
 
-const benefitColumns = [
-  { key: 'emoji', label: 'Emoji' },
-  { key: 'title', label: 'Title' },
-  { key: 'color', label: 'Color' },
-  { key: 'bg', label: 'Background' },
-];
+function PencilIcon() {
+  return (
+    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+    </svg>
+  );
+}
+
+function TrashIcon() {
+  return (
+    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+    </svg>
+  );
+}
+
+function ChevronUpIcon() {
+  return (
+    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+    </svg>
+  );
+}
+
+function ChevronDownIcon() {
+  return (
+    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+    </svg>
+  );
+}
+
+function XIcon() {
+  return (
+    <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+    </svg>
+  );
+}
 
 export default function ProgramsPage() {
   const [activeTab, setActiveTab] = useState<TabName>('Programs');
 
   return (
     <div>
+      {/* Page Header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Programs</h1>
+        <h1 className="font-[family-name:var(--font-display)] text-3xl font-bold text-[#1B2A4A]">
+          {'\u{1F393}'} Programs
+        </h1>
         <p className="mt-1 text-sm text-gray-500">
-          Manage academic programs, special features, and key benefits.
+          Academic programs, features, and benefits &mdash; shown on Homepage and Programs page
         </p>
       </div>
 
-      {/* Section Tabs */}
-      <div className="mt-6 flex gap-1 rounded-lg border border-gray-200 bg-gray-50 p-1">
+      {/* Tabs */}
+      <div className="mt-6 inline-flex rounded-2xl bg-purple-50/50 p-1.5">
         {TABS.map((tab) => (
           <button
             key={tab}
             type="button"
             onClick={() => setActiveTab(tab)}
-            className={`flex-1 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+            className={`rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-200 ${
               activeTab === tab
-                ? 'bg-white text-gray-900 shadow-sm'
-                : 'text-gray-500 hover:text-gray-700'
+                ? 'bg-[#8B5CF6] text-white shadow-sm'
+                : 'bg-white text-gray-600 hover:bg-purple-50'
             }`}
           >
-            {tab}
+            {TAB_EMOJIS[tab]} {tab}
           </button>
         ))}
       </div>
@@ -129,6 +173,9 @@ function ProgramsSection() {
   const [highlights, setHighlights] = useState<string[]>([]);
   const [errors, setErrors] = useState<Record<string, string[]>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [colorValue, setColorValue] = useState('#8B5CF6');
+  const colorInputRef = useRef<HTMLInputElement>(null);
+  const highlightInputRef = useRef<HTMLInputElement>(null);
 
   async function loadData() {
     const items = await getAllPrograms();
@@ -139,11 +186,11 @@ function ProgramsSection() {
     loadData();
   }, []);
 
-  function handleEdit(item: Record<string, unknown>) {
-    const program = item as unknown as Program;
+  function handleEdit(program: Program) {
     setEditingItem(program);
     setImageUrl(program.image || '');
     setHighlights(program.highlights || []);
+    setColorValue(program.color || '#8B5CF6');
     setErrors({});
     setIsFormOpen(true);
   }
@@ -152,6 +199,7 @@ function ProgramsSection() {
     setEditingItem(null);
     setImageUrl('');
     setHighlights([]);
+    setColorValue('#8B5CF6');
     setErrors({});
     setIsFormOpen(true);
   }
@@ -165,17 +213,15 @@ function ProgramsSection() {
   }
 
   function addHighlight() {
-    setHighlights([...highlights, '']);
+    const value = highlightInputRef.current?.value.trim();
+    if (value) {
+      setHighlights([...highlights, value]);
+      highlightInputRef.current!.value = '';
+    }
   }
 
   function removeHighlight(index: number) {
     setHighlights(highlights.filter((_, i) => i !== index));
-  }
-
-  function updateHighlight(index: number, value: string) {
-    const updated = [...highlights];
-    updated[index] = value;
-    setHighlights(updated);
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -194,7 +240,7 @@ function ProgramsSection() {
       highlights: filteredHighlights,
       teaching: formData.get('teaching') as string,
       image: imageUrl,
-      color: formData.get('color') as string,
+      color: colorValue,
       emoji: formData.get('emoji') as string,
     };
 
@@ -216,8 +262,12 @@ function ProgramsSection() {
     await loadData();
   }
 
-  async function handleDelete(item: Record<string, unknown>) {
-    await deleteProgram(item.id as number);
+  async function handleDelete(program: Program) {
+    const confirmed = window.confirm(
+      `Delete "${program.name}"? This can't be undone.`
+    );
+    if (!confirmed) return;
+    await deleteProgram(program.id);
     await loadData();
   }
 
@@ -228,29 +278,72 @@ function ProgramsSection() {
 
   return (
     <div>
-      <div className="mt-6 flex justify-end">
+      {/* Section Header */}
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          {data.length > 0 && (
+            <span className="inline-flex items-center rounded-full bg-purple-50 px-3 py-1 text-xs font-semibold text-purple-700">
+              {data.length} {data.length === 1 ? 'program' : 'programs'}
+            </span>
+          )}
+        </div>
         {!isFormOpen && (
           <button
             type="button"
             onClick={handleCreate}
-            className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-800"
+            className="inline-flex items-center gap-2 rounded-xl bg-[#8B5CF6] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#7c3aed] hover:shadow-md"
           >
+            <PlusIcon />
             Add Program
           </button>
         )}
       </div>
 
+      {/* Add/Edit Form Panel */}
       {isFormOpen && (
         <form
           onSubmit={handleSubmit}
-          className="mt-6 rounded-xl border border-gray-200 bg-white p-6"
+          className="mt-6 rounded-2xl border-t-4 border-[#8B5CF6] bg-white p-6 shadow-md shadow-black/5 sm:p-8"
         >
-          <h2 className="mb-4 text-lg font-semibold text-gray-900">
-            {editingItem ? 'Edit Program' : 'Add Program'}
+          <h2 className="mb-6 text-lg font-bold text-[#1B2A4A]">
+            {editingItem ? '\u{1F393} Edit Program' : '\u{1F393} Add New Program'}
           </h2>
 
-          <div className="grid gap-4">
-            <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-6 lg:grid-cols-2">
+            {/* Left Column: Image + Emoji */}
+            <div className="flex flex-col gap-4">
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-gray-700">
+                  Program Image
+                </label>
+                {imageUrl && (
+                  <div className="mb-3">
+                    <SmartImage
+                      src={imageUrl}
+                      alt="Program preview"
+                      width={200}
+                      height={120}
+                      className="h-28 w-full rounded-xl object-cover"
+                    />
+                  </div>
+                )}
+                <ImageUpload value={imageUrl} onChange={setImageUrl} hidePreview />
+                {errors.image && (
+                  <p className="mt-1 text-sm text-red-600">{errors.image[0]}</p>
+                )}
+              </div>
+              <FormField
+                label="Emoji"
+                name="emoji"
+                required
+                value={editingItem?.emoji}
+                error={errors.emoji?.[0]}
+                placeholder="e.g. \u{1F331}"
+              />
+            </div>
+
+            {/* Right Column: Core fields */}
+            <div className="flex flex-col gap-4">
               <FormField
                 label="Name"
                 name="name"
@@ -259,131 +352,146 @@ function ProgramsSection() {
                 error={errors.name?.[0]}
                 placeholder="e.g. Early Childhood"
               />
-              <FormField
-                label="Emoji"
-                name="emoji"
-                required
-                value={editingItem?.emoji}
-                error={errors.emoji?.[0]}
-                placeholder="e.g. 🌱"
-              />
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              <FormField
-                label="Ages"
-                name="ages"
-                required
-                value={editingItem?.ages}
-                error={errors.ages?.[0]}
-                placeholder="e.g. 3-5 years"
-              />
-              <FormField
-                label="Grades"
-                name="grades"
-                required
-                value={editingItem?.grades}
-                error={errors.grades?.[0]}
-                placeholder="e.g. Nursery - KG"
-              />
-            </div>
-
-            <FormField
-              label="Description"
-              name="description"
-              type="textarea"
-              required
-              value={editingItem?.description}
-              error={errors.description?.[0]}
-              placeholder="Describe the program..."
-            />
-
-            <FormField
-              label="Teaching Approach"
-              name="teaching"
-              type="textarea"
-              required
-              value={editingItem?.teaching}
-              error={errors.teaching?.[0]}
-              placeholder="Describe the teaching methodology..."
-            />
-
-            <FormField
-              label="Color"
-              name="color"
-              required
-              value={editingItem?.color}
-              error={errors.color?.[0]}
-              placeholder="e.g. #FF6B35 or emerald"
-            />
-
-            {/* Highlights multi-input */}
-            <div>
-              <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                Highlights
-              </label>
-              <div className="space-y-2">
-                {highlights.map((highlight, index) => (
-                  <div key={index} className="flex gap-2">
-                    <input
-                      type="text"
-                      value={highlight}
-                      onChange={(e) => updateHighlight(index, e.target.value)}
-                      placeholder={`Highlight ${index + 1}`}
-                      className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 outline-none transition-colors focus:border-gray-900 focus:ring-2 focus:ring-gray-900/10"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => removeHighlight(index)}
-                      className="shrink-0 rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-red-600 transition-colors hover:bg-red-50"
-                      aria-label={`Remove highlight ${index + 1}`}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                ))}
+              <div className="grid gap-4 sm:grid-cols-2">
+                <FormField
+                  label="Ages"
+                  name="ages"
+                  required
+                  value={editingItem?.ages}
+                  error={errors.ages?.[0]}
+                  placeholder="e.g. 3-5 years"
+                />
+                <FormField
+                  label="Grades"
+                  name="grades"
+                  required
+                  value={editingItem?.grades}
+                  error={errors.grades?.[0]}
+                  placeholder="e.g. Nursery - KG"
+                />
               </div>
-              <button
-                type="button"
-                onClick={addHighlight}
-                className="mt-2 rounded-lg border border-dashed border-gray-300 px-4 py-2 text-sm text-gray-600 transition-colors hover:border-gray-400 hover:text-gray-800"
-              >
-                + Add Highlight
-              </button>
-              {errors.highlights && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.highlights[0]}
-                </p>
-              )}
-            </div>
 
-            <div>
-              <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                Image
-              </label>
-              <ImageUpload value={imageUrl} onChange={setImageUrl} />
-              {errors.image && (
-                <p className="mt-1 text-sm text-red-600">{errors.image[0]}</p>
-              )}
+              {/* Color Swatches */}
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-gray-700">
+                  Color<span className="ml-0.5 text-red-500">*</span>
+                </label>
+                <div className="flex items-center gap-2">
+                  {PRESET_COLORS.map((c) => (
+                    <button
+                      key={c}
+                      type="button"
+                      onClick={() => setColorValue(c)}
+                      className={`h-8 w-8 rounded-full border-2 transition-transform duration-150 hover:scale-110 ${
+                        colorValue === c ? 'border-gray-800 scale-110' : 'border-transparent'
+                      }`}
+                      style={{ backgroundColor: c }}
+                      aria-label={`Select color ${c}`}
+                    />
+                  ))}
+                  <input
+                    ref={colorInputRef}
+                    type="text"
+                    value={colorValue}
+                    onChange={(e) => setColorValue(e.target.value)}
+                    className="ml-2 w-24 rounded-lg border border-gray-300 px-2 py-1.5 text-sm text-gray-900 outline-none focus:border-[#8B5CF6] focus:ring-2 focus:ring-purple-200"
+                    placeholder="#hex"
+                  />
+                </div>
+                {errors.color && (
+                  <p className="mt-1 text-sm text-red-600">{errors.color[0]}</p>
+                )}
+              </div>
+
+              <FormField
+                label="Description"
+                name="description"
+                type="textarea"
+                required
+                value={editingItem?.description}
+                error={errors.description?.[0]}
+                placeholder="Describe the program..."
+              />
+              <FormField
+                label="Teaching Approach"
+                name="teaching"
+                type="textarea"
+                required
+                value={editingItem?.teaching}
+                error={errors.teaching?.[0]}
+                placeholder="Describe the teaching methodology..."
+              />
             </div>
           </div>
 
-          <div className="mt-6 flex gap-3">
+          {/* Highlights Section */}
+          <div className="mt-6">
+            <label className="mb-1.5 block text-sm font-medium text-gray-700">
+              Highlights
+            </label>
+            {highlights.length > 0 && (
+              <div className="mb-3 flex flex-wrap gap-2">
+                {highlights.map((highlight, index) => (
+                  <span
+                    key={index}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-purple-50 px-3 py-1.5 text-sm text-purple-700"
+                  >
+                    {highlight}
+                    <button
+                      type="button"
+                      onClick={() => removeHighlight(index)}
+                      className="rounded-full p-0.5 text-purple-400 transition-colors hover:bg-purple-100 hover:text-purple-600"
+                      aria-label={`Remove highlight: ${highlight}`}
+                    >
+                      <XIcon />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
+            <div className="flex gap-2">
+              <input
+                ref={highlightInputRef}
+                type="text"
+                placeholder="Type a highlight and press +"
+                className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 outline-none transition-colors focus:border-[#8B5CF6] focus:ring-2 focus:ring-purple-200"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addHighlight();
+                  }
+                }}
+              />
+              <button
+                type="button"
+                onClick={addHighlight}
+                className="inline-flex items-center gap-1 rounded-lg bg-purple-50 px-4 py-2.5 text-sm font-medium text-purple-700 transition-colors hover:bg-purple-100"
+              >
+                <PlusIcon />
+                Add
+              </button>
+            </div>
+            {errors.highlights && (
+              <p className="mt-1 text-sm text-red-600">{errors.highlights[0]}</p>
+            )}
+          </div>
+
+          <div className="mt-8 flex gap-3">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-800 disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#8B5CF6] px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#7c3aed] hover:shadow-md disabled:opacity-50 disabled:hover:translate-y-0"
             >
               {isSubmitting
                 ? 'Saving...'
                 : editingItem
                   ? 'Update Program'
-                  : 'Add Program'}
+                  : 'Save Program'}
             </button>
             <button
               type="button"
               onClick={handleCancel}
-              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+              className="rounded-xl border border-gray-300 bg-white px-6 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50"
             >
               Cancel
             </button>
@@ -391,15 +499,145 @@ function ProgramsSection() {
         </form>
       )}
 
-      <div className="mt-6">
-        <DataTable
-          columns={programColumns}
-          data={data as unknown as Record<string, unknown>[]}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          onReorder={handleReorder}
-        />
-      </div>
+      {/* Program Cards */}
+      {data.length === 0 ? (
+        <div className="mt-12 flex flex-col items-center justify-center rounded-2xl bg-white py-16 shadow-md shadow-black/5">
+          <div className="text-6xl">{'\u{1F393}'}</div>
+          <h3 className="mt-4 text-lg font-bold text-[#1B2A4A]">No programs yet</h3>
+          <p className="mt-1 text-sm text-gray-500">
+            Add your first academic program to get started
+          </p>
+          {!isFormOpen && (
+            <button
+              type="button"
+              onClick={handleCreate}
+              className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#8B5CF6] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#7c3aed] hover:shadow-md"
+            >
+              <PlusIcon />
+              Add Program
+            </button>
+          )}
+        </div>
+      ) : (
+        <div className="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-2">
+          {data.map((program, index) => (
+            <div
+              key={program.id}
+              className="group relative overflow-hidden rounded-2xl bg-white shadow-md shadow-black/5 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+            >
+              {/* Left color accent strip */}
+              <div
+                className="absolute left-0 top-0 h-full w-1"
+                style={{ backgroundColor: program.color || '#8B5CF6' }}
+              />
+
+              <div className="p-5 pl-6">
+                {/* Top Row: Emoji + Name + Badges + Thumbnail */}
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start gap-3">
+                    <span className="text-3xl leading-none">{program.emoji}</span>
+                    <div>
+                      <h3 className="text-base font-bold text-[#1B2A4A]">
+                        {program.name}
+                      </h3>
+                      <div className="mt-1 flex flex-wrap gap-1.5">
+                        {program.ages && (
+                          <span className="inline-flex items-center rounded-full bg-purple-100 px-2 py-0.5 text-xs text-purple-700">
+                            {program.ages}
+                          </span>
+                        )}
+                        {program.grades && (
+                          <span className="inline-flex items-center rounded-full bg-purple-100 px-2 py-0.5 text-xs text-purple-700">
+                            {program.grades}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  {program.image ? (
+                    <SmartImage
+                      src={program.image}
+                      alt={program.name}
+                      width={64}
+                      height={64}
+                      className="h-16 w-16 shrink-0 rounded-xl object-cover"
+                    />
+                  ) : (
+                    <div
+                      className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl text-2xl"
+                      style={{ backgroundColor: `${program.color}20` }}
+                    >
+                      {program.emoji}
+                    </div>
+                  )}
+                </div>
+
+                {/* Description */}
+                <p className="mt-3 line-clamp-2 text-sm text-gray-500">
+                  {program.description}
+                </p>
+
+                {/* Highlights as pills */}
+                {program.highlights && program.highlights.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {program.highlights.slice(0, 3).map((hl, i) => (
+                      <span
+                        key={i}
+                        className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs text-gray-600"
+                      >
+                        {hl}
+                      </span>
+                    ))}
+                    {program.highlights.length > 3 && (
+                      <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs text-gray-400">
+                        +{program.highlights.length - 3} more
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                {/* Action Bar */}
+                <div className="mt-4 flex items-center gap-1 border-t border-gray-100 pt-3">
+                  <button
+                    type="button"
+                    onClick={() => handleReorder(program.id, 'up')}
+                    disabled={index === 0}
+                    className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-purple-50 hover:text-[#8B5CF6] disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-gray-400"
+                    aria-label={`Move ${program.name} up`}
+                  >
+                    <ChevronUpIcon />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleReorder(program.id, 'down')}
+                    disabled={index === data.length - 1}
+                    className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-purple-50 hover:text-[#8B5CF6] disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-gray-400"
+                    aria-label={`Move ${program.name} down`}
+                  >
+                    <ChevronDownIcon />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleEdit(program)}
+                    className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-orange-50 hover:text-[#FF6B35]"
+                    aria-label={`Edit ${program.name}`}
+                  >
+                    <PencilIcon />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(program)}
+                    className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500"
+                    aria-label={`Delete ${program.name}`}
+                  >
+                    <TrashIcon />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -423,8 +661,7 @@ function SpecialFeaturesSection() {
     loadData();
   }, []);
 
-  function handleEdit(item: Record<string, unknown>) {
-    const feature = item as unknown as SpecialFeature;
+  function handleEdit(feature: SpecialFeature) {
     setEditingItem(feature);
     setErrors({});
     setIsFormOpen(true);
@@ -465,8 +702,12 @@ function SpecialFeaturesSection() {
     await loadData();
   }
 
-  async function handleDelete(item: Record<string, unknown>) {
-    await deleteSpecialFeature(item.id as number);
+  async function handleDelete(feature: SpecialFeature) {
+    const confirmed = window.confirm(
+      `Delete "${feature.title}"? This can't be undone.`
+    );
+    if (!confirmed) return;
+    await deleteSpecialFeature(feature.id);
     await loadData();
   }
 
@@ -477,26 +718,36 @@ function SpecialFeaturesSection() {
 
   return (
     <div>
-      <div className="mt-6 flex justify-end">
+      {/* Section Header */}
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          {data.length > 0 && (
+            <span className="inline-flex items-center rounded-full bg-purple-50 px-3 py-1 text-xs font-semibold text-purple-700">
+              {data.length} {data.length === 1 ? 'feature' : 'features'}
+            </span>
+          )}
+        </div>
         {!isFormOpen && (
           <button
             type="button"
             onClick={handleCreate}
-            className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-800"
+            className="inline-flex items-center gap-2 rounded-xl bg-[#8B5CF6] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#7c3aed] hover:shadow-md"
           >
+            <PlusIcon />
             Add Special Feature
           </button>
         )}
       </div>
 
+      {/* Add/Edit Form Panel */}
       {isFormOpen && (
         <form
           ref={formRef}
           onSubmit={handleSubmit}
-          className="mt-6 rounded-xl border border-gray-200 bg-white p-6"
+          className="mt-6 rounded-2xl border-t-4 border-[#8B5CF6] bg-white p-6 shadow-md shadow-black/5 sm:p-8"
         >
-          <h2 className="mb-4 text-lg font-semibold text-gray-900">
-            {editingItem ? 'Edit Special Feature' : 'Add Special Feature'}
+          <h2 className="mb-6 text-lg font-bold text-[#1B2A4A]">
+            {editingItem ? '\u2B50 Edit Special Feature' : '\u2B50 Add New Special Feature'}
           </h2>
 
           <div className="grid gap-4">
@@ -549,22 +800,22 @@ function SpecialFeaturesSection() {
             </div>
           </div>
 
-          <div className="mt-6 flex gap-3">
+          <div className="mt-8 flex gap-3">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-800 disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#8B5CF6] px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#7c3aed] hover:shadow-md disabled:opacity-50 disabled:hover:translate-y-0"
             >
               {isSubmitting
                 ? 'Saving...'
                 : editingItem
                   ? 'Update Feature'
-                  : 'Add Feature'}
+                  : 'Save Feature'}
             </button>
             <button
               type="button"
               onClick={handleCancel}
-              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+              className="rounded-xl border border-gray-300 bg-white px-6 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50"
             >
               Cancel
             </button>
@@ -572,15 +823,90 @@ function SpecialFeaturesSection() {
         </form>
       )}
 
-      <div className="mt-6">
-        <DataTable
-          columns={featureColumns}
-          data={data as unknown as Record<string, unknown>[]}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          onReorder={handleReorder}
-        />
-      </div>
+      {/* Feature Cards */}
+      {data.length === 0 ? (
+        <div className="mt-12 flex flex-col items-center justify-center rounded-2xl bg-white py-16 shadow-md shadow-black/5">
+          <div className="text-6xl">{'\u2B50'}</div>
+          <h3 className="mt-4 text-lg font-bold text-[#1B2A4A]">No special features yet</h3>
+          <p className="mt-1 text-sm text-gray-500">
+            Add your first special feature to get started
+          </p>
+          {!isFormOpen && (
+            <button
+              type="button"
+              onClick={handleCreate}
+              className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#8B5CF6] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#7c3aed] hover:shadow-md"
+            >
+              <PlusIcon />
+              Add Special Feature
+            </button>
+          )}
+        </div>
+      ) : (
+        <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {data.map((feature, index) => (
+            <div
+              key={feature.id}
+              className="group flex flex-col rounded-2xl bg-white p-5 shadow-md shadow-black/5 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+            >
+              {/* Icon Circle */}
+              <div
+                className={`flex h-12 w-12 items-center justify-center rounded-full text-sm font-bold ${feature.bg} ${feature.color}`}
+              >
+                {feature.icon}
+              </div>
+
+              {/* Title */}
+              <h3 className="mt-3 text-sm font-bold text-[#1B2A4A]">
+                {feature.title}
+              </h3>
+
+              {/* Description */}
+              <p className="mt-1 line-clamp-2 flex-1 text-sm text-gray-500">
+                {feature.description}
+              </p>
+
+              {/* Action Bar */}
+              <div className="mt-4 flex items-center gap-1 border-t border-gray-100 pt-3">
+                <button
+                  type="button"
+                  onClick={() => handleReorder(feature.id, 'up')}
+                  disabled={index === 0}
+                  className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-purple-50 hover:text-[#8B5CF6] disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-gray-400"
+                  aria-label={`Move ${feature.title} up`}
+                >
+                  <ChevronUpIcon />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleReorder(feature.id, 'down')}
+                  disabled={index === data.length - 1}
+                  className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-purple-50 hover:text-[#8B5CF6] disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-gray-400"
+                  aria-label={`Move ${feature.title} down`}
+                >
+                  <ChevronDownIcon />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleEdit(feature)}
+                  className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-orange-50 hover:text-[#FF6B35]"
+                  aria-label={`Edit ${feature.title}`}
+                >
+                  <PencilIcon />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDelete(feature)}
+                  className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500"
+                  aria-label={`Delete ${feature.title}`}
+                >
+                  <TrashIcon />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -604,8 +930,7 @@ function KeyBenefitsSection() {
     loadData();
   }, []);
 
-  function handleEdit(item: Record<string, unknown>) {
-    const benefit = item as unknown as KeyBenefit;
+  function handleEdit(benefit: KeyBenefit) {
     setEditingItem(benefit);
     setErrors({});
     setIsFormOpen(true);
@@ -646,8 +971,12 @@ function KeyBenefitsSection() {
     await loadData();
   }
 
-  async function handleDelete(item: Record<string, unknown>) {
-    await deleteKeyBenefit(item.id as number);
+  async function handleDelete(benefit: KeyBenefit) {
+    const confirmed = window.confirm(
+      `Delete "${benefit.title}"? This can't be undone.`
+    );
+    if (!confirmed) return;
+    await deleteKeyBenefit(benefit.id);
     await loadData();
   }
 
@@ -658,26 +987,36 @@ function KeyBenefitsSection() {
 
   return (
     <div>
-      <div className="mt-6 flex justify-end">
+      {/* Section Header */}
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          {data.length > 0 && (
+            <span className="inline-flex items-center rounded-full bg-purple-50 px-3 py-1 text-xs font-semibold text-purple-700">
+              {data.length} {data.length === 1 ? 'benefit' : 'benefits'}
+            </span>
+          )}
+        </div>
         {!isFormOpen && (
           <button
             type="button"
             onClick={handleCreate}
-            className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-800"
+            className="inline-flex items-center gap-2 rounded-xl bg-[#8B5CF6] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#7c3aed] hover:shadow-md"
           >
+            <PlusIcon />
             Add Key Benefit
           </button>
         )}
       </div>
 
+      {/* Add/Edit Form Panel */}
       {isFormOpen && (
         <form
           ref={formRef}
           onSubmit={handleSubmit}
-          className="mt-6 rounded-xl border border-gray-200 bg-white p-6"
+          className="mt-6 rounded-2xl border-t-4 border-[#8B5CF6] bg-white p-6 shadow-md shadow-black/5 sm:p-8"
         >
-          <h2 className="mb-4 text-lg font-semibold text-gray-900">
-            {editingItem ? 'Edit Key Benefit' : 'Add Key Benefit'}
+          <h2 className="mb-6 text-lg font-bold text-[#1B2A4A]">
+            {editingItem ? '\u{1F3C6} Edit Key Benefit' : '\u{1F3C6} Add New Key Benefit'}
           </h2>
 
           <div className="grid gap-4">
@@ -696,7 +1035,7 @@ function KeyBenefitsSection() {
                 required
                 value={editingItem?.emoji}
                 error={errors.emoji?.[0]}
-                placeholder="e.g. 🌟"
+                placeholder="e.g. \u{1F31F}"
               />
             </div>
 
@@ -738,22 +1077,22 @@ function KeyBenefitsSection() {
             </div>
           </div>
 
-          <div className="mt-6 flex gap-3">
+          <div className="mt-8 flex gap-3">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-800 disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#8B5CF6] px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#7c3aed] hover:shadow-md disabled:opacity-50 disabled:hover:translate-y-0"
             >
               {isSubmitting
                 ? 'Saving...'
                 : editingItem
                   ? 'Update Benefit'
-                  : 'Add Benefit'}
+                  : 'Save Benefit'}
             </button>
             <button
               type="button"
               onClick={handleCancel}
-              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+              className="rounded-xl border border-gray-300 bg-white px-6 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50"
             >
               Cancel
             </button>
@@ -761,15 +1100,99 @@ function KeyBenefitsSection() {
         </form>
       )}
 
-      <div className="mt-6">
-        <DataTable
-          columns={benefitColumns}
-          data={data as unknown as Record<string, unknown>[]}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          onReorder={handleReorder}
-        />
-      </div>
+      {/* Benefit Cards */}
+      {data.length === 0 ? (
+        <div className="mt-12 flex flex-col items-center justify-center rounded-2xl bg-white py-16 shadow-md shadow-black/5">
+          <div className="text-6xl">{'\u{1F3C6}'}</div>
+          <h3 className="mt-4 text-lg font-bold text-[#1B2A4A]">No key benefits yet</h3>
+          <p className="mt-1 text-sm text-gray-500">
+            Add your first key benefit to get started
+          </p>
+          {!isFormOpen && (
+            <button
+              type="button"
+              onClick={handleCreate}
+              className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#8B5CF6] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#7c3aed] hover:shadow-md"
+            >
+              <PlusIcon />
+              Add Key Benefit
+            </button>
+          )}
+        </div>
+      ) : (
+        <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {data.map((benefit, index) => (
+            <div
+              key={benefit.id}
+              className="group flex flex-col rounded-2xl bg-white p-5 shadow-md shadow-black/5 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+            >
+              {/* Large Emoji */}
+              <span className="text-3xl">{benefit.emoji}</span>
+
+              {/* Title */}
+              <h3 className="mt-3 text-sm font-bold text-[#1B2A4A]">
+                {benefit.title}
+              </h3>
+
+              {/* Description */}
+              <p className="mt-1 line-clamp-2 flex-1 text-sm text-gray-500">
+                {benefit.description}
+              </p>
+
+              {/* Color indicator dot */}
+              <div className="mt-3 flex items-center gap-2">
+                <span
+                  className={`inline-block h-2.5 w-2.5 rounded-full ${benefit.color}`}
+                  style={{
+                    backgroundColor: benefit.color.startsWith('#')
+                      ? benefit.color
+                      : undefined,
+                  }}
+                />
+                <span className="text-xs text-gray-400">{benefit.color}</span>
+              </div>
+
+              {/* Action Bar */}
+              <div className="mt-4 flex items-center gap-1 border-t border-gray-100 pt-3">
+                <button
+                  type="button"
+                  onClick={() => handleReorder(benefit.id, 'up')}
+                  disabled={index === 0}
+                  className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-purple-50 hover:text-[#8B5CF6] disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-gray-400"
+                  aria-label={`Move ${benefit.title} up`}
+                >
+                  <ChevronUpIcon />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleReorder(benefit.id, 'down')}
+                  disabled={index === data.length - 1}
+                  className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-purple-50 hover:text-[#8B5CF6] disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-gray-400"
+                  aria-label={`Move ${benefit.title} down`}
+                >
+                  <ChevronDownIcon />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleEdit(benefit)}
+                  className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-orange-50 hover:text-[#FF6B35]"
+                  aria-label={`Edit ${benefit.title}`}
+                >
+                  <PencilIcon />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDelete(benefit)}
+                  className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500"
+                  aria-label={`Delete ${benefit.title}`}
+                >
+                  <TrashIcon />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
