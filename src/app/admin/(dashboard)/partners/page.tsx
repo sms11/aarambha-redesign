@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import Image from 'next/image';
+import SmartImage from '@/components/SmartImage';
 import FormField from '@/components/admin/FormField';
 import ImageUpload from '@/components/admin/ImageUpload';
 import {
@@ -184,7 +184,7 @@ export default function PartnersPage() {
             <div className="flex flex-col items-center gap-3">
               <div className="flex h-32 w-48 items-center justify-center rounded-xl border-2 border-dashed border-gray-300 bg-gray-50">
                 {logoUrl ? (
-                  <Image
+                  <SmartImage
                     src={logoUrl}
                     alt="Logo preview"
                     width={192}
@@ -195,7 +195,7 @@ export default function PartnersPage() {
                   <span className="text-4xl text-gray-300">🏢</span>
                 )}
               </div>
-              <ImageUpload value={logoUrl} onChange={setLogoUrl} hidePreview />
+              <SmartImageUpload value={logoUrl} onChange={setLogoUrl} hidePreview />
               {errors.logo && (
                 <p className="text-sm text-red-600">{errors.logo[0]}</p>
               )}
@@ -244,7 +244,7 @@ export default function PartnersPage() {
               {/* Logo area */}
               <div className="flex flex-1 items-center justify-center p-4">
                 {partner.logo ? (
-                  <Image
+                  <SmartImage
                     src={partner.logo}
                     alt={`${partner.name} logo`}
                     width={160}
