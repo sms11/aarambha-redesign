@@ -176,13 +176,15 @@ const categoryOptions = [
   { label: 'Convenience', value: 'convenience', emoji: '\u{1F68C}' },
 ];
 
-const categoryHeaders: Record<string, string> = {
-  resource: '\u{1F4DA} Resources',
-  lab: '\u{1F52C} Labs',
-  digital: '\u{1F4BB} Digital',
-  health: '\u2764\uFE0F Health',
-  convenience: '\u{1F68C} Convenience',
+const categoryConfig: Record<string, { header: string; max: number }> = {
+  resource: { header: '\u{1F4DA} Resources', max: 4 },
+  lab: { header: '\u{1F52C} Labs', max: 3 },
+  digital: { header: '\u{1F4BB} Digital', max: 2 },
+  health: { header: '\u2764\uFE0F Health', max: 1 },
+  convenience: { header: '\u{1F68C} Convenience', max: 2 },
 };
+
+const TOTAL_FACILITY_LIMIT = 12;
 
 // ─── Activities Section ──────────────────────────────────────────────────────
 
@@ -579,24 +581,22 @@ function FacilitiesSection() {
 
   // Group facilities by category in display order
   const categoryOrder = ['resource', 'lab', 'digital', 'health', 'convenience'];
-  const grouped = categoryOrder
-    .map((cat) => ({
-      category: cat,
-      header: categoryHeaders[cat],
-      items: data.filter((f) => f.category === cat),
-    }))
-    .filter((g) => g.items.length > 0);
+  const grouped = categoryOrder.map((cat) => {
+    const config = categoryConfig[cat];
+    const items = data.filter((f) => f.category === cat);
+    return { category: cat, header: config.header, max: config.max, items };
+  });
 
   return (
     <div>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h2 className="text-lg font-semibold text-[#1B2A4A]">Facilities</h2>
-          <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${data.length >= 12 ? 'bg-red-100 text-red-600' : 'bg-[#F59E0B]/10 text-[#F59E0B]'}`}>
-            {data.length}/12
+          <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${data.length >= TOTAL_FACILITY_LIMIT ? 'bg-red-100 text-red-600' : 'bg-[#F59E0B]/10 text-[#F59E0B]'}`}>
+            {data.length}/{TOTAL_FACILITY_LIMIT}
           </span>
         </div>
-        {!isFormOpen && data.length < 12 && (
+        {!isFormOpen && data.length < TOTAL_FACILITY_LIMIT && (
           <button
             type="button"
             onClick={handleCreate}
@@ -606,10 +606,32 @@ function FacilitiesSection() {
             Add Facility
           </button>
         )}
-        {!isFormOpen && data.length >= 12 && (
-          <span className="text-xs text-gray-400">Maximum 12 facilities reached</span>
+        {!isFormOpen && data.length >= TOTAL_FACILITY_LIMIT && (
+          <span className="text-xs text-gray-400">Maximum {TOTAL_FACILITY_LIMIT} facilities reached</span>
         )}
       </div>
+
+      {/* Per-category limits */}
+      {!isFormOpen && data.length > 0 && (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {categoryOrder.map((cat) => {
+            const config = categoryConfig[cat];
+            const count = data.filter((f) => f.category === cat).length;
+            const atLimit = count >= config.max;
+            return (
+              <span
+                key={cat}
+                className={`inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium ${
+                  atLimit ? 'bg-red-50 text-red-600' : 'bg-gray-100 text-gray-600'
+                }`}
+              >
+                {config.header.split(' ')[0]} {config.header.split(' ').slice(1).join(' ')} {count}/{config.max}
+                {atLimit && ' ✓'}
+              </span>
+            );
+          })}
+        </div>
+      )}
 
       {isFormOpen && (
         <form
@@ -656,20 +678,34 @@ function FacilitiesSection() {
                   Category<span className="ml-0.5 text-red-500">*</span>
                 </label>
                 <div className="flex flex-wrap gap-2">
-                  {categoryOptions.map((cat) => (
-                    <button
-                      key={cat.value}
-                      type="button"
-                      onClick={() => setCategoryValue(cat.value)}
-                      className={`rounded-xl px-4 py-2.5 text-sm font-medium transition-all ${
-                        categoryValue === cat.value
-                          ? 'bg-[#F59E0B] text-white shadow-md shadow-amber-200 scale-105'
-                          : 'bg-amber-50 text-gray-600 hover:bg-amber-100'
-                      }`}
-                    >
-                      {cat.emoji} {cat.label}
-                    </button>
-                  ))}
+                  {categoryOptions.map((cat) => {
+                    const config = categoryConfig[cat.value];
+                    const count = data.filter((f) => f.category === cat.value).length;
+                    const isEditing = !!editingItem;
+                    const isFull = count >= config.max && (!isEditing || editingItem?.category !== cat.value);
+                    return (
+                      <button
+                        key={cat.value}
+                        type="button"
+                        onClick={() => !isFull && setCategoryValue(cat.value)}
+                        disabled={isFull}
+                        className={`rounded-xl px-4 py-2.5 text-sm font-medium transition-all ${
+                          categoryValue === cat.value
+                            ? 'bg-[#F59E0B] text-white shadow-md shadow-amber-200 scale-105'
+                            : isFull
+                              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                              : 'bg-amber-50 text-gray-600 hover:bg-amber-100'
+                        }`}
+                      >
+                        {cat.emoji} {cat.label}
+                        <span className={`ml-1.5 text-[10px] ${
+                          categoryValue === cat.value ? 'text-white/70' : isFull ? 'text-red-400' : 'text-gray-400'
+                        }`}>
+                          {count}/{config.max}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
                 {errors.category && (
                   <p className="mt-1 text-sm text-red-600">{errors.category[0]}</p>
@@ -741,7 +777,14 @@ function FacilitiesSection() {
         <div className="mt-5 space-y-6">
           {grouped.map((group) => (
             <div key={group.category}>
-              <h3 className="mb-3 text-sm font-semibold text-gray-500">{group.header}</h3>
+              <div className="mb-3 flex items-center gap-2">
+                <h3 className="text-sm font-semibold text-gray-500">{group.header}</h3>
+                <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                  group.items.length >= group.max ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-500'
+                }`}>
+                  {group.items.length}/{group.max}
+                </span>
+              </div>
               <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
                 {group.items.map((fac, idx) => {
                   const FacIcon = fac.icon ? getIcon(fac.icon) : null;

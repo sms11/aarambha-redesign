@@ -22,6 +22,7 @@ interface StatItem {
   value: string;
   label: string;
   emoji: string;
+  suffix: string | null;
 }
 
 interface ProgramItem {
