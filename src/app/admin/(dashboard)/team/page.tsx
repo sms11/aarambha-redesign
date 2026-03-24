@@ -202,7 +202,7 @@ export default function TeamMembersPage() {
                   </div>
                 )}
               </div>
-              <ImageUpload value={imageUrl} onChange={setImageUrl} />
+              <ImageUpload value={imageUrl} onChange={setImageUrl} hidePreview />
               {errors.image && (
                 <p className="text-sm text-red-600">{errors.image[0]}</p>
               )}

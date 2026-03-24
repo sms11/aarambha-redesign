@@ -5,9 +5,10 @@ import { useState, useRef } from 'react';
 interface ImageUploadProps {
   value: string;
   onChange: (url: string) => void;
+  hidePreview?: boolean;
 }
 
-export default function ImageUpload({ value, onChange }: ImageUploadProps) {
+export default function ImageUpload({ value, onChange, hidePreview }: ImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
@@ -47,7 +48,7 @@ export default function ImageUpload({ value, onChange }: ImageUploadProps) {
 
   return (
     <div className="space-y-3">
-      {value && (
+      {value && !hidePreview && (
         <div className="relative inline-block">
           <img
             src={value}
