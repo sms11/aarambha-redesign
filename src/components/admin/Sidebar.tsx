@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import Image from 'next/image';
 import { logout } from '@/lib/actions/auth';
 
 interface NavItem {
@@ -77,15 +78,23 @@ export default function Sidebar({ unreadCount, enquiryUnreadCount }: SidebarProp
       {/* Logo area */}
       <div className="border-b border-white/10 px-4 py-5">
         <Link href="/admin" className="flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FF6B35] text-lg font-bold text-white shadow-lg shadow-[#FF6B35]/25">
-            A
+          <div className="shrink-0 rounded-xl bg-white p-1.5 shadow-lg shadow-black/20">
+            <Image
+              src="/logo.png"
+              alt="Aarambha Logo"
+              width={collapsed ? 28 : 36}
+              height={collapsed ? 28 : 36}
+              className="object-contain"
+            />
           </div>
           {!collapsed && (
             <div className="overflow-hidden">
-              <div className="text-sm font-semibold leading-tight text-white font-[family-name:var(--font-display)]">
-                Aarambha
+              <div className="text-sm font-bold leading-tight text-white font-[family-name:var(--font-display)]">
+                Aarambha Sanskar
               </div>
-              <div className="text-xs text-gray-400">School Admin</div>
+              <div className="text-[10px] font-medium tracking-wider text-[#FF6B35] uppercase">
+                Admin Panel
+              </div>
             </div>
           )}
         </Link>
