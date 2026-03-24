@@ -5,6 +5,7 @@ import FormField from '@/components/admin/FormField';
 import ImageUpload from '@/components/admin/ImageUpload';
 import SmartImage from '@/components/SmartImage';
 import IconPicker from '@/components/admin/IconPicker';
+import EmojiPicker from '@/components/admin/EmojiPicker';
 import {
   getAllPrograms,
   createProgram,
@@ -175,6 +176,7 @@ function ProgramsSection() {
   const [errors, setErrors] = useState<Record<string, string[]>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [colorValue, setColorValue] = useState('#8B5CF6');
+  const [emojiValue, setEmojiValue] = useState('');
   const colorInputRef = useRef<HTMLInputElement>(null);
   const highlightInputRef = useRef<HTMLInputElement>(null);
 
@@ -192,6 +194,7 @@ function ProgramsSection() {
     setImageUrl(program.image || '');
     setHighlights(program.highlights || []);
     setColorValue(program.color || '#8B5CF6');
+    setEmojiValue(program.emoji || '');
     setErrors({});
     setIsFormOpen(true);
   }
@@ -201,6 +204,7 @@ function ProgramsSection() {
     setImageUrl('');
     setHighlights([]);
     setColorValue('#8B5CF6');
+    setEmojiValue('');
     setErrors({});
     setIsFormOpen(true);
   }
@@ -210,6 +214,7 @@ function ProgramsSection() {
     setEditingItem(null);
     setImageUrl('');
     setHighlights([]);
+    setEmojiValue('');
     setErrors({});
   }
 
@@ -242,7 +247,7 @@ function ProgramsSection() {
       teaching: formData.get('teaching') as string,
       image: imageUrl,
       color: colorValue,
-      emoji: formData.get('emoji') as string,
+      emoji: emojiValue,
     };
 
     const result = editingItem
@@ -333,13 +338,11 @@ function ProgramsSection() {
                   <p className="mt-1 text-sm text-red-600">{errors.image[0]}</p>
                 )}
               </div>
-              <FormField
+              <EmojiPicker
                 label="Emoji"
-                name="emoji"
-                required
-                value={editingItem?.emoji}
+                value={emojiValue}
+                onChange={setEmojiValue}
                 error={errors.emoji?.[0]}
-                placeholder="e.g. \u{1F331}"
               />
             </div>
 
@@ -923,6 +926,7 @@ function KeyBenefitsSection() {
   const [editingItem, setEditingItem] = useState<KeyBenefit | null>(null);
   const [errors, setErrors] = useState<Record<string, string[]>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [emojiValue, setEmojiValue] = useState('');
   const formRef = useRef<HTMLFormElement>(null);
 
   async function loadData() {
@@ -936,12 +940,14 @@ function KeyBenefitsSection() {
 
   function handleEdit(benefit: KeyBenefit) {
     setEditingItem(benefit);
+    setEmojiValue(benefit.emoji || '');
     setErrors({});
     setIsFormOpen(true);
   }
 
   function handleCreate() {
     setEditingItem(null);
+    setEmojiValue('');
     setErrors({});
     setIsFormOpen(true);
   }
@@ -949,6 +955,7 @@ function KeyBenefitsSection() {
   function handleCancel() {
     setIsFormOpen(false);
     setEditingItem(null);
+    setEmojiValue('');
     setErrors({});
   }
 
@@ -958,6 +965,7 @@ function KeyBenefitsSection() {
     setErrors({});
 
     const formData = new FormData(e.currentTarget);
+    formData.set('emoji', emojiValue);
 
     const result = editingItem
       ? await updateKeyBenefit(editingItem.id, formData)
@@ -1033,13 +1041,11 @@ function KeyBenefitsSection() {
                 error={errors.title?.[0]}
                 placeholder="e.g. Holistic Development"
               />
-              <FormField
+              <EmojiPicker
                 label="Emoji"
-                name="emoji"
-                required
-                value={editingItem?.emoji}
+                value={emojiValue}
+                onChange={setEmojiValue}
                 error={errors.emoji?.[0]}
-                placeholder="e.g. \u{1F31F}"
               />
             </div>
 
