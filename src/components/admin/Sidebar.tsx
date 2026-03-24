@@ -1,26 +1,62 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { logout } from '@/lib/actions/auth';
 
-const navItems = [
-  { href: '/admin', label: 'Dashboard', icon: DashboardIcon },
-  { href: '/admin/team', label: 'Team', icon: TeamIcon },
-  { href: '/admin/testimonials', label: 'Testimonials', icon: TestimonialsIcon },
-  { href: '/admin/partners', label: 'Partners', icon: PartnersIcon },
-  { href: '/admin/programs', label: 'Programs', icon: ProgramsIcon },
-  { href: '/admin/gallery', label: 'Gallery', icon: GalleryIcon },
-  { href: '/admin/facilities', label: 'Facilities', icon: FacilitiesIcon },
-  { href: '/admin/about', label: 'About', icon: AboutIcon },
-  { href: '/admin/homepage', label: 'Homepage', icon: HomepageIcon },
-  { href: '/admin/community', label: 'Community', icon: CommunityIcon },
-  { href: '/admin/contact', label: 'Contact', icon: ContactIcon },
-  { href: '/admin/settings', label: 'Settings', icon: SettingsIcon },
+interface NavItem {
+  href: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+
+interface NavSection {
+  label: string;
+  items: NavItem[];
+}
+
+const navSections: NavSection[] = [
+  {
+    label: 'Content',
+    items: [
+      { href: '/admin/team', label: 'Team', icon: TeamIcon },
+      { href: '/admin/testimonials', label: 'Testimonials', icon: TestimonialsIcon },
+      { href: '/admin/partners', label: 'Partners', icon: PartnersIcon },
+      { href: '/admin/programs', label: 'Programs', icon: ProgramsIcon },
+    ],
+  },
+  {
+    label: 'Pages',
+    items: [
+      { href: '/admin/homepage', label: 'Homepage', icon: HomepageIcon },
+      { href: '/admin/about', label: 'About', icon: AboutIcon },
+      { href: '/admin/facilities', label: 'Facilities', icon: FacilitiesIcon },
+      { href: '/admin/gallery', label: 'Gallery', icon: GalleryIcon },
+      { href: '/admin/community', label: 'Community', icon: CommunityIcon },
+    ],
+  },
+  {
+    label: 'Communication',
+    items: [
+      { href: '/admin/contact', label: 'Contact', icon: ContactIcon },
+    ],
+  },
+  {
+    label: 'System',
+    items: [
+      { href: '/admin/settings', label: 'Settings', icon: SettingsIcon },
+    ],
+  },
 ];
 
-export default function Sidebar() {
+interface SidebarProps {
+  unreadCount?: number;
+}
+
+export default function Sidebar({ unreadCount }: SidebarProps) {
   const pathname = usePathname();
+  const [collapsed, setCollapsed] = useState(false);
 
   function isActive(href: string) {
     if (href === '/admin') return pathname === '/admin';
@@ -28,64 +64,175 @@ export default function Sidebar() {
   }
 
   return (
-    <aside className="flex w-64 shrink-0 flex-col bg-gray-900 text-white">
-      <div className="border-b border-gray-800 px-6 py-5">
+    <aside
+      className={`flex shrink-0 flex-col transition-all duration-300 ease-in-out ${
+        collapsed ? 'w-20' : 'w-64'
+      }`}
+      style={{
+        background: 'linear-gradient(180deg, #1B2A4A 0%, #223255 100%)',
+      }}
+    >
+      {/* Logo area */}
+      <div className="border-b border-white/10 px-4 py-5">
         <Link href="/admin" className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white text-sm font-bold text-gray-900">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FF6B35] text-lg font-bold text-white shadow-lg shadow-[#FF6B35]/25">
             A
           </div>
-          <div>
-            <div className="text-sm font-semibold leading-tight">Aarambha</div>
-            <div className="text-xs text-gray-400">Admin Panel</div>
-          </div>
+          {!collapsed && (
+            <div className="overflow-hidden">
+              <div className="text-sm font-semibold leading-tight text-white font-[family-name:var(--font-display)]">
+                Aarambha
+              </div>
+              <div className="text-xs text-gray-400">School Admin</div>
+            </div>
+          )}
         </Link>
       </div>
 
-      <nav className="flex-1 overflow-y-auto px-3 py-4">
-        <ul className="space-y-1">
-          {navItems.map((item) => {
-            const active = isActive(item.href);
-            const Icon = item.icon;
-            return (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
-                    active
-                      ? 'bg-white/10 font-medium text-white'
-                      : 'text-gray-400 hover:bg-white/5 hover:text-white'
-                  }`}
-                >
-                  <Icon className="h-4 w-4 shrink-0" />
-                  {item.label}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+      {/* Dashboard link */}
+      <div className="px-3 pt-4 pb-1">
+        <NavLink
+          href="/admin"
+          label="Dashboard"
+          icon={DashboardIcon}
+          active={isActive('/admin')}
+          collapsed={collapsed}
+        />
+      </div>
+
+      {/* Navigation sections */}
+      <nav className="flex-1 overflow-y-auto px-3 py-2">
+        {navSections.map((section) => (
+          <div key={section.label} className="mb-4">
+            {!collapsed && (
+              <div className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-gray-500">
+                {section.label}
+              </div>
+            )}
+            {collapsed && <div className="mb-2 border-t border-white/5" />}
+            <ul className="space-y-0.5">
+              {section.items.map((item) => {
+                const active = isActive(item.href);
+                const isContact = item.href === '/admin/contact';
+                return (
+                  <li key={item.href}>
+                    <NavLink
+                      href={item.href}
+                      label={item.label}
+                      icon={item.icon}
+                      active={active}
+                      collapsed={collapsed}
+                      badge={isContact && unreadCount && unreadCount > 0 ? unreadCount : undefined}
+                    />
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
       </nav>
 
-      <div className="border-t border-gray-800 px-3 py-4 space-y-1">
+      {/* Bottom section */}
+      <div className="border-t border-white/10 px-3 py-3 space-y-0.5">
         <a
           href="/"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-400 transition-colors hover:bg-white/5 hover:text-white"
+          className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-gray-400 transition-all duration-200 hover:bg-white/[0.08] hover:text-white ${
+            collapsed ? 'justify-center' : ''
+          }`}
         >
-          <ExternalLinkIcon className="h-4 w-4 shrink-0" />
-          View Site
+          <ExternalLinkIcon className="h-[18px] w-[18px] shrink-0" />
+          {!collapsed && <span>View Site</span>}
+          {collapsed && (
+            <span className="pointer-events-none absolute left-full ml-3 whitespace-nowrap rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
+              View Site
+            </span>
+          )}
         </a>
         <form action={logout}>
           <button
             type="submit"
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-400 transition-colors hover:bg-white/5 hover:text-red-400"
+            className={`group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-gray-400 transition-all duration-200 hover:bg-red-500/10 hover:text-red-400 ${
+              collapsed ? 'justify-center' : ''
+            }`}
           >
-            <LogoutIcon className="h-4 w-4 shrink-0" />
-            Logout
+            <LogoutIcon className="h-[18px] w-[18px] shrink-0" />
+            {!collapsed && <span>Logout</span>}
+            {collapsed && (
+              <span className="pointer-events-none absolute left-full ml-3 whitespace-nowrap rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
+                Logout
+              </span>
+            )}
           </button>
         </form>
       </div>
+
+      {/* Collapse toggle */}
+      <div className="border-t border-white/10 px-3 py-3">
+        <button
+          type="button"
+          onClick={() => setCollapsed((prev) => !prev)}
+          className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-gray-400 transition-all duration-200 hover:bg-white/[0.08] hover:text-white ${
+            collapsed ? 'justify-center' : ''
+          }`}
+          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        >
+          <CollapseIcon className="h-[18px] w-[18px] shrink-0" collapsed={collapsed} />
+          {!collapsed && <span>Collapse</span>}
+        </button>
+      </div>
     </aside>
+  );
+}
+
+/** Reusable nav link with tooltip support in collapsed mode */
+function NavLink({
+  href,
+  label,
+  icon: Icon,
+  active,
+  collapsed,
+  badge,
+}: {
+  href: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  active: boolean;
+  collapsed: boolean;
+  badge?: number;
+}) {
+  return (
+    <Link
+      href={href}
+      className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 ${
+        collapsed ? 'justify-center' : ''
+      } ${
+        active
+          ? 'bg-[#FF6B35]/15 font-medium text-[#FF6B35]'
+          : 'text-gray-400 hover:bg-white/[0.08] hover:text-white'
+      }`}
+    >
+      <Icon className="h-[18px] w-[18px] shrink-0" />
+      {!collapsed && (
+        <span className="flex-1">{label}</span>
+      )}
+      {badge !== undefined && !collapsed && (
+        <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#FF6B35] px-1.5 text-[10px] font-bold text-white">
+          {badge > 99 ? '99+' : badge}
+        </span>
+      )}
+      {badge !== undefined && collapsed && (
+        <span className="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#FF6B35] px-1 text-[9px] font-bold text-white">
+          {badge > 99 ? '99+' : badge}
+        </span>
+      )}
+      {collapsed && (
+        <span className="pointer-events-none absolute left-full ml-3 whitespace-nowrap rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
+          {label}
+        </span>
+      )}
+    </Link>
   );
 }
 
@@ -200,6 +347,20 @@ function LogoutIcon({ className }: { className?: string }) {
   return (
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+    </svg>
+  );
+}
+
+function CollapseIcon({ className, collapsed }: { className?: string; collapsed: boolean }) {
+  return (
+    <svg
+      className={`${className} transition-transform duration-300 ${collapsed ? 'rotate-180' : ''}`}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={1.5}
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5" />
     </svg>
   );
 }
