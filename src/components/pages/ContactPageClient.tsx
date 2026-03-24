@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
+import SmartImage from "@/components/SmartImage";
 import { motion } from "framer-motion";
 import {
   MapPinIcon,
@@ -164,7 +164,7 @@ export default function ContactPageClient({
 function HeroSection() {
   return (
     <section className="relative overflow-hidden min-h-[60vh] md:min-h-[70vh] lg:min-h-[80vh] flex items-center justify-center">
-      <Image
+      <SmartImage
         src="/images/facilities/beyond-classroom.webp"
         alt="Aarambha School campus"
         fill

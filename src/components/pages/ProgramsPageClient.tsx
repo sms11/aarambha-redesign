@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
+import SmartImage from "@/components/SmartImage";
 import Link from "next/link";
 import {
   CheckCircleIcon,
@@ -183,7 +183,7 @@ export default function ProgramsPageClient({
 function HeroSection() {
   return (
     <section className="relative overflow-hidden min-h-[60vh] md:min-h-[70vh] lg:min-h-[80vh] flex items-center justify-center">
-      <Image
+      <SmartImage
         src="https://images.unsplash.com/photo-1577896851231-70ef18881754?w=1920&q=80"
         alt="Students learning in a classroom"
         fill
@@ -279,7 +279,7 @@ function ThematicApproach() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <Image
+            <SmartImage
               src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=80"
               alt="Children learning with thematic approach"
               fill
@@ -419,7 +419,7 @@ function ProgramTabs({ programs }: { programs: ProgramItem[] }) {
           >
             {/* Left: image card */}
             <div className="group relative h-[320px] lg:h-[440px] rounded-3xl overflow-hidden shadow-2xl">
-              <Image
+              <SmartImage
                 src={current.image}
                 alt={current.name}
                 fill

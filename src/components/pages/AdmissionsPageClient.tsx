@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
+import SmartImage from "@/components/SmartImage";
 import Link from "next/link";
 import {
   SparklesIcon,
@@ -186,7 +186,7 @@ export default function AdmissionsPageClient({
 function HeroSection() {
   return (
     <section className="relative overflow-hidden min-h-[60vh] md:min-h-[70vh] lg:min-h-[80vh] flex items-center justify-center">
-      <Image
+      <SmartImage
         src="/images/community/partnerships-1.webp"
         alt="Aarambha School community partnerships"
         fill
@@ -287,7 +287,7 @@ function InvolvementSection({ involvementItems }: { involvementItems: Involvemen
           >
             {/* Image */}
             <div className="relative h-[300px] lg:h-[400px] rounded-3xl overflow-hidden shadow-2xl">
-              <Image
+              <SmartImage
                 src={item.image ?? ""}
                 alt={item.title}
                 fill
@@ -453,7 +453,7 @@ function PartnershipsSection({
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <div className="relative h-[280px] rounded-3xl overflow-hidden shadow-lg">
-              <Image
+              <SmartImage
                 src="/images/community/partnerships-1.webp"
                 alt="Aarambha community partnership event"
                 fill
@@ -462,7 +462,7 @@ function PartnershipsSection({
               <div className="absolute -top-3 -left-3 w-16 h-16 rounded-full bg-[var(--gold)] opacity-20 animate-blob" />
             </div>
             <div className="relative h-[280px] rounded-3xl overflow-hidden shadow-lg">
-              <Image
+              <SmartImage
                 src="/images/community/partnerships-2.webp"
                 alt="Aarambha students in community program"
                 fill
@@ -501,7 +501,7 @@ function PartnersMarquee({ partners }: { partners: PartnerItem[] }) {
                 key={`${partner.name}-${i}`}
                 className="flex items-center justify-center h-16 w-32 shrink-0 grayscale hover:grayscale-0 opacity-60 hover:opacity-100 transition-all duration-300"
               >
-                <Image
+                <SmartImage
                   src={partner.logo}
                   alt={partner.name}
                   width={110}
@@ -594,7 +594,7 @@ function TestimonialsSection({ testimonials }: { testimonials: TestimonialItem[]
               {/* Author */}
               <div className="flex items-center gap-4">
                 <div className="relative w-14 h-14 rounded-full overflow-hidden ring-3 ring-offset-2 ring-[var(--gold)]">
-                  <Image
+                  <SmartImage
                     src={current.image}
                     alt={current.name}
                     fill

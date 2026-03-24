@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Image from "next/image";
+import SmartImage from "@/components/SmartImage";
 import Link from "next/link";
 import {
   CheckCircleIcon,
@@ -178,7 +178,7 @@ export default function FacilitiesPageClient({
 function HeroSection() {
   return (
     <section className="relative overflow-hidden min-h-[60vh] md:min-h-[70vh] lg:min-h-[80vh] flex items-center justify-center">
-      <Image
+      <SmartImage
         src="/images/facilities/beyond-classroom.webp"
         alt="Aarambha School facilities"
         fill
@@ -284,7 +284,7 @@ function SchoolLifeSection({ activities }: { activities: ActivityItem[] }) {
               whileHover={{ y: -6 }}
             >
               <div className="relative h-[220px] overflow-hidden">
-                <Image
+                <SmartImage
                   src={item.image}
                   alt={item.title}
                   fill
@@ -367,7 +367,7 @@ function ResourcesSection({ resources }: { resources: FacilityItem[] }) {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <Image
+            <SmartImage
               src="/images/facilities/beyond-classroom.webp"
               alt="Learning beyond the classroom at Aarambha"
               fill
@@ -435,7 +435,7 @@ function LabsSection({ labs }: { labs: FacilityItem[] }) {
               whileHover={{ y: -6 }}
             >
               <div className="relative h-[220px] overflow-hidden">
-                <Image
+                <SmartImage
                   src={lab.image ?? "/images/facilities/beyond-classroom.webp"}
                   alt={lab.title}
                   fill
@@ -498,7 +498,7 @@ function DigitalSection({ digitalItems }: { digitalItems: FacilityItem[] }) {
               >
                 <div className="flex items-start gap-4">
                   <div className="relative w-20 h-14 shrink-0 rounded-xl overflow-hidden">
-                    <Image
+                    <SmartImage
                       src={item.image ?? "/images/facilities/beyond-classroom.webp"}
                       alt={item.title}
                       fill
@@ -526,7 +526,7 @@ function DigitalSection({ digitalItems }: { digitalItems: FacilityItem[] }) {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <Image
+            <SmartImage
               src="/images/facilities/digital-education.webp"
               alt="Digital education at Aarambha"
               fill
@@ -572,7 +572,7 @@ function HealthSection({ counselingPoints }: { counselingPoints: string[] }) {
             />
             <div className="flex flex-col sm:flex-row gap-6 items-start">
               <div className="relative w-32 h-32 shrink-0 rounded-2xl overflow-hidden">
-                <Image
+                <SmartImage
                   src="/images/facilities/medicare.webp"
                   alt="Medicare services"
                   fill
@@ -646,7 +646,7 @@ function ConvenienceSection({ conveniences }: { conveniences: FacilityItem[] }) 
             transition={{ duration: 0.6 }}
           >
             <div className="relative w-[55%] h-[350px] rounded-3xl overflow-hidden shadow-lg">
-              <Image
+              <SmartImage
                 src="/images/facilities/convenience-1.webp"
                 alt="Aarambha School transportation and facilities"
                 fill
@@ -654,7 +654,7 @@ function ConvenienceSection({ conveniences }: { conveniences: FacilityItem[] }) 
               />
             </div>
             <div className="relative w-[45%] h-[420px] rounded-3xl overflow-hidden shadow-lg -mt-8">
-              <Image
+              <SmartImage
                 src="/images/facilities/convenience-2.webp"
                 alt="Aarambha School cafeteria"
                 fill

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Image from "next/image";
+import SmartImage from "@/components/SmartImage";
 import Link from "next/link";
 import {
   SparklesIcon,
@@ -166,7 +166,7 @@ export default function AboutPageClient({
 function HeroSection() {
   return (
     <section className="relative overflow-hidden min-h-[60vh] md:min-h-[70vh] lg:min-h-[80vh] flex items-center justify-center">
-      <Image
+      <SmartImage
         src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1920&q=80"
         alt="School campus"
         fill
@@ -252,7 +252,7 @@ function AboutSection({ aboutText }: { aboutText: string[] }) {
             transition={{ duration: 0.6 }}
           >
             <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-              <Image
+              <SmartImage
                 src="/images/about-1.webp"
                 alt="Aarambha School campus"
                 width={600}
@@ -464,7 +464,7 @@ function PhilosophySection({ philosophy }: { philosophy: PhilosophyItem[] }) {
             transition={{ duration: 0.6 }}
           >
             <div className="rounded-3xl overflow-hidden shadow-2xl">
-              <Image
+              <SmartImage
                 src="/images/about-2.webp"
                 alt="Students at Aarambha School"
                 width={600}
@@ -519,7 +519,7 @@ function TeamSection({ teamMembers }: { teamMembers: TeamMemberItem[] }) {
               whileHover={{ y: -4 }}
             >
               <div className="relative w-32 h-32 mx-auto mb-6">
-                <Image
+                <SmartImage
                   src={member.image}
                   alt={member.name}
                   width={128}

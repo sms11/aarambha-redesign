@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import Image from "next/image";
+import SmartImage from "@/components/SmartImage";
 import {
   ChevronDownIcon,
   ChevronLeftIcon,
@@ -238,7 +238,7 @@ function HeroSection() {
 
   return (
     <section className="relative overflow-hidden min-h-[70vh] md:min-h-[80vh] lg:min-h-screen flex items-center justify-center">
-      <Image
+      <SmartImage
         src="https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=1920&q=80"
         alt="Students learning together"
         fill
@@ -391,7 +391,7 @@ function ProgramsSection({ programs }: { programs: ProgramItem[] }) {
             >
               <div className="card group cursor-pointer h-full">
                 <div className="relative h-52 overflow-hidden">
-                  <Image
+                  <SmartImage
                     src={program.image}
                     alt={program.name}
                     fill
@@ -447,7 +447,7 @@ function PrincipalMessage({ principalData }: { principalData: PrincipalData }) {
             transition={{ duration: 0.6 }}
           >
             <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-              <Image
+              <SmartImage
                 src={principalData.image}
                 alt={principalData.name}
                 width={600}
@@ -566,7 +566,7 @@ function AboutSection({ aboutText }: { aboutText: string[] }) {
             transition={{ duration: 0.6 }}
           >
             <div className="rounded-3xl overflow-hidden shadow-2xl">
-              <Image
+              <SmartImage
                 src="/images/about-1.webp"
                 alt="Aarambha School campus life"
                 width={600}
@@ -653,7 +653,7 @@ function WhyDifferentSection({ features }: { features: FeatureItem[] }) {
                 transition={{ delay: index * 0.15 }}
               >
                 <div className="relative h-52 overflow-hidden">
-                  <Image
+                  <SmartImage
                     src={feature.image}
                     alt={feature.title}
                     fill
@@ -715,7 +715,7 @@ function SchoolLifeSection({ schoolLifeItems }: { schoolLifeItems: SchoolLifeIte
                 transition={{ delay: index * 0.05 }}
                 whileHover={{ y: -4 }}
               >
-                <Image
+                <SmartImage
                   src={item.image}
                   alt={item.title}
                   fill
@@ -778,7 +778,7 @@ function TeamSection({ teamMembers }: { teamMembers: TeamMemberItem[] }) {
               whileHover={{ y: -4 }}
             >
               <div className="relative w-28 h-28 mx-auto mb-5">
-                <Image
+                <SmartImage
                   src={member.image}
                   alt={member.name}
                   width={112}
@@ -851,7 +851,7 @@ function TestimonialSection({ testimonials }: { testimonials: TestimonialItem[] 
                     &ldquo;{testimonials[active].quote}&rdquo;
                   </p>
                   <div className="flex items-center justify-center gap-4 mt-8">
-                    <Image
+                    <SmartImage
                       src={testimonials[active].image}
                       alt={testimonials[active].name}
                       width={56}
@@ -923,7 +923,7 @@ function PartnersSection({ partners }: { partners: PartnerItem[] }) {
                 key={`${partner.name}-${i}`}
                 className="bg-[var(--cream)] rounded-xl px-8 py-5 flex items-center justify-center shrink-0 hover:shadow-md transition-shadow"
               >
-                <Image
+                <SmartImage
                   src={partner.logo}
                   alt={partner.name}
                   width={120}

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
+import SmartImage from "@/components/SmartImage";
 import Link from "next/link";
 import { SparklesIcon } from "@heroicons/react/24/outline";
 import { StarIcon } from "@heroicons/react/24/outline";
@@ -153,7 +153,7 @@ export default function GalleryPageClient({ galleryImages }: GalleryPageClientPr
 function HeroSection() {
   return (
     <section className="relative overflow-hidden min-h-[60vh] md:min-h-[70vh] lg:min-h-[80vh] flex items-center justify-center">
-      <Image
+      <SmartImage
         src="/images/facilities/club-activities.webp"
         alt="Life at Aarambha"
         fill
@@ -296,7 +296,7 @@ function GallerySection({ galleryImages }: { galleryImages: GalleryImageItem[] }
                 }}
                 className="break-inside-avoid mb-5 relative group rounded-2xl overflow-hidden cursor-pointer"
               >
-                <Image
+                <SmartImage
                   src={item.src}
                   alt={item.alt}
                   width={600}
