@@ -38,6 +38,14 @@ export async function verifySession(): Promise<{ userId: number; email: string }
   }
 }
 
+export async function requireAuth() {
+  const session = await verifySession();
+  if (!session) {
+    throw new Error('Unauthorized');
+  }
+  return session;
+}
+
 export async function deleteSession() {
   const cookieStore = await cookies();
   cookieStore.delete(COOKIE_NAME);

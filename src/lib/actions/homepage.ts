@@ -8,6 +8,7 @@ import {
   schoolLifeItemSchema,
   principalMessageSchema,
 } from '@/lib/validations/homepage';
+import { requireAuth } from '@/lib/auth';
 
 // ─── Stats ───────────────────────────────────────────────────────────────────
 
@@ -21,6 +22,7 @@ export async function createStat(data: {
   suffix?: string;
   emoji: string;
 }) {
+  await requireAuth();
   const parsed = statSchema.safeParse(data);
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors };
@@ -50,6 +52,7 @@ export async function updateStat(
     emoji: string;
   }
 ) {
+  await requireAuth();
   const parsed = statSchema.safeParse(data);
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors };
@@ -65,12 +68,14 @@ export async function updateStat(
 }
 
 export async function deleteStat(id: number) {
+  await requireAuth();
   await prisma.stat.delete({ where: { id } });
   revalidatePath('/');
   return { success: true };
 }
 
 export async function reorderStat(id: number, direction: 'up' | 'down') {
+  await requireAuth();
   const current = await prisma.stat.findUnique({ where: { id } });
   if (!current) return;
 
@@ -114,6 +119,7 @@ export async function createHomepageFeature(data: {
   icon: string;
   image: string;
 }) {
+  await requireAuth();
   const parsed = homepageFeatureSchema.safeParse(data);
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors };
@@ -143,6 +149,7 @@ export async function updateHomepageFeature(
     image: string;
   }
 ) {
+  await requireAuth();
   const parsed = homepageFeatureSchema.safeParse(data);
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors };
@@ -158,12 +165,14 @@ export async function updateHomepageFeature(
 }
 
 export async function deleteHomepageFeature(id: number) {
+  await requireAuth();
   await prisma.homepageFeature.delete({ where: { id } });
   revalidatePath('/');
   return { success: true };
 }
 
 export async function reorderHomepageFeature(id: number, direction: 'up' | 'down') {
+  await requireAuth();
   const current = await prisma.homepageFeature.findUnique({ where: { id } });
   if (!current) return;
 
@@ -206,6 +215,7 @@ export async function createSchoolLifeItem(data: {
   icon: string;
   image: string;
 }) {
+  await requireAuth();
   const parsed = schoolLifeItemSchema.safeParse(data);
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors };
@@ -234,6 +244,7 @@ export async function updateSchoolLifeItem(
     image: string;
   }
 ) {
+  await requireAuth();
   const parsed = schoolLifeItemSchema.safeParse(data);
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors };
@@ -249,12 +260,14 @@ export async function updateSchoolLifeItem(
 }
 
 export async function deleteSchoolLifeItem(id: number) {
+  await requireAuth();
   await prisma.schoolLifeItem.delete({ where: { id } });
   revalidatePath('/');
   return { success: true };
 }
 
 export async function reorderSchoolLifeItem(id: number, direction: 'up' | 'down') {
+  await requireAuth();
   const current = await prisma.schoolLifeItem.findUnique({ where: { id } });
   if (!current) return;
 
@@ -306,6 +319,7 @@ export async function updatePrincipalMessage(data: {
   principal_name: string;
   principal_image: string;
 }) {
+  await requireAuth();
   const parsed = principalMessageSchema.safeParse(data);
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors };

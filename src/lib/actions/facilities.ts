@@ -7,6 +7,7 @@ import {
   facilitySchema,
   counselingPointsSchema,
 } from '@/lib/validations/facilities';
+import { requireAuth } from '@/lib/auth';
 
 // ─── Activities ──────────────────────────────────────────────────────────────
 
@@ -22,6 +23,7 @@ export async function createActivity(data: {
   color: string;
   section: string;
 }) {
+  await requireAuth();
   const parsed = activitySchema.safeParse(data);
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors };
@@ -53,6 +55,7 @@ export async function updateActivity(
     section: string;
   }
 ) {
+  await requireAuth();
   const parsed = activitySchema.safeParse(data);
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors };
@@ -68,12 +71,14 @@ export async function updateActivity(
 }
 
 export async function deleteActivity(id: number) {
+  await requireAuth();
   await prisma.activity.delete({ where: { id } });
   revalidatePath('/facilities');
   return { success: true };
 }
 
 export async function reorderActivity(id: number, direction: 'up' | 'down') {
+  await requireAuth();
   const current = await prisma.activity.findUnique({ where: { id } });
   if (!current) return;
 
@@ -120,6 +125,7 @@ export async function createFacility(data: {
   icon?: string;
   color?: string;
 }) {
+  await requireAuth();
   const parsed = facilitySchema.safeParse(data);
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors };
@@ -152,6 +158,7 @@ export async function updateFacility(
     color?: string;
   }
 ) {
+  await requireAuth();
   const parsed = facilitySchema.safeParse(data);
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors };
@@ -167,12 +174,14 @@ export async function updateFacility(
 }
 
 export async function deleteFacility(id: number) {
+  await requireAuth();
   await prisma.facility.delete({ where: { id } });
   revalidatePath('/facilities');
   return { success: true };
 }
 
 export async function reorderFacility(id: number, direction: 'up' | 'down') {
+  await requireAuth();
   const current = await prisma.facility.findUnique({ where: { id } });
   if (!current) return;
 
@@ -221,6 +230,7 @@ export async function getCounselingPoints(): Promise<string[]> {
 }
 
 export async function updateCounselingPoints(points: string[]) {
+  await requireAuth();
   const parsed = counselingPointsSchema.safeParse({ counseling_points: points });
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors };

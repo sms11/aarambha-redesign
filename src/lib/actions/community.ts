@@ -3,6 +3,7 @@
 import { prisma } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { communitySchema } from '@/lib/validations/community';
+import { requireAuth } from '@/lib/auth';
 
 export async function getAllCommunityItems() {
   return prisma.communityInvolvement.findMany({ orderBy: { sortOrder: 'asc' } });
@@ -13,6 +14,7 @@ export async function getCommunityItemById(id: number) {
 }
 
 export async function createCommunityItem(formData: FormData) {
+  await requireAuth();
   const parsed = communitySchema.safeParse({
     title: formData.get('title'),
     description: formData.get('description'),
@@ -43,6 +45,7 @@ export async function createCommunityItem(formData: FormData) {
 }
 
 export async function updateCommunityItem(id: number, formData: FormData) {
+  await requireAuth();
   const parsed = communitySchema.safeParse({
     title: formData.get('title'),
     description: formData.get('description'),
@@ -69,12 +72,14 @@ export async function updateCommunityItem(id: number, formData: FormData) {
 }
 
 export async function deleteCommunityItem(id: number) {
+  await requireAuth();
   await prisma.communityInvolvement.delete({ where: { id } });
   revalidatePath('/community');
   return { success: true };
 }
 
 export async function reorderCommunityItem(id: number, direction: 'up' | 'down') {
+  await requireAuth();
   const current = await prisma.communityInvolvement.findUnique({ where: { id } });
   if (!current) return;
 

@@ -3,6 +3,7 @@
 import { prisma } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { testimonialSchema } from '@/lib/validations/testimonial';
+import { requireAuth } from '@/lib/auth';
 
 export async function getAllTestimonials() {
   return prisma.testimonial.findMany({ orderBy: { sortOrder: 'asc' } });
@@ -13,6 +14,7 @@ export async function getTestimonialById(id: number) {
 }
 
 export async function createTestimonial(formData: FormData) {
+  await requireAuth();
   const parsed = testimonialSchema.safeParse({
     quote: formData.get('quote'),
     name: formData.get('name'),
@@ -43,6 +45,7 @@ export async function createTestimonial(formData: FormData) {
 }
 
 export async function updateTestimonial(id: number, formData: FormData) {
+  await requireAuth();
   const parsed = testimonialSchema.safeParse({
     quote: formData.get('quote'),
     name: formData.get('name'),
@@ -67,6 +70,7 @@ export async function updateTestimonial(id: number, formData: FormData) {
 }
 
 export async function deleteTestimonial(id: number) {
+  await requireAuth();
   await prisma.testimonial.delete({ where: { id } });
   revalidatePath('/');
   revalidatePath('/community');
@@ -74,6 +78,7 @@ export async function deleteTestimonial(id: number) {
 }
 
 export async function reorderTestimonial(id: number, direction: 'up' | 'down') {
+  await requireAuth();
   const current = await prisma.testimonial.findUnique({ where: { id } });
   if (!current) return;
 

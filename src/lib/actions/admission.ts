@@ -3,6 +3,7 @@
 import { prisma } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
+import { requireAuth } from '@/lib/auth';
 
 const enquirySchema = z.object({
   studentName: z.string().min(1, 'Student name is required'),
@@ -44,11 +45,13 @@ export async function getAllEnquiries() {
 }
 
 export async function markEnquiryAsRead(id: number) {
+  await requireAuth();
   await prisma.admissionEnquiry.update({ where: { id }, data: { read: true } });
   revalidatePath('/admin/admissions');
 }
 
 export async function deleteEnquiry(id: number) {
+  await requireAuth();
   await prisma.admissionEnquiry.delete({ where: { id } });
   revalidatePath('/admin/admissions');
 }

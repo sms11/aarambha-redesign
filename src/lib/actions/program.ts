@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { programSchema } from '@/lib/validations/program';
 import { specialFeatureSchema } from '@/lib/validations/special-features';
 import { keyBenefitSchema } from '@/lib/validations/key-benefits';
+import { requireAuth } from '@/lib/auth';
 
 export async function getAllPrograms() {
   return prisma.program.findMany({ orderBy: { sortOrder: 'asc' } });
@@ -25,6 +26,7 @@ export async function createProgram(data: {
   color: string;
   emoji: string;
 }) {
+  await requireAuth();
   const parsed = programSchema.safeParse(data);
 
   if (!parsed.success) {
@@ -61,6 +63,7 @@ export async function updateProgram(
     emoji: string;
   }
 ) {
+  await requireAuth();
   const parsed = programSchema.safeParse(data);
 
   if (!parsed.success) {
@@ -78,6 +81,7 @@ export async function updateProgram(
 }
 
 export async function deleteProgram(id: number) {
+  await requireAuth();
   await prisma.program.delete({ where: { id } });
   revalidatePath('/');
   revalidatePath('/programs');
@@ -85,6 +89,7 @@ export async function deleteProgram(id: number) {
 }
 
 export async function reorderProgram(id: number, direction: 'up' | 'down') {
+  await requireAuth();
   const current = await prisma.program.findUnique({ where: { id } });
   if (!current) return;
 
@@ -124,6 +129,7 @@ export async function getAllSpecialFeatures() {
 }
 
 export async function createSpecialFeature(formData: FormData) {
+  await requireAuth();
   const parsed = specialFeatureSchema.safeParse({
     title: formData.get('title'),
     description: formData.get('description'),
@@ -152,6 +158,7 @@ export async function createSpecialFeature(formData: FormData) {
 }
 
 export async function updateSpecialFeature(id: number, formData: FormData) {
+  await requireAuth();
   const parsed = specialFeatureSchema.safeParse({
     title: formData.get('title'),
     description: formData.get('description'),
@@ -174,12 +181,14 @@ export async function updateSpecialFeature(id: number, formData: FormData) {
 }
 
 export async function deleteSpecialFeature(id: number) {
+  await requireAuth();
   await prisma.specialFeature.delete({ where: { id } });
   revalidatePath('/programs');
   return { success: true };
 }
 
 export async function reorderSpecialFeature(id: number, direction: 'up' | 'down') {
+  await requireAuth();
   const current = await prisma.specialFeature.findUnique({ where: { id } });
   if (!current) return;
 
@@ -218,6 +227,7 @@ export async function getAllKeyBenefits() {
 }
 
 export async function createKeyBenefit(formData: FormData) {
+  await requireAuth();
   const parsed = keyBenefitSchema.safeParse({
     title: formData.get('title'),
     description: formData.get('description'),
@@ -247,6 +257,7 @@ export async function createKeyBenefit(formData: FormData) {
 }
 
 export async function updateKeyBenefit(id: number, formData: FormData) {
+  await requireAuth();
   const parsed = keyBenefitSchema.safeParse({
     title: formData.get('title'),
     description: formData.get('description'),
@@ -270,12 +281,14 @@ export async function updateKeyBenefit(id: number, formData: FormData) {
 }
 
 export async function deleteKeyBenefit(id: number) {
+  await requireAuth();
   await prisma.keyBenefit.delete({ where: { id } });
   revalidatePath('/programs');
   return { success: true };
 }
 
 export async function reorderKeyBenefit(id: number, direction: 'up' | 'down') {
+  await requireAuth();
   const current = await prisma.keyBenefit.findUnique({ where: { id } });
   if (!current) return;
 

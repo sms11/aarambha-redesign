@@ -3,6 +3,7 @@
 import { prisma } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { partnerSchema } from '@/lib/validations/partner';
+import { requireAuth } from '@/lib/auth';
 
 export async function getAllPartners() {
   return prisma.partner.findMany({ orderBy: { sortOrder: 'asc' } });
@@ -13,6 +14,7 @@ export async function getPartnerById(id: number) {
 }
 
 export async function createPartner(formData: FormData) {
+  await requireAuth();
   const parsed = partnerSchema.safeParse({
     name: formData.get('name'),
     logo: formData.get('logo'),
@@ -39,6 +41,7 @@ export async function createPartner(formData: FormData) {
 }
 
 export async function updatePartner(id: number, formData: FormData) {
+  await requireAuth();
   const parsed = partnerSchema.safeParse({
     name: formData.get('name'),
     logo: formData.get('logo'),
@@ -59,6 +62,7 @@ export async function updatePartner(id: number, formData: FormData) {
 }
 
 export async function deletePartner(id: number) {
+  await requireAuth();
   await prisma.partner.delete({ where: { id } });
   revalidatePath('/');
   revalidatePath('/community');
@@ -66,6 +70,7 @@ export async function deletePartner(id: number) {
 }
 
 export async function reorderPartner(id: number, direction: 'up' | 'down') {
+  await requireAuth();
   const current = await prisma.partner.findUnique({ where: { id } });
   if (!current) return;
 

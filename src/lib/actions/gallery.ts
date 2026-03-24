@@ -3,6 +3,7 @@
 import { prisma } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { galleryImageSchema } from '@/lib/validations/gallery';
+import { requireAuth } from '@/lib/auth';
 
 export async function getAllGalleryImages() {
   return prisma.galleryImage.findMany({ orderBy: { sortOrder: 'asc' } });
@@ -13,6 +14,7 @@ export async function createGalleryImage(data: {
   alt: string;
   category: string;
 }) {
+  await requireAuth();
   const parsed = galleryImageSchema.safeParse(data);
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors };
@@ -41,6 +43,7 @@ export async function updateGalleryImage(
     category: string;
   }
 ) {
+  await requireAuth();
   const parsed = galleryImageSchema.safeParse(data);
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors };
@@ -56,12 +59,14 @@ export async function updateGalleryImage(
 }
 
 export async function deleteGalleryImage(id: number) {
+  await requireAuth();
   await prisma.galleryImage.delete({ where: { id } });
   revalidatePath('/gallery');
   return { success: true };
 }
 
 export async function reorderGalleryImage(id: number, direction: 'up' | 'down') {
+  await requireAuth();
   const current = await prisma.galleryImage.findUnique({ where: { id } });
   if (!current) return;
 

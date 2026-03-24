@@ -7,6 +7,7 @@ import {
   philosophySchema,
   missionVisionSchema,
 } from '@/lib/validations/about';
+import { requireAuth } from '@/lib/auth';
 
 // ─── Core Values ─────────────────────────────────────────────────────────────
 
@@ -20,6 +21,7 @@ export async function createCoreValue(data: {
   emoji: string;
   color: string;
 }) {
+  await requireAuth();
   const parsed = coreValueSchema.safeParse(data);
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors };
@@ -49,6 +51,7 @@ export async function updateCoreValue(
     color: string;
   }
 ) {
+  await requireAuth();
   const parsed = coreValueSchema.safeParse(data);
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors };
@@ -64,12 +67,14 @@ export async function updateCoreValue(
 }
 
 export async function deleteCoreValue(id: number) {
+  await requireAuth();
   await prisma.coreValue.delete({ where: { id } });
   revalidatePath('/about');
   return { success: true };
 }
 
 export async function reorderCoreValue(id: number, direction: 'up' | 'down') {
+  await requireAuth();
   const current = await prisma.coreValue.findUnique({ where: { id } });
   if (!current) return;
 
@@ -113,6 +118,7 @@ export async function createPhilosophy(data: {
   emoji: string;
   color: string;
 }) {
+  await requireAuth();
   const parsed = philosophySchema.safeParse(data);
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors };
@@ -142,6 +148,7 @@ export async function updatePhilosophy(
     color: string;
   }
 ) {
+  await requireAuth();
   const parsed = philosophySchema.safeParse(data);
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors };
@@ -157,12 +164,14 @@ export async function updatePhilosophy(
 }
 
 export async function deletePhilosophy(id: number) {
+  await requireAuth();
   await prisma.philosophy.delete({ where: { id } });
   revalidatePath('/about');
   return { success: true };
 }
 
 export async function reorderPhilosophy(id: number, direction: 'up' | 'down') {
+  await requireAuth();
   const current = await prisma.philosophy.findUnique({ where: { id } });
   if (!current) return;
 
@@ -213,6 +222,7 @@ export async function updateMissionVision(data: {
   mission: string;
   vision: string;
 }) {
+  await requireAuth();
   const parsed = missionVisionSchema.safeParse(data);
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors };

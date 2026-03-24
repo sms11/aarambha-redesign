@@ -4,6 +4,7 @@ import { prisma } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { contactInfoSchema } from '@/lib/validations/contact-info';
+import { requireAuth } from '@/lib/auth';
 
 const contactSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -38,6 +39,7 @@ export async function getAllContactInfo() {
 }
 
 export async function createContactInfo(formData: FormData) {
+  await requireAuth();
   const parsed = contactInfoSchema.safeParse({
     label: formData.get('label'),
     value: formData.get('value'),
@@ -65,6 +67,7 @@ export async function createContactInfo(formData: FormData) {
 }
 
 export async function updateContactInfo(id: number, formData: FormData) {
+  await requireAuth();
   const parsed = contactInfoSchema.safeParse({
     label: formData.get('label'),
     value: formData.get('value'),
@@ -86,12 +89,14 @@ export async function updateContactInfo(id: number, formData: FormData) {
 }
 
 export async function deleteContactInfo(id: number) {
+  await requireAuth();
   await prisma.contactInfo.delete({ where: { id } });
   revalidatePath('/contact');
   return { success: true };
 }
 
 export async function reorderContactInfo(id: number, direction: 'up' | 'down') {
+  await requireAuth();
   const current = await prisma.contactInfo.findUnique({ where: { id } });
   if (!current) return;
 
@@ -130,6 +135,7 @@ export async function getAllSubmissions() {
 }
 
 export async function markAsRead(id: number) {
+  await requireAuth();
   await prisma.contactSubmission.update({
     where: { id },
     data: { read: true },
@@ -138,6 +144,7 @@ export async function markAsRead(id: number) {
 }
 
 export async function deleteSubmission(id: number) {
+  await requireAuth();
   await prisma.contactSubmission.delete({ where: { id } });
   return { success: true };
 }

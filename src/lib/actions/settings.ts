@@ -3,6 +3,7 @@
 import { prisma } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { settingsSchema, SETTINGS_KEYS } from '@/lib/validations/settings';
+import { requireAuth } from '@/lib/auth';
 
 export async function getAllSettings() {
   const rows = await prisma.siteSettings.findMany({
@@ -17,6 +18,7 @@ export async function getAllSettings() {
 }
 
 export async function updateSettings(data: Record<string, string>) {
+  await requireAuth();
   const parsed = settingsSchema.safeParse(data);
 
   if (!parsed.success) {

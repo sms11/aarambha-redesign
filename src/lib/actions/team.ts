@@ -3,6 +3,7 @@
 import { prisma } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { teamMemberSchema } from '@/lib/validations/team';
+import { requireAuth } from '@/lib/auth';
 
 export async function getAllTeamMembers() {
   return prisma.teamMember.findMany({ orderBy: { sortOrder: 'asc' } });
@@ -13,6 +14,7 @@ export async function getTeamMemberById(id: number) {
 }
 
 export async function createTeamMember(formData: FormData) {
+  await requireAuth();
   const parsed = teamMemberSchema.safeParse({
     name: formData.get('name'),
     role: formData.get('role'),
@@ -40,6 +42,7 @@ export async function createTeamMember(formData: FormData) {
 }
 
 export async function updateTeamMember(id: number, formData: FormData) {
+  await requireAuth();
   const parsed = teamMemberSchema.safeParse({
     name: formData.get('name'),
     role: formData.get('role'),
@@ -61,6 +64,7 @@ export async function updateTeamMember(id: number, formData: FormData) {
 }
 
 export async function deleteTeamMember(id: number) {
+  await requireAuth();
   await prisma.teamMember.delete({ where: { id } });
   revalidatePath('/');
   revalidatePath('/about');
@@ -68,6 +72,7 @@ export async function deleteTeamMember(id: number) {
 }
 
 export async function reorderTeamMember(id: number, direction: 'up' | 'down') {
+  await requireAuth();
   const current = await prisma.teamMember.findUnique({ where: { id } });
   if (!current) return;
 
