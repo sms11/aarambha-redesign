@@ -606,7 +606,7 @@ function StatsBar({ stats }: { stats: StatItem[] }) {
             >
               <span className="text-3xl mb-2 block">{stat.emoji}</span>
               <div className="text-title font-display text-[var(--gold)]">
-                {stat.value}
+                {stat.value}{stat.suffix && stat.suffix}
               </div>
               <div className="text-label text-white/70 mt-2">{stat.label}</div>
             </motion.div>
