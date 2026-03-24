@@ -1,3 +1,8 @@
+/**
+ * Simple in-memory rate limiter.
+ * Note: Resets on server restart. For production at scale,
+ * use Redis-backed rate limiting (e.g., @upstash/ratelimit).
+ */
 const requests = new Map<string, { count: number; resetTime: number }>();
 
 const WINDOW_MS = 60 * 1000; // 1 minute
