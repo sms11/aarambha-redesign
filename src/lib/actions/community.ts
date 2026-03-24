@@ -38,7 +38,7 @@ export async function createCommunityItem(formData: FormData) {
     },
   });
 
-  revalidatePath('/admissions');
+  revalidatePath('/community');
   return { success: true };
 }
 
@@ -64,13 +64,13 @@ export async function updateCommunityItem(id: number, formData: FormData) {
     },
   });
 
-  revalidatePath('/admissions');
+  revalidatePath('/community');
   return { success: true };
 }
 
 export async function deleteCommunityItem(id: number) {
   await prisma.communityInvolvement.delete({ where: { id } });
-  revalidatePath('/admissions');
+  revalidatePath('/community');
   return { success: true };
 }
 
@@ -103,5 +103,5 @@ export async function reorderCommunityItem(id: number, direction: 'up' | 'down')
     ]);
   }
 
-  revalidatePath('/admissions');
+  revalidatePath('/community');
 }

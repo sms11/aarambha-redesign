@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const navLinks = [
   { href: "/about", label: "About" },
   { href: "/programs", label: "Academic Excellence" },
-  { href: "/admissions", label: "Community" },
+  { href: "/community", label: "Community" },
   { href: "/facilities", label: "Facilities & Environment" },
   { href: "/gallery", label: "Gallery" },
   { href: "/contact", label: "Contact" },
@@ -79,7 +79,7 @@ export default function Header() {
         {/* Apply Now Button (Desktop) */}
         <div className="hidden lg:block">
           <Link
-            href="/admissions"
+            href="/community/form"
             className={`inline-flex items-center justify-center px-6 py-2.5 rounded-full text-sm font-semibold tracking-wide transition-all duration-300 hover:scale-105 ${
               scrolled
                 ? "btn-primary"
@@ -177,7 +177,7 @@ export default function Header() {
                   className="mt-8"
                 >
                   <Link
-                    href="/admissions"
+                    href="/community/form"
                     onClick={() => setMobileMenuOpen(false)}
                     className="btn-primary w-full text-center"
                   >

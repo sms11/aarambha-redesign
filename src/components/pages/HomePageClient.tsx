@@ -306,7 +306,7 @@ function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
         >
-          <Link href="/admissions/form" className="btn-cta">
+          <Link href="/community/form" className="btn-cta">
             Enroll Now
           </Link>
           <Link href="/about" className="btn-secondary">
@@ -968,7 +968,7 @@ function CTASection() {
           step toward a transformative education for your child.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
-          <Link href="/admissions/form" className="btn-cta">
+          <Link href="/community/form" className="btn-cta">
             Admission Form
           </Link>
           <Link href="/contact" className="btn-secondary">

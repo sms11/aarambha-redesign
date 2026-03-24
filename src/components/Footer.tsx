@@ -14,8 +14,8 @@ const schoolLinks = [
 ];
 
 const communityLinks = [
-  { href: "/admissions", label: "Community" },
-  { href: "/admissions", label: "Admission Process" },
+  { href: "/community", label: "Community" },
+  { href: "/community/form", label: "Admissions Form" },
   { href: "/about#team", label: "Team Aarambha" },
   { href: "/contact", label: "Contact" },
 ];

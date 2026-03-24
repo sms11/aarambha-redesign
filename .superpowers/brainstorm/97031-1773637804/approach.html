@@ -1,0 +1,25 @@
+<h2>Implementation Approach</h2>
+<p class="subtitle">Both approaches achieve the Premier look. The difference is how we get there.</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Full Rewrite — Recommended ✦</h3>
+      <p>Rewrite all pages and the design system (globals.css) from scratch to match Premier's aesthetic. New color palette, new typography, new component patterns. Clean slate, no leftover artifacts from the current playful design.</p>
+      <div style="margin-top: 12px; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 13px;">
+        <strong style="color: #F6CE6B;">Why recommended:</strong> The current design (bouncy animations, emoji icons, teal/orange palette) is so different from Premier that patching it would leave inconsistencies. A rewrite is cleaner and faster for this scope.
+      </div>
+    </div>
+  </div>
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Incremental Restyle</h3>
+      <p>Keep the existing page structure and components, but swap out the design system — colors, fonts, animations, spacing. Modify each page to match Premier's layout patterns while preserving the React/component architecture.</p>
+      <div style="margin-top: 12px; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 13px;">
+        <strong>Trade-off:</strong> Lower risk of breaking things, but harder to fully shed the current design's DNA. May end up as a hybrid that doesn't quite feel like Premier.
+      </div>
+    </div>
+  </div>
+</div>

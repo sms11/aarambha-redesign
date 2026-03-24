@@ -34,7 +34,7 @@ export async function createPartner(formData: FormData) {
   });
 
   revalidatePath('/');
-  revalidatePath('/admissions');
+  revalidatePath('/community');
   return { success: true };
 }
 
@@ -54,14 +54,14 @@ export async function updatePartner(id: number, formData: FormData) {
   });
 
   revalidatePath('/');
-  revalidatePath('/admissions');
+  revalidatePath('/community');
   return { success: true };
 }
 
 export async function deletePartner(id: number) {
   await prisma.partner.delete({ where: { id } });
   revalidatePath('/');
-  revalidatePath('/admissions');
+  revalidatePath('/community');
   return { success: true };
 }
 
@@ -95,5 +95,5 @@ export async function reorderPartner(id: number, direction: 'up' | 'down') {
   }
 
   revalidatePath('/');
-  revalidatePath('/admissions');
+  revalidatePath('/community');
 }

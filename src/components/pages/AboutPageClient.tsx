@@ -580,7 +580,7 @@ function CTASection() {
           <Link href="/contact" className="btn-cta">
             Schedule a Visit
           </Link>
-          <Link href="/admissions" className="btn-secondary">
+          <Link href="/community" className="btn-secondary">
             Apply Now
           </Link>
         </div>

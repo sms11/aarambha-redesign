@@ -680,7 +680,7 @@ function CTASection() {
           <Link href="/contact" className="btn-cta">
             Get in Touch
           </Link>
-          <Link href="/admissions/form" className="btn-secondary">
+          <Link href="/community/form" className="btn-secondary">
             Admission Form
           </Link>
         </div>

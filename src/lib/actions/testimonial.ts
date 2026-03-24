@@ -38,7 +38,7 @@ export async function createTestimonial(formData: FormData) {
   });
 
   revalidatePath('/');
-  revalidatePath('/admissions');
+  revalidatePath('/community');
   return { success: true };
 }
 
@@ -62,14 +62,14 @@ export async function updateTestimonial(id: number, formData: FormData) {
   });
 
   revalidatePath('/');
-  revalidatePath('/admissions');
+  revalidatePath('/community');
   return { success: true };
 }
 
 export async function deleteTestimonial(id: number) {
   await prisma.testimonial.delete({ where: { id } });
   revalidatePath('/');
-  revalidatePath('/admissions');
+  revalidatePath('/community');
   return { success: true };
 }
 
@@ -103,5 +103,5 @@ export async function reorderTestimonial(id: number, direction: 'up' | 'down') {
   }
 
   revalidatePath('/');
-  revalidatePath('/admissions');
+  revalidatePath('/community');
 }

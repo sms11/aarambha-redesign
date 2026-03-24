@@ -116,7 +116,7 @@ export default function AdmissionFormClient() {
                 <Link href="/" className="btn-secondary">
                   Back to Home
                 </Link>
-                <Link href="/admissions" className="btn-cta">
+                <Link href="/community" className="btn-cta">
                   Explore Admissions
                 </Link>
               </div>

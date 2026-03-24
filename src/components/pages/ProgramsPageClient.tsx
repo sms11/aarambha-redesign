@@ -242,7 +242,7 @@ function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
         >
-          <Link href="/admissions" className="btn-cta">
+          <Link href="/community" className="btn-cta">
             Apply Now
           </Link>
           <Link href="/contact" className="btn-secondary">
@@ -520,7 +520,7 @@ function ProgramTabs({ programs }: { programs: ProgramItem[] }) {
               </div>
 
               <Link
-                href="/admissions"
+                href="/community"
                 className="btn-cta inline-flex items-center gap-2"
               >
                 Apply for {current.name}
@@ -680,7 +680,7 @@ function CTASection() {
           thematic, student-centered approach.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
-          <Link href="/admissions" className="btn-cta">
+          <Link href="/community" className="btn-cta">
             Apply Now
           </Link>
           <Link href="/contact" className="btn-secondary">

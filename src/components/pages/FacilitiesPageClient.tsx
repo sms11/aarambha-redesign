@@ -240,7 +240,7 @@ function HeroSection() {
           <Link href="/contact" className="btn-cta">
             Schedule a Tour
           </Link>
-          <Link href="/admissions" className="btn-secondary">
+          <Link href="/community" className="btn-secondary">
             Learn More
           </Link>
         </motion.div>
@@ -735,7 +735,7 @@ function CTASection() {
           <Link href="/contact" className="btn-cta">
             Schedule a Tour
           </Link>
-          <Link href="/admissions" className="btn-secondary">
+          <Link href="/community" className="btn-secondary">
             Contact Us
           </Link>
         </div>
