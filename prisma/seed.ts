@@ -50,7 +50,10 @@ async function main() {
   // ──────────────────────────────────────────────
   console.log("Creating admin user...");
   const adminEmail = process.env.ADMIN_EMAIL || "admin@aarambha.school";
-  const adminPassword = process.env.ADMIN_PASSWORD || "aarambha2024";
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  if (!adminPassword) {
+    throw new Error('ADMIN_PASSWORD environment variable is required for seeding');
+  }
   const passwordHash = await hash(adminPassword, 12);
 
   await prisma.adminUser.create({
