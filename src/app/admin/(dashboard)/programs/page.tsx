@@ -6,6 +6,7 @@ import ImageUpload from '@/components/admin/ImageUpload';
 import SmartImage from '@/components/SmartImage';
 import IconPicker from '@/components/admin/IconPicker';
 import EmojiPicker from '@/components/admin/EmojiPicker';
+import { getIcon } from '@/lib/icons';
 import {
   getAllPrograms,
   createProgram,
@@ -122,6 +123,75 @@ function XIcon() {
     <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
     </svg>
+  );
+}
+
+// Tailwind color presets for text and bg class selection
+const COLOR_PRESETS = [
+  { name: 'Blue', text: 'text-blue-600', bg: 'bg-blue-50', hex: '#2563eb', hexLight: '#eff6ff' },
+  { name: 'Purple', text: 'text-purple-600', bg: 'bg-purple-50', hex: '#9333ea', hexLight: '#faf5ff' },
+  { name: 'Teal', text: 'text-teal-600', bg: 'bg-teal-50', hex: '#0d9488', hexLight: '#f0fdfa' },
+  { name: 'Orange', text: 'text-orange-600', bg: 'bg-orange-50', hex: '#ea580c', hexLight: '#fff7ed' },
+  { name: 'Pink', text: 'text-pink-600', bg: 'bg-pink-50', hex: '#db2777', hexLight: '#fdf2f8' },
+  { name: 'Amber', text: 'text-amber-600', bg: 'bg-amber-50', hex: '#d97706', hexLight: '#fffbeb' },
+  { name: 'Emerald', text: 'text-emerald-600', bg: 'bg-emerald-50', hex: '#059669', hexLight: '#ecfdf5' },
+  { name: 'Red', text: 'text-red-600', bg: 'bg-red-50', hex: '#dc2626', hexLight: '#fef2f2' },
+  { name: 'Indigo', text: 'text-indigo-600', bg: 'bg-indigo-50', hex: '#4f46e5', hexLight: '#eef2ff' },
+  { name: 'Cyan', text: 'text-cyan-600', bg: 'bg-cyan-50', hex: '#0891b2', hexLight: '#ecfeff' },
+];
+
+function TailwindColorPicker({
+  label,
+  value,
+  onChange,
+  type,
+  error,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  type: 'text' | 'bg';
+  error?: string;
+}) {
+  return (
+    <div>
+      <label className="mb-1.5 block text-sm font-medium text-[#1B2A4A]">{label}</label>
+      <div className="flex flex-wrap gap-2">
+        {COLOR_PRESETS.map((c) => {
+          const val = type === 'text' ? c.text : c.bg;
+          const isSelected = value === val;
+          return (
+            <button
+              key={c.name}
+              type="button"
+              onClick={() => onChange(val)}
+              title={`${c.name} — ${val}`}
+              className={`group relative flex h-9 w-9 items-center justify-center rounded-lg border-2 transition-all ${
+                isSelected
+                  ? 'border-[#8B5CF6] ring-2 ring-[#8B5CF6]/20 scale-110'
+                  : 'border-gray-200 hover:border-gray-300 hover:scale-105'
+              }`}
+              style={{
+                backgroundColor: type === 'bg' ? c.hexLight : c.hex,
+              }}
+            >
+              {isSelected && (
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke={type === 'bg' ? c.hex : '#fff'} strokeWidth={3}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                </svg>
+              )}
+              <span className="pointer-events-none absolute -top-7 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded bg-[#1B2A4A] px-1.5 py-0.5 text-[10px] text-white opacity-0 group-hover:opacity-100">
+                {c.name}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+      {value && (
+        <p className="mt-1.5 text-xs text-gray-400">{value}</p>
+      )}
+      {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
+    </div>
   );
 }
 
@@ -653,6 +723,8 @@ function SpecialFeaturesSection() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<SpecialFeature | null>(null);
   const [iconValue, setIconValue] = useState('');
+  const [colorValue, setColorValue] = useState('');
+  const [bgValue, setBgValue] = useState('');
   const [errors, setErrors] = useState<Record<string, string[]>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
@@ -669,6 +741,8 @@ function SpecialFeaturesSection() {
   function handleEdit(feature: SpecialFeature) {
     setEditingItem(feature);
     setIconValue(feature.icon || '');
+    setColorValue(feature.color || '');
+    setBgValue(feature.bg || '');
     setErrors({});
     setIsFormOpen(true);
   }
@@ -676,6 +750,8 @@ function SpecialFeaturesSection() {
   function handleCreate() {
     setEditingItem(null);
     setIconValue('');
+    setColorValue('');
+    setBgValue('');
     setErrors({});
     setIsFormOpen(true);
   }
@@ -684,6 +760,8 @@ function SpecialFeaturesSection() {
     setIsFormOpen(false);
     setEditingItem(null);
     setIconValue('');
+    setColorValue('');
+    setBgValue('');
     setErrors({});
   }
 
@@ -694,6 +772,8 @@ function SpecialFeaturesSection() {
 
     const formData = new FormData(e.currentTarget);
     formData.set('icon', iconValue);
+    formData.set('color', colorValue);
+    formData.set('bg', bgValue);
 
     const result = editingItem
       ? await updateSpecialFeature(editingItem.id, formData)
@@ -788,21 +868,19 @@ function SpecialFeaturesSection() {
             />
 
             <div className="grid gap-4 sm:grid-cols-2">
-              <FormField
-                label="Color"
-                name="color"
-                required
-                value={editingItem?.color}
+              <TailwindColorPicker
+                label="Text Color"
+                value={colorValue}
+                onChange={setColorValue}
+                type="text"
                 error={errors.color?.[0]}
-                placeholder="e.g. text-blue-600"
               />
-              <FormField
+              <TailwindColorPicker
                 label="Background"
-                name="bg"
-                required
-                value={editingItem?.bg}
+                value={bgValue}
+                onChange={setBgValue}
+                type="bg"
                 error={errors.bg?.[0]}
-                placeholder="e.g. bg-blue-50"
               />
             </div>
           </div>
@@ -858,9 +936,12 @@ function SpecialFeaturesSection() {
             >
               {/* Icon Circle */}
               <div
-                className={`flex h-12 w-12 items-center justify-center rounded-full text-sm font-bold ${feature.bg} ${feature.color}`}
+                className={`flex h-12 w-12 items-center justify-center rounded-full ${feature.bg} ${feature.color}`}
               >
-                {feature.icon}
+                {(() => {
+                  const Icon = getIcon(feature.icon);
+                  return Icon ? <Icon className="h-6 w-6" /> : <span className="text-sm font-bold">{feature.icon}</span>;
+                })()}
               </div>
 
               {/* Title */}
