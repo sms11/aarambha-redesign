@@ -211,10 +211,16 @@ export default function AdmissionFormClient() {
                     Our team will reach out to you at <strong>{contactNumber}</strong> shortly.
                   </p>
                   <div className="flex flex-wrap justify-center gap-4">
-                    <Link href="/" className="btn-secondary">
+                    <Link
+                      href="/"
+                      className="inline-flex items-center gap-2 rounded-2xl border-2 border-[var(--navy)] px-8 py-3 text-sm font-bold text-[var(--navy)] transition-all hover:bg-[var(--navy)] hover:text-white"
+                    >
                       ← Back to Home
                     </Link>
-                    <Link href="/community" className="btn-cta">
+                    <Link
+                      href="/community"
+                      className="inline-flex items-center gap-2 rounded-2xl bg-[var(--gold)] px-8 py-3 text-sm font-bold text-white shadow-lg shadow-[var(--gold)]/25 transition-all hover:shadow-xl hover:-translate-y-0.5"
+                    >
                       Explore Our School →
                     </Link>
                   </div>
