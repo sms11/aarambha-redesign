@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import FormField from '@/components/admin/FormField';
 import ImageUpload from '@/components/admin/ImageUpload';
 import SmartImage from '@/components/SmartImage';
+import IconPicker from '@/components/admin/IconPicker';
 import {
   getAllPrograms,
   createProgram,
@@ -648,6 +649,7 @@ function SpecialFeaturesSection() {
   const [data, setData] = useState<SpecialFeature[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<SpecialFeature | null>(null);
+  const [iconValue, setIconValue] = useState('');
   const [errors, setErrors] = useState<Record<string, string[]>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
@@ -663,12 +665,14 @@ function SpecialFeaturesSection() {
 
   function handleEdit(feature: SpecialFeature) {
     setEditingItem(feature);
+    setIconValue(feature.icon || '');
     setErrors({});
     setIsFormOpen(true);
   }
 
   function handleCreate() {
     setEditingItem(null);
+    setIconValue('');
     setErrors({});
     setIsFormOpen(true);
   }
@@ -676,6 +680,7 @@ function SpecialFeaturesSection() {
   function handleCancel() {
     setIsFormOpen(false);
     setEditingItem(null);
+    setIconValue('');
     setErrors({});
   }
 
@@ -685,6 +690,7 @@ function SpecialFeaturesSection() {
     setErrors({});
 
     const formData = new FormData(e.currentTarget);
+    formData.set('icon', iconValue);
 
     const result = editingItem
       ? await updateSpecialFeature(editingItem.id, formData)
@@ -760,13 +766,11 @@ function SpecialFeaturesSection() {
                 error={errors.title?.[0]}
                 placeholder="e.g. STEAM Education"
               />
-              <FormField
+              <IconPicker
                 label="Icon"
-                name="icon"
-                required
-                value={editingItem?.icon}
+                value={iconValue}
+                onChange={setIconValue}
                 error={errors.icon?.[0]}
-                placeholder="e.g. BeakerIcon"
               />
             </div>
 
