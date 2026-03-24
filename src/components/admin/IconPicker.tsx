@@ -42,6 +42,11 @@ const iconLabels: Record<string, string> = {
   BuildingOfficeIcon: 'Building',
   LightBulbIconSolid: 'Bulb (solid)',
   PresentationChartBarIcon: 'Chart',
+  ShieldCheckIcon: 'Shield',
+  LightBulbIcon: 'Light Bulb',
+  AcademicCapIcon: 'Graduation Cap',
+  UserGroupIcon: 'People',
+  CheckCircleIcon: 'Check',
   CpuChipIcon: 'Chip',
 };
 

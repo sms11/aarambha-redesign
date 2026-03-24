@@ -76,6 +76,13 @@ export const iconMap: Record<string, React.ComponentType<React.SVGProps<SVGSVGEl
   LightBulbIconSolid,
   PresentationChartBarIcon,
   CpuChipIcon,
+
+  // Base name aliases (map to outline variants as default)
+  ShieldCheckIcon: ShieldCheckIconOutline,
+  LightBulbIcon: LightBulbIconOutline,
+  AcademicCapIcon: AcademicCapIconOutline,
+  UserGroupIcon: UserGroupIconOutline,
+  CheckCircleIcon: CheckCircleIconOutline,
 };
 
 /**
