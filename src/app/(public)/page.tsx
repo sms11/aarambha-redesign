@@ -1,5 +1,3 @@
-export const dynamic = 'force-dynamic';
-
 import { prisma } from "@/lib/db";
 import HomePageClient from "@/components/pages/HomePageClient";
 
