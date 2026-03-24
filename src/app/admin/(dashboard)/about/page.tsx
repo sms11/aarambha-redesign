@@ -521,7 +521,7 @@ function PhilosophySection() {
             Add Philosophy
           </button>
         )}
-        {!isFormOpen && data.length >= 6 && (
+        {!isFormOpen && data.length >= 5 && (
           <span className="text-xs text-gray-400">Maximum 5 philosophy items reached</span>
         )}
       </div>
