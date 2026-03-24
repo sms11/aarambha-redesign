@@ -164,16 +164,20 @@ export default function AdmissionsPageClient({
   useEffect(() => {
     if (window.location.hash) {
       const id = window.location.hash.slice(1);
-      // Try multiple times as page content loads progressively
-      const attempts = [300, 800, 1500];
-      attempts.forEach((delay) => {
-        setTimeout(() => {
-          const el = document.getElementById(id);
-          if (el) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        }, delay);
-      });
+      // Poll until the element exists and scroll to it
+      let attempts = 0;
+      const interval = setInterval(() => {
+        const el = document.getElementById(id);
+        attempts++;
+        if (el) {
+          clearInterval(interval);
+          // Use window.scrollTo for more reliable scrolling
+          const top = el.getBoundingClientRect().top + window.scrollY - 20;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+        if (attempts > 20) clearInterval(interval); // give up after 4 seconds
+      }, 200);
+      return () => clearInterval(interval);
     }
   }, []);
 
