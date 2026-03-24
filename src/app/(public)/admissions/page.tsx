@@ -12,7 +12,7 @@ export default async function AdmissionsPage() {
 
   /** Group community involvement items by section */
   const involvementItems = communityItems.filter(
-    (item: typeof communityItems[number]) => item.section === "involvement"
+    (item: typeof communityItems[number]) => item.section === "parent_teacher"
   );
   const businessPartnerships = communityItems.filter(
     (item: typeof communityItems[number]) => item.section === "business"
