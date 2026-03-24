@@ -161,6 +161,15 @@ export default function AdmissionsPageClient({
   testimonials,
   partners,
 }: AdmissionsPageClientProps) {
+  useEffect(() => {
+    if (window.location.hash) {
+      const id = window.location.hash.slice(1);
+      setTimeout(() => {
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+      }, 500);
+    }
+  }, []);
+
   return (
     <>
       <HeroSection />
