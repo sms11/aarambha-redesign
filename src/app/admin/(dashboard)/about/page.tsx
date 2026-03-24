@@ -242,8 +242,13 @@ function CoreValuesSection() {
     <div>
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-[#1B2A4A]">Core Values</h2>
-        {!isFormOpen && (
+        <div className="flex items-center gap-3">
+          <h2 className="text-lg font-semibold text-[#1B2A4A]">Core Values</h2>
+          <span className={`text-xs font-medium rounded-full px-2 py-0.5 ${data.length >= 10 ? 'bg-red-100 text-red-600' : 'bg-teal-50 text-teal-600'}`}>
+            {data.length}/10
+          </span>
+        </div>
+        {!isFormOpen && data.length < 10 && (
           <button
             type="button"
             onClick={handleCreate}
@@ -252,6 +257,9 @@ function CoreValuesSection() {
             <PlusIcon className="h-4 w-4" />
             Add Core Value
           </button>
+        )}
+        {!isFormOpen && data.length >= 10 && (
+          <span className="text-xs text-gray-400">Maximum 10 core values reached</span>
         )}
       </div>
 
@@ -497,8 +505,13 @@ function PhilosophySection() {
     <div>
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-[#1B2A4A]">Philosophy</h2>
-        {!isFormOpen && (
+        <div className="flex items-center gap-3">
+          <h2 className="text-lg font-semibold text-[#1B2A4A]">Philosophy</h2>
+          <span className={`text-xs font-medium rounded-full px-2 py-0.5 ${data.length >= 6 ? 'bg-red-100 text-red-600' : 'bg-teal-50 text-teal-600'}`}>
+            {data.length}/6
+          </span>
+        </div>
+        {!isFormOpen && data.length < 6 && (
           <button
             type="button"
             onClick={handleCreate}
@@ -507,6 +520,9 @@ function PhilosophySection() {
             <PlusIcon className="h-4 w-4" />
             Add Philosophy
           </button>
+        )}
+        {!isFormOpen && data.length >= 6 && (
+          <span className="text-xs text-gray-400">Maximum 6 philosophy items reached</span>
         )}
       </div>
 
@@ -704,15 +720,21 @@ function MissionVisionSection() {
             <textarea
               id="mission"
               value={mission}
-              onChange={(e) => setMission(e.target.value)}
+              onChange={(e) => { if (e.target.value.length <= 500) setMission(e.target.value); }}
               required
+              maxLength={500}
               rows={6}
               placeholder="Write the school's mission statement..."
               className="w-full resize-y rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm text-[#1B2A4A] placeholder-gray-400 outline-none transition-all focus:border-[#14B8A6] focus:ring-2 focus:ring-[#14B8A6]/20"
             />
-            {errors.mission && (
-              <p className="mt-1 text-sm text-red-600">{errors.mission[0]}</p>
-            )}
+            <div className="mt-1 flex items-center justify-between">
+              {errors.mission ? (
+                <p className="text-sm text-red-600">{errors.mission[0]}</p>
+              ) : <span />}
+              <span className={`text-xs ${mission.length >= 450 ? 'text-amber-500' : 'text-gray-400'}`}>
+                {mission.length}/500
+              </span>
+            </div>
           </div>
 
           {/* Vision Card */}
@@ -725,15 +747,21 @@ function MissionVisionSection() {
             <textarea
               id="vision"
               value={vision}
-              onChange={(e) => setVision(e.target.value)}
+              onChange={(e) => { if (e.target.value.length <= 500) setVision(e.target.value); }}
               required
+              maxLength={500}
               rows={6}
               placeholder="Write the school's vision statement..."
               className="w-full resize-y rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm text-[#1B2A4A] placeholder-gray-400 outline-none transition-all focus:border-[#14B8A6] focus:ring-2 focus:ring-[#14B8A6]/20"
             />
-            {errors.vision && (
-              <p className="mt-1 text-sm text-red-600">{errors.vision[0]}</p>
-            )}
+            <div className="mt-1 flex items-center justify-between">
+              {errors.vision ? (
+                <p className="text-sm text-red-600">{errors.vision[0]}</p>
+              ) : <span />}
+              <span className={`text-xs ${vision.length >= 450 ? 'text-amber-500' : 'text-gray-400'}`}>
+                {vision.length}/500
+              </span>
+            </div>
           </div>
         </div>
 
