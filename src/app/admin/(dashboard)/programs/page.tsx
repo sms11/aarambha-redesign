@@ -140,7 +140,7 @@ const COLOR_PRESETS = [
   { name: 'Cyan', text: 'text-cyan-600', bg: 'bg-cyan-50', border: 'border-cyan-200', hex: '#0891b2', hexLight: '#ecfeff', hexBorder: '#a5f3fc' },
 ];
 
-function TailwindColorPicker({
+function ColorPicker({
   label,
   value,
   onChange,
@@ -153,27 +153,27 @@ function TailwindColorPicker({
   type: 'text' | 'bg' | 'border';
   error?: string;
 }) {
+  // Save hex values (not Tailwind classes) so they work with inline styles on the public site
   return (
     <div>
       <label className="mb-1.5 block text-sm font-medium text-[#1B2A4A]">{label}</label>
       <div className="flex flex-wrap gap-2">
         {COLOR_PRESETS.map((c) => {
-          const val = type === 'text' ? c.text : type === 'bg' ? c.bg : c.border;
-          const isSelected = value === val;
-          const swatchColor = type === 'text' ? c.hex : type === 'bg' ? c.hexLight : c.hexBorder;
+          const hexVal = type === 'text' ? c.hex : type === 'bg' ? c.hexLight : c.hexBorder;
+          const isSelected = value === hexVal;
           const checkColor = type === 'bg' || type === 'border' ? c.hex : '#fff';
           return (
             <button
               key={c.name}
               type="button"
-              onClick={() => onChange(val)}
-              title={`${c.name} — ${val}`}
+              onClick={() => onChange(hexVal)}
+              title={c.name}
               className={`group relative flex h-9 w-9 items-center justify-center rounded-lg border-2 transition-all ${
                 isSelected
                   ? 'border-[#8B5CF6] ring-2 ring-[#8B5CF6]/20 scale-110'
                   : 'border-gray-200 hover:border-gray-300 hover:scale-105'
               }`}
-              style={{ backgroundColor: swatchColor }}
+              style={{ backgroundColor: hexVal }}
             >
               {isSelected && (
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke={checkColor} strokeWidth={3}>
@@ -188,7 +188,10 @@ function TailwindColorPicker({
         })}
       </div>
       {value && (
-        <p className="mt-1.5 text-xs text-gray-400">{value}</p>
+        <div className="mt-1.5 flex items-center gap-2">
+          <span className="inline-block h-4 w-4 rounded border border-gray-200" style={{ backgroundColor: value }} />
+          <span className="text-xs text-gray-400">{value}</span>
+        </div>
       )}
       {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
     </div>
@@ -868,14 +871,14 @@ function SpecialFeaturesSection() {
             />
 
             <div className="grid gap-4 sm:grid-cols-2">
-              <TailwindColorPicker
+              <ColorPicker
                 label="Text Color"
                 value={colorValue}
                 onChange={setColorValue}
                 type="text"
                 error={errors.color?.[0]}
               />
-              <TailwindColorPicker
+              <ColorPicker
                 label="Background"
                 value={bgValue}
                 onChange={setBgValue}
@@ -936,7 +939,8 @@ function SpecialFeaturesSection() {
             >
               {/* Icon Circle */}
               <div
-                className={`flex h-12 w-12 items-center justify-center rounded-full ${feature.bg} ${feature.color}`}
+                className="flex h-12 w-12 items-center justify-center rounded-full"
+                style={{ backgroundColor: feature.bg, color: feature.color }}
               >
                 {(() => {
                   const Icon = getIcon(feature.icon);
@@ -1157,21 +1161,21 @@ function KeyBenefitsSection() {
             />
 
             <div className="grid gap-4 sm:grid-cols-3">
-              <TailwindColorPicker
+              <ColorPicker
                 label="Text Color"
                 value={colorValue}
                 onChange={setColorValue}
                 type="text"
                 error={errors.color?.[0]}
               />
-              <TailwindColorPicker
+              <ColorPicker
                 label="Background"
                 value={bgValue}
                 onChange={setBgValue}
                 type="bg"
                 error={errors.bg?.[0]}
               />
-              <TailwindColorPicker
+              <ColorPicker
                 label="Border"
                 value={borderValue}
                 onChange={setBorderValue}
@@ -1246,12 +1250,8 @@ function KeyBenefitsSection() {
               {/* Color indicator dot */}
               <div className="mt-3 flex items-center gap-2">
                 <span
-                  className={`inline-block h-2.5 w-2.5 rounded-full ${benefit.color}`}
-                  style={{
-                    backgroundColor: benefit.color.startsWith('#')
-                      ? benefit.color
-                      : undefined,
-                  }}
+                  className="inline-block h-2.5 w-2.5 rounded-full"
+                  style={{ backgroundColor: benefit.color }}
                 />
                 <span className="text-xs text-gray-400">{benefit.color}</span>
               </div>
