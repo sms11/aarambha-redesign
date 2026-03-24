@@ -22,6 +22,7 @@ const statsConfig = [
   { key: 'programCount' as const, label: 'Programs', color: '#8B5CF6', emoji: '🎓' },
   { key: 'galleryCount' as const, label: 'Gallery Images', color: '#EC4899', emoji: '📸' },
   { key: 'unreadCount' as const, label: 'Unread Messages', color: '#FF6B35', emoji: '✉️' },
+  { key: 'enquiryCount' as const, label: 'Unread Enquiries', color: '#F59E0B', emoji: '🎓' },
 ];
 
 const quickActions = [
@@ -67,17 +68,25 @@ const quickActions = [
     emoji: '✉️',
     helper: 'View messages and update contact info',
   },
+  {
+    href: '/admin/admissions',
+    label: 'Admissions',
+    color: '#F59E0B',
+    emoji: '🎓',
+    helper: 'View student enquiry submissions',
+  },
 ];
 
 export default async function AdminDashboardPage() {
-  const [teamCount, programCount, galleryCount, unreadCount] = await Promise.all([
+  const [teamCount, programCount, galleryCount, unreadCount, enquiryCount] = await Promise.all([
     prisma.teamMember.count(),
     prisma.program.count(),
     prisma.galleryImage.count(),
     prisma.contactSubmission.count({ where: { read: false } }),
+    prisma.admissionEnquiry.count({ where: { read: false } }),
   ]);
 
-  const counts = { teamCount, programCount, galleryCount, unreadCount };
+  const counts = { teamCount, programCount, galleryCount, unreadCount, enquiryCount };
   const greeting = getGreeting();
   const formattedDate = getFormattedDate();
 
@@ -95,7 +104,7 @@ export default async function AdminDashboardPage() {
       </div>
 
       {/* Stats Row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-10">
         {statsConfig.map((stat) => (
           <div
             key={stat.key}
