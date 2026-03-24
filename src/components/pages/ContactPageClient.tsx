@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
+import ReCaptchaWidget from "@/components/ReCaptcha";
 import SmartImage from "@/components/SmartImage";
 import { motion } from "framer-motion";
 import {
@@ -229,6 +231,8 @@ function HeroSection() {
 function FormAndInfoSection({ contactItems }: { contactItems: ContactInfoItem[] }) {
   const [formStatus, setFormStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const captchaRef = useRef<ReCAPTCHA>(null);
 
   const inputClassName =
     "w-full bg-[var(--cream)] border border-transparent rounded-xl px-5 py-3.5 text-sm text-[var(--charcoal)] placeholder:text-[var(--muted)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--gold)] focus:border-transparent transition-all duration-200";
@@ -240,14 +244,19 @@ function FormAndInfoSection({ contactItems }: { contactItems: ContactInfoItem[] 
 
     const form = e.currentTarget;
     const formData = new FormData(form);
+    formData.set("recaptchaToken", captchaToken || "");
     const result = await submitContactForm(formData);
 
     if (result.success) {
       setFormStatus("success");
       form.reset();
+      captchaRef.current?.reset();
+      setCaptchaToken(null);
     } else {
       setFormStatus("error");
       setErrorMessage(result.error ?? "Something went wrong. Please try again.");
+      captchaRef.current?.reset();
+      setCaptchaToken(null);
     }
   }
 
@@ -399,9 +408,16 @@ function FormAndInfoSection({ contactItems }: { contactItems: ContactInfoItem[] 
                   <p className="text-sm text-red-500">{errorMessage}</p>
                 )}
 
+                <div className="mt-4">
+                  <ReCaptchaWidget
+                    ref={captchaRef}
+                    onChange={(token) => setCaptchaToken(token)}
+                  />
+                </div>
+
                 <button
                   type="submit"
-                  disabled={formStatus === "submitting"}
+                  disabled={!captchaToken || formStatus === "submitting"}
                   className="btn-cta w-full mt-2 gap-2 disabled:opacity-60"
                 >
                   <PaperAirplaneIcon className="w-4 h-4" />

@@ -3,6 +3,8 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import ReCAPTCHA from "react-google-recaptcha";
+import ReCaptchaWidget from "@/components/ReCaptcha";
 import { submitEnquiry } from "@/lib/actions/admission";
 
 const GRADE_OPTIONS = [
@@ -83,6 +85,8 @@ export default function AdmissionFormClient() {
   const [customRelation, setCustomRelation] = useState("");
   const [contactNumber, setContactNumber] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const captchaRef = useRef<ReCAPTCHA>(null);
 
   const STEPS = [
     { title: "About the Student", emoji: "🧒", subtitle: "Tell us about the little learner" },
@@ -115,14 +119,19 @@ export default function AdmissionFormClient() {
     formData.set("guardianName", guardianName);
     formData.set("relation", relation === "Other" ? customRelation : relation);
     formData.set("contactNumber", contactNumber);
+    formData.set("recaptchaToken", captchaToken || "");
 
     const result = await submitEnquiry(formData);
 
     if (result.success) {
       setStatus("success");
+      captchaRef.current?.reset();
+      setCaptchaToken(null);
     } else {
       setStatus("error");
       setErrorMessage(result.error ?? "Something went wrong. Please try again.");
+      captchaRef.current?.reset();
+      setCaptchaToken(null);
     }
   }
 
@@ -482,6 +491,14 @@ export default function AdmissionFormClient() {
                           className="w-full rounded-2xl border-2 border-gray-100 bg-gray-50/50 px-5 py-3.5 text-sm text-[var(--navy)] placeholder:text-gray-400 transition-all focus:border-[var(--gold)] focus:bg-white focus:ring-4 focus:ring-[var(--gold)]/10 focus:outline-none"
                         />
                       </div>
+
+                      {/* reCAPTCHA */}
+                      <div className="flex justify-center">
+                        <ReCaptchaWidget
+                          ref={captchaRef}
+                          onChange={(token) => setCaptchaToken(token)}
+                        />
+                      </div>
                     </motion.div>
                   )}
 
@@ -511,7 +528,7 @@ export default function AdmissionFormClient() {
                     ) : (
                       <button
                         type="submit"
-                        disabled={!canGoNext() || status === "submitting"}
+                        disabled={!canGoNext() || status === "submitting" || !captchaToken}
                         className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[var(--coral)] to-[var(--gold)] px-8 py-3 text-sm font-bold text-white shadow-lg shadow-[var(--coral)]/25 transition-all hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-40 disabled:shadow-none disabled:translate-y-0 disabled:cursor-not-allowed"
                       >
                         {status === "submitting" ? (

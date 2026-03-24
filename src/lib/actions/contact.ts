@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { contactInfoSchema } from '@/lib/validations/contact-info';
 import { requireAuth } from '@/lib/auth';
 import { checkRateLimit } from '@/lib/rate-limit';
+import { verifyRecaptcha } from '@/lib/recaptcha';
 import { headers } from 'next/headers';
 
 const contactSchema = z.object({
@@ -20,6 +21,15 @@ export async function submitContactForm(formData: FormData) {
   const ip = h.get('x-forwarded-for')?.split(',')[0] ?? 'unknown';
   if (!checkRateLimit(`contact-form:${ip}`)) {
     return { success: false, error: 'Too many submissions. Please try again in a minute.' };
+  }
+
+  const recaptchaToken = formData.get('recaptchaToken') as string;
+  if (!recaptchaToken) {
+    return { success: false, error: 'Please complete the CAPTCHA verification.' };
+  }
+  const isHuman = await verifyRecaptcha(recaptchaToken);
+  if (!isHuman) {
+    return { success: false, error: 'CAPTCHA verification failed. Please try again.' };
   }
 
   const parsed = contactSchema.safeParse({
