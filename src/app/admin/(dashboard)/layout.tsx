@@ -1,5 +1,6 @@
 import { verifySession } from '@/lib/auth';
 import { redirect } from 'next/navigation';
+import { prisma } from '@/lib/db';
 import Sidebar from '@/components/admin/Sidebar';
 
 export default async function AdminDashboardLayout({
@@ -12,11 +13,13 @@ export default async function AdminDashboardLayout({
     redirect('/admin/login');
   }
 
+  const unreadCount = await prisma.contactSubmission.count({ where: { read: false } });
+
   return (
     <div className="flex min-h-screen">
-      <Sidebar />
-      <div className="flex-1 bg-gray-50">
-        <div className="p-8">{children}</div>
+      <Sidebar unreadCount={unreadCount} />
+      <div className="flex-1 bg-[#FFF9F5] overflow-auto">
+        <div className="p-8 max-w-7xl mx-auto">{children}</div>
       </div>
     </div>
   );
