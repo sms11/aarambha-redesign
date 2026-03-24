@@ -78,9 +78,11 @@ function ChevronDownIcon({ className }: { className?: string }) {
 function ColorPicker({
   value,
   onChange,
+  error,
 }: {
   value: string;
   onChange: (color: string) => void;
+  error?: string;
 }) {
   return (
     <div>
@@ -108,6 +110,7 @@ function ColorPicker({
           Selected: <span className="font-mono font-medium">{value}</span>
         </p>
       )}
+      {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
     </div>
   );
 }
@@ -366,10 +369,7 @@ export default function CommunityPage() {
             </div>
 
             {/* Color Picker */}
-            <ColorPicker value={colorValue} onChange={setColorValue} />
-            {errors.color && (
-              <p className="mt-1 text-sm text-red-600">{errors.color[0]}</p>
-            )}
+            <ColorPicker value={colorValue} onChange={setColorValue} error={errors.color?.[0]} />
 
             {/* Image Upload */}
             <div>

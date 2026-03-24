@@ -717,6 +717,7 @@ function FacilitiesSection() {
                   label="Icon (optional)"
                   value={iconValue}
                   onChange={setIconValue}
+                  error={errors.icon?.[0]}
                 />
                 <HexColorPicker
                   label="Color (optional)"
