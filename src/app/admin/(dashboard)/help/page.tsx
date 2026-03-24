@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import Link from 'next/link';
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -642,6 +643,65 @@ const sections: KnowledgeSection[] = [
 ];
 
 /* ------------------------------------------------------------------ */
+/*  Section → Admin route mapping                                      */
+/* ------------------------------------------------------------------ */
+
+const sectionRoutes: Record<string, string> = {
+  dashboard: '/admin',
+  team: '/admin/team',
+  testimonials: '/admin/testimonials',
+  partners: '/admin/partners',
+  programs: '/admin/programs',
+  homepage: '/admin/homepage',
+  about: '/admin/about',
+  facilities: '/admin/facilities',
+  gallery: '/admin/gallery',
+  community: '/admin/community',
+  contact: '/admin/contact',
+  settings: '/admin/settings',
+  admissions: '/admin/admissions',
+  'image-tips': '',
+  security: '',
+};
+
+/* ------------------------------------------------------------------ */
+/*  Quick-link accent tints (bg color for each module pill)             */
+/* ------------------------------------------------------------------ */
+
+const quickLinkTints: Record<string, string> = {
+  dashboard: 'bg-orange-50 text-orange-700 hover:bg-orange-100',
+  team: 'bg-teal-50 text-teal-700 hover:bg-teal-100',
+  testimonials: 'bg-purple-50 text-purple-700 hover:bg-purple-100',
+  partners: 'bg-blue-50 text-blue-700 hover:bg-blue-100',
+  programs: 'bg-violet-50 text-violet-700 hover:bg-violet-100',
+  homepage: 'bg-orange-50 text-orange-700 hover:bg-orange-100',
+  about: 'bg-teal-50 text-teal-700 hover:bg-teal-100',
+  facilities: 'bg-amber-50 text-amber-700 hover:bg-amber-100',
+  gallery: 'bg-pink-50 text-pink-700 hover:bg-pink-100',
+  community: 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100',
+  contact: 'bg-blue-50 text-blue-700 hover:bg-blue-100',
+  settings: 'bg-gray-100 text-gray-700 hover:bg-gray-200',
+  admissions: 'bg-orange-50 text-orange-700 hover:bg-orange-100',
+  'image-tips': 'bg-violet-50 text-violet-700 hover:bg-violet-100',
+  security: 'bg-red-50 text-red-700 hover:bg-red-100',
+};
+
+/* ------------------------------------------------------------------ */
+/*  Suggested search terms                                             */
+/* ------------------------------------------------------------------ */
+
+const suggestedSearchTerms = [
+  'upload photo',
+  'testimonial',
+  'settings',
+  'gallery',
+  'team member',
+  'programs',
+  'contact',
+  'admissions',
+];
+
+/* ------------------------------------------------------------------ */
 /*  Helper: render markdown-style bold (**text**)                      */
 /* ------------------------------------------------------------------ */
 
@@ -685,6 +745,14 @@ function ChevronIcon({ className, open }: { className?: string; open: boolean })
   );
 }
 
+function ArrowRightIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+    </svg>
+  );
+}
+
 /* ------------------------------------------------------------------ */
 /*  Page Component                                                     */
 /* ------------------------------------------------------------------ */
@@ -698,6 +766,19 @@ export default function HelpPage() {
     setOpenSections((prev) =>
       prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]
     );
+  }
+
+  /** Expand all / collapse all */
+  const allExpanded = useMemo(() => {
+    return sections.every((s) => openSections.includes(s.id));
+  }, [openSections]);
+
+  function toggleAll() {
+    if (allExpanded) {
+      setOpenSections([]);
+    } else {
+      setOpenSections(sections.map((s) => s.id));
+    }
   }
 
   /** Filter sections based on search query */
@@ -726,80 +807,190 @@ export default function HelpPage() {
     return openSections;
   }, [searchQuery, filteredSections, openSections]);
 
+  /** Scroll to a section */
+  function scrollToSection(id: string) {
+    if (!openSections.includes(id)) {
+      setOpenSections((prev) => [...prev, id]);
+    }
+    setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  }
+
   return (
-    <div className="mx-auto max-w-4xl">
-      {/* Page Header */}
-      <div className="mb-8">
+    <div className="mx-auto max-w-4xl pb-8">
+      {/* ============================================================ */}
+      {/*  Hero Header                                                  */}
+      {/* ============================================================ */}
+      <div
+        className="relative mb-12 overflow-hidden rounded-2xl px-6 pb-10 pt-8 shadow-lg sm:px-10 sm:pt-10"
+        style={{
+          background: 'linear-gradient(135deg, #1B2A4A 0%, #223255 60%, #2a3f6b 100%)',
+        }}
+      >
+        {/* Decorative circles */}
+        <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/5" />
+        <div className="pointer-events-none absolute -bottom-6 -left-6 h-28 w-28 rounded-full bg-white/5" />
+
         <h1
-          className="text-3xl font-bold text-[#1B2A4A]"
+          className="relative text-3xl font-bold text-white sm:text-4xl"
           style={{ fontFamily: 'var(--font-display)' }}
         >
           {'\u{1F4D6}'} Knowledge Base
         </h1>
-        <p className="mt-2 text-gray-500">
-          Learn how to manage every part of your school website
+        <p className="relative mt-2 text-base text-white/70">
+          Everything you need to know to manage your school website
         </p>
+
+        {/* Stat pills */}
+        <div className="relative mt-5 flex flex-wrap gap-2.5">
+          {[
+            { label: `${sections.length} Guides`, icon: '\u{1F4DA}' },
+            { label: 'Step-by-step', icon: '\u{1F463}' },
+            { label: 'Always up to date', icon: '\u{2705}' },
+          ].map((pill) => (
+            <span
+              key={pill.label}
+              className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-medium text-white/90 backdrop-blur-sm"
+            >
+              <span>{pill.icon}</span>
+              {pill.label}
+            </span>
+          ))}
+        </div>
+
+        {/* Search bar — overlaps bottom edge */}
+        <div className="relative mt-8 -mb-14">
+          <div className="relative">
+            <SearchIcon className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder='Search for help topics... (e.g., "upload photo", "testimonial", "settings")'
+              className="w-full rounded-xl border-2 border-transparent bg-white py-4 pl-12 pr-12 text-sm text-gray-900 shadow-xl placeholder:text-gray-400 focus:border-[#FF6B35] focus:outline-none focus:ring-4 focus:ring-[#FF6B35]/20 transition-all duration-200"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                aria-label="Clear search"
+              >
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
+          </div>
+        </div>
       </div>
 
-      {/* Search Bar */}
-      <div className="relative mb-8">
-        <SearchIcon className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search for help topics... (e.g., &quot;upload photo&quot;, &quot;testimonial&quot;, &quot;settings&quot;)"
-          className="w-full rounded-xl border border-gray-200 bg-white py-3.5 pl-12 pr-4 text-sm text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-[#FF6B35] focus:outline-none focus:ring-2 focus:ring-[#FF6B35]/20 transition-shadow duration-200"
-        />
-        {searchQuery && (
+      {/* ============================================================ */}
+      {/*  Quick Links Grid                                             */}
+      {/* ============================================================ */}
+      {!searchQuery.trim() && (
+        <nav className="mb-8" aria-label="Quick navigation to guide sections">
+          <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-5">
+            {sections.map((section) => (
+              <button
+                key={section.id}
+                type="button"
+                onClick={() => scrollToSection(section.id)}
+                className={`flex items-center gap-2 rounded-lg px-3 py-2.5 text-xs font-medium transition-colors duration-150 ${quickLinkTints[section.id] || 'bg-gray-50 text-gray-700 hover:bg-gray-100'}`}
+              >
+                <span className="text-base leading-none" role="img" aria-hidden="true">
+                  {section.emoji}
+                </span>
+                <span className="truncate">{section.title}</span>
+              </button>
+            ))}
+          </div>
+        </nav>
+      )}
+
+      {/* ============================================================ */}
+      {/*  Results count + Expand/Collapse toggle                       */}
+      {/* ============================================================ */}
+      <div className="mb-4 flex items-center justify-between">
+        <div className="text-sm text-gray-500">
+          {searchQuery.trim()
+            ? filteredSections.length === 0
+              ? 'No results found'
+              : `Found ${filteredSections.length} section${filteredSections.length === 1 ? '' : 's'} matching "${searchQuery}"`
+            : `${sections.length} guide sections`}
+        </div>
+        {!searchQuery.trim() && (
           <button
             type="button"
-            onClick={() => setSearchQuery('')}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-            aria-label="Clear search"
+            onClick={toggleAll}
+            className="flex items-center gap-1.5 rounded-lg bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-800"
           >
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-            </svg>
+            {allExpanded ? (
+              <>
+                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12h-15" />
+                </svg>
+                Collapse All
+              </>
+            ) : (
+              <>
+                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+                </svg>
+                Expand All
+              </>
+            )}
           </button>
         )}
       </div>
 
-      {/* Results count when searching */}
-      {searchQuery.trim() && (
-        <div className="mb-4 text-sm text-gray-500">
-          {filteredSections.length === 0
-            ? 'No results found'
-            : `Found ${filteredSections.length} section${filteredSections.length === 1 ? '' : 's'} matching "${searchQuery}"`}
-        </div>
-      )}
-
-      {/* No results state */}
+      {/* ============================================================ */}
+      {/*  No results state                                             */}
+      {/* ============================================================ */}
       {searchQuery.trim() && filteredSections.length === 0 && (
         <div className="rounded-2xl border border-gray-200 bg-white p-12 text-center shadow-sm">
-          <div className="mx-auto mb-4 text-5xl">{'\u{1F50D}'}</div>
-          <h3 className="text-lg font-semibold text-gray-900">No articles found</h3>
-          <p className="mt-2 text-sm text-gray-500">
-            Try different keywords or browse the sections below by clearing your search.
+          <div className="mx-auto mb-2 text-7xl">{'\u{1F914}'}</div>
+          <h3 className="mt-2 text-xl font-bold text-gray-900">
+            No articles found
+          </h3>
+          <p className="mx-auto mt-2 max-w-sm text-sm text-gray-500">
+            We could not find anything matching your search. Try one of these common topics:
           </p>
+          <div className="mt-5 flex flex-wrap justify-center gap-2">
+            {suggestedSearchTerms.map((term) => (
+              <button
+                key={term}
+                type="button"
+                onClick={() => setSearchQuery(term)}
+                className="rounded-full bg-gray-100 px-3.5 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-[#FF6B35]/10 hover:text-[#FF6B35]"
+              >
+                {term}
+              </button>
+            ))}
+          </div>
           <button
             type="button"
             onClick={() => setSearchQuery('')}
-            className="mt-4 inline-flex items-center rounded-lg bg-[#FF6B35] px-4 py-2 text-sm font-medium text-white hover:bg-[#e55a2a] transition-colors"
+            className="mt-6 inline-flex items-center gap-2 rounded-lg bg-[#FF6B35] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#e55a2a] transition-colors"
           >
             Clear search
           </button>
         </div>
       )}
 
-      {/* Accordion Sections */}
+      {/* ============================================================ */}
+      {/*  Accordion Sections                                           */}
+      {/* ============================================================ */}
       <div className="space-y-3">
         {filteredSections.map((section) => {
           const isOpen = effectiveOpenSections.includes(section.id);
+          const route = sectionRoutes[section.id];
           return (
             <div
               key={section.id}
-              className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow duration-200 hover:shadow-md"
+              id={section.id}
+              className="scroll-mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow duration-200 hover:shadow-md"
               style={{
                 borderLeftWidth: isOpen ? '4px' : '1px',
                 borderLeftColor: isOpen ? section.accentColor : undefined,
@@ -809,21 +1000,21 @@ export default function HelpPage() {
               <button
                 type="button"
                 onClick={() => toggleSection(section.id)}
-                className="flex w-full items-center gap-3 px-5 py-4 text-left transition-colors duration-150 hover:bg-gray-50"
+                className="flex w-full items-center gap-3.5 px-5 py-4 text-left transition-colors duration-150 hover:bg-gray-50"
                 aria-expanded={isOpen}
               >
-                <span className="text-2xl leading-none" role="img" aria-hidden="true">
+                <span className="text-3xl leading-none" role="img" aria-hidden="true">
                   {section.emoji}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-semibold text-gray-900">
+                  <div className="text-base font-bold text-gray-900">
                     {section.title}
                   </div>
-                  <div className="text-xs text-gray-500 truncate">
+                  <div className="mt-0.5 text-sm text-gray-500">
                     {section.description}
                   </div>
                 </div>
-                <ChevronIcon className="h-4 w-4 shrink-0 text-gray-400" open={isOpen} />
+                <ChevronIcon className="h-5 w-5 shrink-0 text-gray-400" open={isOpen} />
               </button>
 
               {/* Section Content */}
@@ -834,55 +1025,87 @@ export default function HelpPage() {
                 }}
               >
                 <div className="overflow-hidden">
-                  <div className="border-t border-gray-100 px-5 pb-5 pt-4 space-y-5">
-                    {section.content.map((block, blockIdx) => (
-                      <div key={blockIdx}>
-                        {/* Block heading */}
-                        {block.heading && (
-                          <h3 className="mb-2 text-sm font-semibold text-gray-800">
-                            {block.heading}
-                          </h3>
-                        )}
+                  <div className="border-t border-gray-100">
+                    {/* Section splash banner */}
+                    <div
+                      className="flex items-center gap-3 px-5 py-3"
+                      style={{ backgroundColor: `${section.accentColor}08` }}
+                    >
+                      <span className="text-2xl leading-none opacity-60">{section.emoji}</span>
+                      <span
+                        className="text-sm font-bold"
+                        style={{ color: section.accentColor }}
+                      >
+                        {section.title} Guide
+                      </span>
+                    </div>
 
-                        {/* Text block */}
-                        {block.type === 'text' && block.text && (
-                          <p className="text-sm leading-relaxed text-gray-600">
-                            {renderBoldText(block.text)}
-                          </p>
-                        )}
+                    <div className="px-5 pb-5 pt-3 space-y-5">
+                      {section.content.map((block, blockIdx) => (
+                        <div key={blockIdx}>
+                          {/* Block heading */}
+                          {block.heading && (
+                            <h3 className="mb-2.5 text-sm font-bold text-gray-800">
+                              {block.heading}
+                            </h3>
+                          )}
 
-                        {/* Steps block */}
-                        {block.type === 'steps' && block.items && (
-                          <ol className="space-y-1.5 pl-1">
-                            {block.items.map((item, itemIdx) => (
-                              <li key={itemIdx} className="flex gap-2.5 text-sm leading-relaxed text-gray-600">
-                                <span
-                                  className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-white mt-0.5"
-                                  style={{ backgroundColor: section.accentColor }}
-                                >
-                                  {itemIdx + 1}
-                                </span>
-                                <span>{renderBoldText(item)}</span>
-                              </li>
-                            ))}
-                          </ol>
-                        )}
+                          {/* Text block */}
+                          {block.type === 'text' && block.text && (
+                            <p className="text-sm leading-relaxed text-gray-600" style={{ lineHeight: '1.7' }}>
+                              {renderBoldText(block.text)}
+                            </p>
+                          )}
 
-                        {/* Tip block */}
-                        {block.type === 'tip' && block.text && (
-                          <div
-                            className="flex gap-2.5 rounded-lg p-3 text-sm leading-relaxed"
-                            style={{
-                              backgroundColor: `${section.accentColor}10`,
-                              color: section.accentColor,
-                            }}
+                          {/* Steps block */}
+                          {block.type === 'steps' && block.items && (
+                            <ol className="space-y-2 pl-1">
+                              {block.items.map((item, itemIdx) => (
+                                <li key={itemIdx} className="flex gap-3 text-sm text-gray-600" style={{ lineHeight: '1.7' }}>
+                                  <span
+                                    className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold text-white mt-0.5"
+                                    style={{ backgroundColor: section.accentColor }}
+                                  >
+                                    {itemIdx + 1}
+                                  </span>
+                                  <span>{renderBoldText(item)}</span>
+                                </li>
+                              ))}
+                            </ol>
+                          )}
+
+                          {/* Tip block */}
+                          {block.type === 'tip' && block.text && (
+                            <div
+                              className="flex gap-3 rounded-lg border-l-4 p-4 text-sm"
+                              style={{
+                                backgroundColor: `${section.accentColor}08`,
+                                borderLeftColor: section.accentColor,
+                                color: section.accentColor,
+                                lineHeight: '1.7',
+                              }}
+                            >
+                              <span className="shrink-0 text-lg leading-none">{'\u{1F4A1}'}</span>
+                              <span>{renderBoldText(block.text)}</span>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+
+                      {/* "Go to Module" button */}
+                      {route && (
+                        <div className="pt-2">
+                          <Link
+                            href={route}
+                            className="inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white transition-colors duration-150 hover:opacity-90"
+                            style={{ backgroundColor: section.accentColor }}
                           >
-                            <span className="shrink-0 text-base leading-none">{'\u{1F4A1}'}</span>
-                            <span>{renderBoldText(block.text)}</span>
-                          </div>
-                        )}
-                      </div>
-                    ))}
+                            Go to {section.title}
+                            <ArrowRightIcon className="h-4 w-4" />
+                          </Link>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -891,11 +1114,33 @@ export default function HelpPage() {
         })}
       </div>
 
-      {/* Footer help text */}
-      <div className="mt-10 mb-6 rounded-xl border border-gray-200 bg-gradient-to-r from-[#1B2A4A] to-[#2a3f6b] p-6 text-center shadow-sm">
-        <p className="text-sm font-medium text-white">
-          Still need help? Contact your developer or system administrator for advanced support.
+      {/* ============================================================ */}
+      {/*  Footer                                                       */}
+      {/* ============================================================ */}
+      <div
+        className="mt-10 mb-6 overflow-hidden rounded-2xl px-6 py-8 text-center shadow-lg sm:px-10"
+        style={{
+          background: 'linear-gradient(135deg, #1B2A4A 0%, #223255 60%, #2a3f6b 100%)',
+        }}
+      >
+        <div className="text-3xl mb-3">{'\u{1F64B}'}</div>
+        <h3 className="text-lg font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>
+          Still have questions?
+        </h3>
+        <p className="mx-auto mt-2 max-w-md text-sm text-white/70">
+          We are here to help! Reach out to your developer or system administrator and they will get you sorted out.
         </p>
+        <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
+          <Link
+            href="/admin"
+            className="inline-flex items-center gap-2 rounded-lg bg-white/10 px-5 py-2.5 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/20"
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+            </svg>
+            Back to Dashboard
+          </Link>
+        </div>
       </div>
     </div>
   );
