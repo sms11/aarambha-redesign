@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { serialize } from "@/lib/utils";
 import ProgramsPageClient from "@/components/pages/ProgramsPageClient";
 
 export default async function ProgramsPage() {
@@ -7,11 +8,6 @@ export default async function ProgramsPage() {
     prisma.specialFeature.findMany({ orderBy: { sortOrder: "asc" } }),
     prisma.keyBenefit.findMany({ orderBy: { sortOrder: "asc" } }),
   ]);
-
-  /** Serialize Prisma DateTime fields to plain objects for client component */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const serialize = <T,>(items: T[]): T[] =>
-    JSON.parse(JSON.stringify(items));
 
   return (
     <ProgramsPageClient

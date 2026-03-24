@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { serialize } from "@/lib/utils";
 import FacilitiesPageClient from "@/components/pages/FacilitiesPageClient";
 
 export default async function FacilitiesPage() {
@@ -35,11 +36,6 @@ export default async function FacilitiesPage() {
   const digitalItems = facilities.filter((f: FacilityRow) => f.category === "digital");
   const healthItems = facilities.filter((f: FacilityRow) => f.category === "health");
   const conveniences = facilities.filter((f: FacilityRow) => f.category === "convenience");
-
-  /** Serialize Prisma DateTime fields to plain objects for client component */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const serialize = <T,>(items: T[]): T[] =>
-    JSON.parse(JSON.stringify(items));
 
   return (
     <FacilitiesPageClient

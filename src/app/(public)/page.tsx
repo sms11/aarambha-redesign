@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { serialize } from "@/lib/utils";
 import HomePageClient from "@/components/pages/HomePageClient";
 
 export default async function HomePage() {
@@ -53,11 +54,6 @@ export default async function HomePage() {
       "Welcome to Aarambha School, a progressive K-12 educational institution strategically located in the heart of Kathmandu at Pipal Bot, Galko Pakha Marga, Ward Number 26.",
     ];
   }
-
-  /** Serialize Prisma DateTime fields to plain objects for client component */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const serialize = <T,>(items: T[]): T[] =>
-    JSON.parse(JSON.stringify(items));
 
   return (
     <HomePageClient

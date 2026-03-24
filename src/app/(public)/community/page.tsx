@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { serialize } from "@/lib/utils";
 import AdmissionsPageClient from "@/components/pages/AdmissionsPageClient";
 
 export default async function AdmissionsPage() {
@@ -18,11 +19,6 @@ export default async function AdmissionsPage() {
   const educationalPartnerships = communityItems.filter(
     (item: typeof communityItems[number]) => item.section === "educational"
   );
-
-  /** Serialize Prisma DateTime fields to plain objects for client component */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const serialize = <T,>(items: T[]): T[] =>
-    JSON.parse(JSON.stringify(items));
 
   return (
     <AdmissionsPageClient

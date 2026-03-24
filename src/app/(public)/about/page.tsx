@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { serialize } from "@/lib/utils";
 import AboutPageClient from "@/components/pages/AboutPageClient";
 
 export default async function AboutPage() {
@@ -37,11 +38,6 @@ export default async function AboutPage() {
       "We prioritize hands-on, inquiry-based learning experiences that integrate the core principles of Science, Technology, Engineering, Arts, and Mathematics (STEAM). This approach equips our students with the tools they need to tackle complex real-world challenges with confidence and enthusiasm.",
     ];
   }
-
-  /** Serialize Prisma DateTime fields to plain objects for client component */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const serialize = <T,>(items: T[]): T[] =>
-    JSON.parse(JSON.stringify(items));
 
   return (
     <AboutPageClient
