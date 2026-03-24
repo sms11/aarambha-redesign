@@ -277,11 +277,11 @@ function ActivitiesSection() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h2 className="text-lg font-semibold text-[#1B2A4A]">Activities</h2>
-          <span className="rounded-full bg-[#F59E0B]/10 px-2.5 py-0.5 text-xs font-semibold text-[#F59E0B]">
-            {data.length}
+          <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${data.length >= 9 ? 'bg-red-100 text-red-600' : 'bg-[#F59E0B]/10 text-[#F59E0B]'}`}>
+            {data.length}/9
           </span>
         </div>
-        {!isFormOpen && (
+        {!isFormOpen && data.length < 9 && (
           <button
             type="button"
             onClick={handleCreate}
@@ -290,6 +290,9 @@ function ActivitiesSection() {
             <PlusIcon />
             Add Activity
           </button>
+        )}
+        {!isFormOpen && data.length >= 9 && (
+          <span className="text-xs text-gray-400">Maximum 9 activities reached</span>
         )}
       </div>
 
@@ -589,11 +592,11 @@ function FacilitiesSection() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h2 className="text-lg font-semibold text-[#1B2A4A]">Facilities</h2>
-          <span className="rounded-full bg-[#F59E0B]/10 px-2.5 py-0.5 text-xs font-semibold text-[#F59E0B]">
-            {data.length}
+          <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${data.length >= 12 ? 'bg-red-100 text-red-600' : 'bg-[#F59E0B]/10 text-[#F59E0B]'}`}>
+            {data.length}/12
           </span>
         </div>
-        {!isFormOpen && (
+        {!isFormOpen && data.length < 12 && (
           <button
             type="button"
             onClick={handleCreate}
@@ -602,6 +605,9 @@ function FacilitiesSection() {
             <PlusIcon />
             Add Facility
           </button>
+        )}
+        {!isFormOpen && data.length >= 12 && (
+          <span className="text-xs text-gray-400">Maximum 12 facilities reached</span>
         )}
       </div>
 
@@ -918,8 +924,8 @@ function CounselingPointsSection() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h2 className="text-lg font-semibold text-[#1B2A4A]">Counseling Points</h2>
-          <span className="rounded-full bg-[#F59E0B]/10 px-2.5 py-0.5 text-xs font-semibold text-[#F59E0B]">
-            {points.length}
+          <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${points.length >= 6 ? 'bg-red-100 text-red-600' : 'bg-[#F59E0B]/10 text-[#F59E0B]'}`}>
+            {points.length}/6
           </span>
         </div>
         {!isEditing && (
@@ -1009,25 +1015,29 @@ function CounselingPointsSection() {
             )}
 
             {/* Add new point input */}
-            <div className="mt-4 flex gap-2">
-              <input
-                type="text"
-                value={newPoint}
-                onChange={(e) => setNewPoint(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Type a counseling point and press Enter..."
-                className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 outline-none transition-all focus:border-[#F59E0B] focus:ring-2 focus:ring-[#F59E0B]/20"
-              />
-              <button
-                type="button"
-                onClick={addPoint}
-                disabled={!newPoint.trim()}
-                className="flex shrink-0 items-center gap-1.5 rounded-xl bg-amber-50 px-4 py-2.5 text-sm font-medium text-[#F59E0B] transition-colors hover:bg-amber-100 disabled:opacity-40"
-              >
-                <PlusIcon />
-                Add
-              </button>
-            </div>
+            {editPoints.length < 6 ? (
+              <div className="mt-4 flex gap-2">
+                <input
+                  type="text"
+                  value={newPoint}
+                  onChange={(e) => setNewPoint(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Type a counseling point and press Enter..."
+                  className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 outline-none transition-all focus:border-[#F59E0B] focus:ring-2 focus:ring-[#F59E0B]/20"
+                />
+                <button
+                  type="button"
+                  onClick={addPoint}
+                  disabled={!newPoint.trim()}
+                  className="flex shrink-0 items-center gap-1.5 rounded-xl bg-amber-50 px-4 py-2.5 text-sm font-medium text-[#F59E0B] transition-colors hover:bg-amber-100 disabled:opacity-40"
+                >
+                  <PlusIcon />
+                  Add
+                </button>
+              </div>
+            ) : (
+              <p className="mt-4 text-xs text-gray-400">Maximum 6 counseling points reached</p>
+            )}
 
             {errors.counseling_points && (
               <p className="mt-2 text-sm text-red-600">{errors.counseling_points[0]}</p>
