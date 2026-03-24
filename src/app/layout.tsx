@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Serif_Display, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 
 const dmSerif = DM_Serif_Display({
   subsets: ["latin"],
@@ -32,9 +30,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${dmSerif.variable} ${plusJakarta.variable}`}>
       <body className="font-body antialiased">
-        <Header />
-        <main>{children}</main>
-        <Footer />
+        {children}
       </body>
     </html>
   );

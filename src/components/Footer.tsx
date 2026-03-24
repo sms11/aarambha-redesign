@@ -69,13 +69,20 @@ function SocialIcon({ name }: { name: string }) {
   return icons[name] || null;
 }
 
-const socials = [
-  { name: "facebook", href: "https://www.facebook.com/profile.php?id=61572480778405" },
-  { name: "instagram", href: "https://www.instagram.com/aarambha_school" },
-  { name: "tiktok", href: "https://www.tiktok.com/@aarambha.school" },
-];
+interface FooterProps {
+  socialLinks: {
+    facebook: string;
+    instagram: string;
+    tiktok: string;
+  };
+}
 
-export default function Footer() {
+export default function Footer({ socialLinks }: FooterProps) {
+  const socials = [
+    { name: "facebook" as const, href: socialLinks.facebook },
+    { name: "instagram" as const, href: socialLinks.instagram },
+    { name: "tiktok" as const, href: socialLinks.tiktok },
+  ].filter((s) => s.href);
   return (
     <footer className="bg-[var(--navy-deep)] text-white">
       <div className="max-w-7xl mx-auto px-8 pt-20 pb-12">
