@@ -209,6 +209,8 @@ model ContactSubmission {
   message   String
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
+
+  @@index([read, createdAt])
 }
 
 model SiteSettings {
@@ -231,4 +233,6 @@ model AdmissionEnquiry {
   contactNumber  String
   read           Boolean  @default(false)
   createdAt      DateTime @default(now())
+
+  @@index([read, createdAt])
 }
