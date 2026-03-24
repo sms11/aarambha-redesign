@@ -4,6 +4,7 @@ import { prisma } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { requireAuth } from '@/lib/auth';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 const enquirySchema = z.object({
   studentName: z.string().min(1, 'Student name is required'),
@@ -18,6 +19,10 @@ const enquirySchema = z.object({
 });
 
 export async function submitEnquiry(formData: FormData) {
+  if (!checkRateLimit('admission-form')) {
+    return { success: false, error: 'Too many submissions. Please try again in a minute.' };
+  }
+
   const parsed = enquirySchema.safeParse({
     studentName: formData.get('studentName'),
     age: formData.get('age'),

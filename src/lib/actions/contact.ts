@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { contactInfoSchema } from '@/lib/validations/contact-info';
 import { requireAuth } from '@/lib/auth';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 const contactSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -14,6 +15,10 @@ const contactSchema = z.object({
 });
 
 export async function submitContactForm(formData: FormData) {
+  if (!checkRateLimit('contact-form')) {
+    return { success: false, error: 'Too many submissions. Please try again in a minute.' };
+  }
+
   const parsed = contactSchema.safeParse({
     name: formData.get('name'),
     phone: formData.get('phone'),
