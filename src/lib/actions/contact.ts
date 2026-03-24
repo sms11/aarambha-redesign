@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { contactInfoSchema } from '@/lib/validations/contact-info';
 import { requireAuth } from '@/lib/auth';
 import { checkRateLimit } from '@/lib/rate-limit';
+import { headers } from 'next/headers';
 
 const contactSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -15,7 +16,9 @@ const contactSchema = z.object({
 });
 
 export async function submitContactForm(formData: FormData) {
-  if (!checkRateLimit('contact-form')) {
+  const h = await headers();
+  const ip = h.get('x-forwarded-for')?.split(',')[0] ?? 'unknown';
+  if (!checkRateLimit(`contact-form:${ip}`)) {
     return { success: false, error: 'Too many submissions. Please try again in a minute.' };
   }
 
@@ -136,6 +139,7 @@ export async function reorderContactInfo(id: number, direction: 'up' | 'down') {
 // ─── Contact Submissions Management ─────────────────────────────────────────
 
 export async function getAllSubmissions() {
+  await requireAuth();
   return prisma.contactSubmission.findMany({ orderBy: { createdAt: 'desc' } });
 }
 

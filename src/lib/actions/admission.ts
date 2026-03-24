@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { requireAuth } from '@/lib/auth';
 import { checkRateLimit } from '@/lib/rate-limit';
+import { headers } from 'next/headers';
 
 const enquirySchema = z.object({
   studentName: z.string().min(1, 'Student name is required'),
@@ -19,7 +20,9 @@ const enquirySchema = z.object({
 });
 
 export async function submitEnquiry(formData: FormData) {
-  if (!checkRateLimit('admission-form')) {
+  const h = await headers();
+  const ip = h.get('x-forwarded-for')?.split(',')[0] ?? 'unknown';
+  if (!checkRateLimit(`admission-form:${ip}`)) {
     return { success: false, error: 'Too many submissions. Please try again in a minute.' };
   }
 
@@ -46,6 +49,7 @@ export async function submitEnquiry(formData: FormData) {
 // ─── Admin Actions ──────────────────────────────────────────────────────────
 
 export async function getAllEnquiries() {
+  await requireAuth();
   return prisma.admissionEnquiry.findMany({ orderBy: { createdAt: 'desc' } });
 }
 

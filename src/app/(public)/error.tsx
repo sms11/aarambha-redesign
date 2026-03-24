@@ -1,11 +1,18 @@
 'use client';
 
+import { useEffect } from 'react';
+
 export default function PublicError({
+  error,
   reset,
 }: {
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  useEffect(() => {
+    console.error('[public-error-boundary]', error.digest ?? error.message);
+  }, [error]);
+
   return (
     <div className="min-h-[60vh] flex flex-col items-center justify-center px-6 text-center">
       <span className="text-6xl mb-6">😟</span>
@@ -13,7 +20,7 @@ export default function PublicError({
         Something went wrong
       </h2>
       <p className="text-[var(--muted)] mb-8 max-w-md">
-        We're having trouble loading this page. Please try again.
+        We&apos;re having trouble loading this page. Please try again.
       </p>
       <button
         onClick={reset}
