@@ -6,7 +6,7 @@ import Image, { ImageProps } from 'next/image';
  */
 export default function SmartImage(props: ImageProps) {
   const src = typeof props.src === 'string' ? props.src : '';
-  const isPrivateUrl = src.includes('localhost') || src.includes('127.0.0.1');
+  const isMinioUrl = src.includes('localhost') || src.includes('127.0.0.1') || src.includes(':5554') || src.includes('aarambha-uploads');
 
-  return <Image {...props} unoptimized={isPrivateUrl || props.unoptimized} />;
+  return <Image {...props} unoptimized={isMinioUrl || props.unoptimized} />;
 }

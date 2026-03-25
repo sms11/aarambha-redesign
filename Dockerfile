@@ -19,6 +19,7 @@ COPY . .
 RUN npx prisma generate
 
 # Build the application
+ENV NEXT_PUBLIC_RECAPTCHA_SITE_KEY=""
 RUN npm run build
 
 # Production image, copy all the files and run next
@@ -27,10 +28,27 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
+RUN apk add --no-cache openssl
+
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/public ./public
+
+# Prisma files needed for migrations
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
+COPY --from=builder /app/src/generated ./src/generated
+COPY --from=builder /app/node_modules/@prisma/adapter-pg ./node_modules/@prisma/adapter-pg
+COPY --from=builder /app/node_modules/pg ./node_modules/pg
+COPY --from=builder /app/node_modules/dotenv ./node_modules/dotenv
+
+# Seed script dependencies
+COPY --from=builder /app/node_modules/bcryptjs ./node_modules/bcryptjs
+COPY --from=builder /app/node_modules/minio ./node_modules/minio
 
 # Set the correct permission for prerender cache
 RUN mkdir .next

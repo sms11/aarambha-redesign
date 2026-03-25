@@ -39,6 +39,11 @@ export async function uploadFile(
   await minioClient.putObject(BUCKET_NAME, fileName, buffer, buffer.length, {
     'Content-Type': contentType,
   });
+  // Use MINIO_PUBLIC_URL for browser-accessible URLs (production),
+  // fall back to constructing from endpoint/port (local dev)
+  if (process.env.MINIO_PUBLIC_URL) {
+    return `${process.env.MINIO_PUBLIC_URL}/${BUCKET_NAME}/${fileName}`;
+  }
   const protocol = process.env.MINIO_USE_SSL === 'true' ? 'https' : 'http';
   const port = process.env.MINIO_PORT || '9000';
   const endpoint = process.env.MINIO_ENDPOINT || 'localhost';
