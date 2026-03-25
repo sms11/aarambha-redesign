@@ -5,7 +5,6 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Copy package files
 COPY package.json package-lock.json ./
 RUN npm ci
 
@@ -22,7 +21,7 @@ RUN npx prisma generate
 ENV NEXT_PUBLIC_RECAPTCHA_SITE_KEY=""
 RUN npm run build
 
-# Production image, copy all the files and run next
+# Production image
 FROM base AS runner
 WORKDIR /app
 
@@ -35,26 +34,22 @@ RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/public ./public
 
-# Prisma files needed for migrations
+# Prisma files for migrations and seed
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/src/generated ./src/generated
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
-COPY --from=builder /app/src/generated ./src/generated
 COPY --from=builder /app/node_modules/@prisma/adapter-pg ./node_modules/@prisma/adapter-pg
 COPY --from=builder /app/node_modules/pg ./node_modules/pg
 COPY --from=builder /app/node_modules/dotenv ./node_modules/dotenv
-
-# Seed script dependencies
 COPY --from=builder /app/node_modules/bcryptjs ./node_modules/bcryptjs
 COPY --from=builder /app/node_modules/minio ./node_modules/minio
 
-# Set the correct permission for prerender cache
+# Next.js standalone output
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
-# Automatically leverage output traces to reduce image size
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
