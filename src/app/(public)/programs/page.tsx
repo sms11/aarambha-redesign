@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { prisma } from "@/lib/db";
 import { serialize } from "@/lib/utils";
 import ProgramsPageClient from "@/components/pages/ProgramsPageClient";
