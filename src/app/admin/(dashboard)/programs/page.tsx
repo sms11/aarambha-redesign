@@ -36,6 +36,10 @@ interface Program {
   image: string;
   color: string;
   emoji: string;
+  sectionLabel: string | null;
+  featureCards: string | null;
+  programHighlights: string | null;
+  galleryImages: string[];
   sortOrder: number;
 }
 
@@ -250,6 +254,10 @@ function ProgramsSection() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [colorValue, setColorValue] = useState('#8B5CF6');
   const [emojiValue, setEmojiValue] = useState('');
+  const [sectionLabel, setSectionLabel] = useState('');
+  const [featureCardsText, setFeatureCardsText] = useState('');
+  const [programHighlightsText, setProgramHighlightsText] = useState('');
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const colorInputRef = useRef<HTMLInputElement>(null);
   const highlightInputRef = useRef<HTMLInputElement>(null);
 
@@ -262,12 +270,24 @@ function ProgramsSection() {
     loadData();
   }, []);
 
+  function formatJsonForEdit(jsonStr: string | null): string {
+    if (!jsonStr) return '';
+    try {
+      const arr = JSON.parse(jsonStr);
+      return arr.map((item: { title: string; description: string }) => `${item.title} | ${item.description}`).join('\n');
+    } catch { return ''; }
+  }
+
   function handleEdit(program: Program) {
     setEditingItem(program);
     setImageUrl(program.image || '');
     setHighlights(program.highlights || []);
     setColorValue(program.color || '#8B5CF6');
     setEmojiValue(program.emoji || '');
+    setSectionLabel(program.sectionLabel || '');
+    setFeatureCardsText(formatJsonForEdit(program.featureCards));
+    setProgramHighlightsText(formatJsonForEdit(program.programHighlights));
+    setGalleryImages(program.galleryImages || []);
     setErrors({});
     setIsFormOpen(true);
   }
@@ -278,8 +298,21 @@ function ProgramsSection() {
     setHighlights([]);
     setColorValue('#8B5CF6');
     setEmojiValue('');
+    setSectionLabel('');
+    setFeatureCardsText('');
+    setProgramHighlightsText('');
+    setGalleryImages([]);
     setErrors({});
     setIsFormOpen(true);
+  }
+
+  function parseTextToJson(text: string): string {
+    if (!text.trim()) return '';
+    const items = text.split('\n').filter(l => l.trim()).map(line => {
+      const [title, ...rest] = line.split('|');
+      return { title: (title || '').trim(), description: rest.join('|').trim() };
+    });
+    return JSON.stringify(items);
   }
 
   function handleCancel() {
@@ -288,6 +321,10 @@ function ProgramsSection() {
     setImageUrl('');
     setHighlights([]);
     setEmojiValue('');
+    setSectionLabel('');
+    setFeatureCardsText('');
+    setProgramHighlightsText('');
+    setGalleryImages([]);
     setErrors({});
   }
 
@@ -321,6 +358,10 @@ function ProgramsSection() {
       image: imageUrl,
       color: colorValue,
       emoji: emojiValue,
+      sectionLabel: sectionLabel || undefined,
+      featureCards: parseTextToJson(featureCardsText) || undefined,
+      programHighlights: parseTextToJson(programHighlightsText) || undefined,
+      galleryImages,
     };
 
     const result = editingItem
@@ -551,6 +592,99 @@ function ProgramsSection() {
             {errors.highlights && (
               <p className="mt-1 text-sm text-red-600">{errors.highlights[0]}</p>
             )}
+          </div>
+
+          {/* New Section: Page Layout Fields */}
+          <div className="mt-8 rounded-xl border border-purple-100 bg-purple-50/30 p-5">
+            <h3 className="text-sm font-bold text-[#1B2A4A] mb-4 flex items-center gap-2">
+              <span>📄</span> Page Layout (shown on Programs page)
+            </h3>
+
+            <div className="grid gap-4">
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-700">
+                  Section Label
+                </label>
+                <input
+                  type="text"
+                  value={sectionLabel}
+                  onChange={(e) => setSectionLabel(e.target.value)}
+                  placeholder="e.g. EARLY LEARNING, FOUNDATION YEARS"
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#8B5CF6] focus:ring-2 focus:ring-purple-200"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-700">
+                  Feature Cards (3 cards shown at top)
+                </label>
+                <p className="text-xs text-gray-500 mb-1.5">
+                  One per line. Format: <code className="bg-gray-100 px-1 rounded">Title | Description</code>
+                </p>
+                <textarea
+                  value={featureCardsText}
+                  onChange={(e) => setFeatureCardsText(e.target.value)}
+                  rows={3}
+                  placeholder={"For Ages 3-6 years | Discover the world through hands-on exploration\nPlay-based foundation | Learning through creative play\nNurturing young minds | Building curiosity and confidence"}
+                  className="w-full resize-y rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#8B5CF6] focus:ring-2 focus:ring-purple-200"
+                />
+              </div>
+
+              {/* Gallery Images */}
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-700">
+                  Gallery Images (shown in highlights section)
+                </label>
+                <p className="text-xs text-gray-500 mb-2">
+                  Upload up to 5 images for the program highlights grid.
+                </p>
+                <div className="flex flex-wrap gap-3 mb-3">
+                  {galleryImages.map((img, i) => (
+                    <div key={i} className="relative group">
+                      <SmartImage
+                        src={img}
+                        alt={`Gallery ${i + 1}`}
+                        width={100}
+                        height={70}
+                        className="h-16 w-24 rounded-lg object-cover border border-gray-200"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setGalleryImages(galleryImages.filter((_, j) => j !== i))}
+                        className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                {galleryImages.length < 5 && (
+                  <ImageUpload
+                    value=""
+                    onChange={(url) => {
+                      if (url) setGalleryImages([...galleryImages, url]);
+                    }}
+                    hidePreview
+                  />
+                )}
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-700">
+                  Program Highlights (4 items with descriptions)
+                </label>
+                <p className="text-xs text-gray-500 mb-1.5">
+                  One per line. Format: <code className="bg-gray-100 px-1 rounded">Title | Description</code>
+                </p>
+                <textarea
+                  value={programHighlightsText}
+                  onChange={(e) => setProgramHighlightsText(e.target.value)}
+                  rows={4}
+                  placeholder={"Learning Through Play | Alphabets, numbers, shapes through fun activities\nHolistic Development | Social, emotional, physical development\nTeaching Approach | Storytelling, art, music, and life skills\nCreative Activities | Guided play and creative expression"}
+                  className="w-full resize-y rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-[#8B5CF6] focus:ring-2 focus:ring-purple-200"
+                />
+              </div>
+            </div>
           </div>
 
           <div className="mt-8 flex gap-3">

@@ -1,21 +1,24 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import SmartImage from "@/components/SmartImage";
 import Link from "next/link";
-import {
-  CheckCircleIcon,
-} from "@heroicons/react/24/solid";
-import {
-  SparklesIcon,
-  StarIcon,
-} from "@heroicons/react/24/outline";
 import { getIcon } from "@/lib/icons";
 
 /* ──────────────────────────────────────────────
    Types
    ────────────────────────────────────────────── */
+
+interface FeatureCard {
+  title: string;
+  description: string;
+}
+
+interface ProgramHighlight {
+  title: string;
+  description: string;
+}
 
 interface ProgramItem {
   id: number;
@@ -28,6 +31,10 @@ interface ProgramItem {
   image: string;
   color: string;
   emoji: string;
+  sectionLabel: string | null;
+  featureCards: string | null;
+  programHighlights: string | null;
+  galleryImages: string[];
 }
 
 interface SpecialFeatureItem {
@@ -56,98 +63,16 @@ export interface ProgramsPageClientProps {
 }
 
 /* ──────────────────────────────────────────────
-   Decorative Components
+   Helper to parse JSON fields
    ────────────────────────────────────────────── */
 
-function FloatingShape({
-  color,
-  size,
-  top,
-  left,
-  delay = 0,
-  shape = "circle",
-}: {
-  color: string;
-  size: number;
-  top: string;
-  left: string;
-  delay?: number;
-  shape?: "circle" | "triangle" | "star" | "square";
-}) {
-  const shapeStyles: React.CSSProperties = {
-    position: "absolute",
-    top,
-    left,
-    width: size,
-    height: size,
-    opacity: 0.15,
-    zIndex: 0,
-    animationDelay: `${delay}s`,
-  };
-
-  if (shape === "circle") {
-    return (
-      <div
-        className="animate-float-slow"
-        style={{ ...shapeStyles, borderRadius: "50%", backgroundColor: color }}
-      />
-    );
+function parseJson<T>(value: string | null, fallback: T): T {
+  if (!value) return fallback;
+  try {
+    return JSON.parse(value);
+  } catch {
+    return fallback;
   }
-  if (shape === "triangle") {
-    return (
-      <div
-        className="animate-float"
-        style={{
-          ...shapeStyles,
-          width: 0,
-          height: 0,
-          backgroundColor: "transparent",
-          borderLeft: `${size / 2}px solid transparent`,
-          borderRight: `${size / 2}px solid transparent`,
-          borderBottom: `${size}px solid ${color}`,
-        }}
-      />
-    );
-  }
-  if (shape === "star") {
-    return (
-      <div className="animate-wiggle" style={shapeStyles}>
-        <StarIcon style={{ width: size, height: size, color }} />
-      </div>
-    );
-  }
-  return (
-    <div
-      className="animate-float"
-      style={{
-        ...shapeStyles,
-        borderRadius: "4px",
-        backgroundColor: color,
-        transform: "rotate(15deg)",
-      }}
-    />
-  );
-}
-
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="text-label text-[var(--gold)] block mb-3 tracking-[3px]">
-      {children}
-    </span>
-  );
-}
-
-function WaveDivider({ flip = false, color = "var(--cream)" }: { flip?: boolean; color?: string }) {
-  return (
-    <div className={`w-full overflow-hidden leading-[0] ${flip ? "rotate-180" : ""}`}>
-      <svg viewBox="0 0 1440 80" preserveAspectRatio="none" className="w-full h-[50px] md:h-[80px]">
-        <path
-          d="M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,80 L0,80 Z"
-          fill={color}
-        />
-      </svg>
-    </div>
-  );
 }
 
 /* ──────────────────────────────────────────────
@@ -159,535 +84,333 @@ export default function ProgramsPageClient({
   specialFeatures,
   keyBenefits,
 }: ProgramsPageClientProps) {
+  const [activeTab, setActiveTab] = useState(0);
+  const program = programs[activeTab];
+
+  if (!program) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-gray-500">No programs available.</p>
+      </div>
+    );
+  }
+
+  const featureCards = parseJson<FeatureCard[]>(program.featureCards, []);
+  const programHighlights = parseJson<ProgramHighlight[]>(program.programHighlights, []);
+
   return (
     <>
-      <HeroSection />
-      <WaveDivider color="white" />
-      <ThematicApproach />
-      <WaveDivider color="var(--cream)" flip />
-      <ProgramTabs programs={programs} />
-      <WaveDivider color="white" />
-      <SpecialFeaturesSection specialFeatures={specialFeatures} />
-      <WaveDivider color="var(--cream)" />
-      <KeyBenefitsSection keyBenefits={keyBenefits} />
-      <WaveDivider color="var(--navy)" />
-      <CTASection />
-    </>
-  );
-}
-
-/* ──────────────────────────────────────────────
-   Section 1 — Hero
-   ────────────────────────────────────────────── */
-
-function HeroSection() {
-  return (
-    <section className="relative overflow-hidden min-h-[60vh] md:min-h-[70vh] lg:min-h-[80vh] flex items-center justify-center">
-      <SmartImage
-        src="https://images.unsplash.com/photo-1577896851231-70ef18881754?w=1920&q=80"
-        alt="Students learning in a classroom"
-        fill
-        className="object-cover"
-        priority
-      />
-      <div className="absolute inset-0 bg-gradient-to-b from-[rgba(19,47,80,0.85)] via-[rgba(30,74,122,0.75)] to-[rgba(19,47,80,0.9)]" />
-
-      <FloatingShape color="#F5A623" size={90} top="8%" left="5%" shape="circle" delay={0} />
-      <FloatingShape color="#4ECDC4" size={55} top="18%" left="88%" shape="triangle" delay={1} />
-      <FloatingShape color="#FF6B6B" size={45} top="72%" left="8%" shape="star" delay={2} />
-      <FloatingShape color="#A78BFA" size={65} top="60%" left="82%" shape="square" delay={0.5} />
-      <FloatingShape color="#FBBF77" size={35} top="35%" left="93%" shape="circle" delay={1.5} />
-
-      <motion.div
-        className="relative z-10 text-center px-6 max-w-4xl mx-auto"
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-      >
-        <motion.span
-          className="text-label text-[var(--gold)] inline-flex items-center gap-2 tracking-[3px]"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-        >
-          <SparklesIcon className="w-4 h-4" />
-          Academic Excellence
-          <SparklesIcon className="w-4 h-4" />
-        </motion.span>
-
-        <motion.h1
-          className="text-hero font-display text-white mt-6 mb-4"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.6 }}
-        >
-          Learning Journeys for{" "}
-          <span className="text-[var(--gold)]">Every Stage</span>
-        </motion.h1>
-
-        <motion.p
-          className="text-body text-white/80 max-w-xl mx-auto mb-10"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6 }}
-        >
-          Our programs are tailored for each age group, utilizing a thematic
-          approach in our academic teaching to shape well-rounded, future-ready
-          learners.
-        </motion.p>
-
+      {/* Hero */}
+      <section className="relative overflow-hidden min-h-[50vh] md:min-h-[60vh] flex items-center justify-center">
+        <div className="absolute inset-0 bg-gradient-to-b from-[rgba(19,47,80,0.9)] via-[rgba(30,74,122,0.8)] to-[rgba(19,47,80,0.92)]" />
         <motion.div
-          className="flex flex-wrap justify-center gap-4"
-          initial={{ opacity: 0, y: 20 }}
+          className="relative z-10 text-center px-6 max-w-3xl mx-auto"
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
+          transition={{ duration: 0.8 }}
         >
-          <Link href="/community" className="btn-cta">
-            Apply Now
-          </Link>
-          <Link href="/contact" className="btn-secondary">
-            Schedule a Visit
-          </Link>
-        </motion.div>
-      </motion.div>
-    </section>
-  );
-}
-
-/* ──────────────────────────────────────────────
-   Section 2 — Thematic Approach
-   ────────────────────────────────────────────── */
-
-function ThematicApproach() {
-  return (
-    <section className="bg-white py-24 px-6 relative overflow-hidden">
-      <FloatingShape color="#F5A623" size={60} top="10%" left="90%" shape="star" delay={0} />
-      <FloatingShape color="#4ECDC4" size={40} top="80%" left="5%" shape="circle" delay={1} />
-
-      <div className="max-w-5xl mx-auto relative z-10">
-        <motion.div
-          className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-        >
-          {/* Image */}
-          <motion.div
-            className="relative h-[350px] lg:h-[450px] rounded-3xl overflow-hidden shadow-2xl"
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <SmartImage
-              src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=80"
-              alt="Children learning with thematic approach"
-              fill
-              className="object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[var(--navy)]/30 to-transparent" />
-            <div className="absolute -bottom-3 -right-3 w-28 h-28 rounded-full bg-[var(--gold)] opacity-20 animate-blob" />
-          </motion.div>
-
-          {/* Text */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <SectionLabel>Our Approach</SectionLabel>
-            <h2 className="text-title font-display text-[var(--navy)] mb-5">
-              Thematic Teaching for{" "}
-              <span className="text-[var(--gold)]">Deeper Learning</span>
-            </h2>
-            <p className="text-body text-[var(--muted)] mb-5">
-              Aarambha School selects a relevant theme for each term and
-              integrates it into thoughtfully designed programs. This thematic
-              approach helps students make meaningful connections across subjects,
-              sparking curiosity and fostering deeper understanding.
-            </p>
-            <p className="text-body text-[var(--muted)] mb-8">
-              From the earliest years to secondary school, every program is
-              designed to match each developmental stage — ensuring students build
-              skills progressively while staying engaged, motivated, and excited
-              about learning.
-            </p>
-            <div className="flex flex-wrap gap-3">
-              {["Play-Based", "Experiential", "Project-Based", "STEAM-Focused"].map(
-                (tag) => (
-                  <span
-                    key={tag}
-                    className="px-4 py-2 rounded-full bg-[var(--cream)] text-[var(--navy)] text-small font-semibold"
-                  >
-                    {tag}
-                  </span>
-                )
-              )}
-            </div>
-          </motion.div>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
-
-/* ──────────────────────────────────────────────
-   Section 3 — Program Tabs
-   ────────────────────────────────────────────── */
-
-function ProgramTabs({ programs }: { programs: ProgramItem[] }) {
-  const [activeTab, setActiveTab] = useState(0);
-
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === "ArrowRight") {
-        e.preventDefault();
-        setActiveTab((prev) => (prev + 1) % programs.length);
-      } else if (e.key === "ArrowLeft") {
-        e.preventDefault();
-        setActiveTab((prev) => (prev - 1 + programs.length) % programs.length);
-      }
-    },
-    [programs.length]
-  );
-
-  const current = programs[activeTab];
-
-  return (
-    <section className="bg-[var(--cream)] py-24 px-6 relative overflow-hidden">
-      <FloatingShape color="#F5A623" size={70} top="5%" left="90%" shape="star" delay={0} />
-      <FloatingShape color="#4ECDC4" size={50} top="80%" left="3%" shape="circle" delay={1.5} />
-
-      <div className="max-w-6xl mx-auto relative z-10">
-        <div className="text-center mb-14">
-          <SectionLabel>Our Programs</SectionLabel>
-          <h2 className="text-title font-display text-[var(--navy)]">
-            A Program for Every Stage
-          </h2>
-          <p className="text-body text-[var(--muted)] mt-3 max-w-lg mx-auto">
-            From curious toddlers to ambitious young adults, every stage of
-            learning is thoughtfully designed to match their developmental needs.
+          <span className="text-[var(--gold)] font-semibold text-sm uppercase tracking-wider mb-4 block">
+            Academic Excellence
+          </span>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-display text-white mb-6">
+            Our Programs
+          </h1>
+          <p className="text-white/70 text-lg max-w-xl mx-auto">
+            Comprehensive education from Pre-School through Secondary, designed to nurture every stage of growth.
           </p>
-        </div>
+        </motion.div>
+      </section>
 
-        {/* Tab buttons */}
-        <div
-          className="flex gap-3 flex-wrap justify-center mb-14"
-          role="tablist"
-          onKeyDown={handleKeyDown}
+      {/* Tab Navigation */}
+      <div className="bg-white sticky top-0 z-30 border-b border-gray-100">
+        <div className="max-w-4xl mx-auto px-4 md:px-6 py-3 md:py-4 flex justify-center">
+          <div className="inline-flex bg-gray-50 rounded-full p-1.5 gap-1 flex-wrap justify-center overflow-x-auto max-w-full">
+            {programs.map((p, i) => (
+              <button
+                key={p.id}
+                onClick={() => setActiveTab(i)}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all ${
+                  i === activeTab
+                    ? "bg-[var(--navy)] text-white shadow-md"
+                    : "text-gray-600 hover:bg-gray-100"
+                }`}
+              >
+                <span className="text-base">{p.emoji}</span>
+                {p.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Program Content */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={program.id}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.4 }}
         >
-          {programs.map((program, index) => (
-            <motion.button
-              key={program.id}
-              id={`program-${program.id}`}
-              role="tab"
-              aria-selected={activeTab === index}
-              tabIndex={activeTab === index ? 0 : -1}
-              onClick={() => setActiveTab(index)}
-              whileHover={{ y: -2 }}
-              whileTap={{ scale: 0.97 }}
-              className={`relative px-7 py-3.5 rounded-full text-sm font-semibold transition-all duration-300 cursor-pointer ${
-                activeTab === index
-                  ? "text-white shadow-lg"
-                  : "bg-white text-[var(--muted)] border-2 border-gray-200 hover:border-gray-300"
-              }`}
-              style={
-                activeTab === index
-                  ? { backgroundColor: program.color }
-                  : undefined
-              }
-            >
-              <span className="relative z-10 inline-flex items-center gap-2">
-                {program.emoji} {program.name}
-              </span>
-            </motion.button>
-          ))}
-        </div>
-
-        {/* Active program detail */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            role="tabpanel"
-            aria-labelledby={`program-${current.id}`}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.35, type: "spring", stiffness: 200, damping: 25 }}
-            className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center"
-          >
-            {/* Left: image card */}
-            <div className="group relative h-[320px] lg:h-[440px] rounded-3xl overflow-hidden shadow-2xl">
-              <SmartImage
-                src={current.image}
-                alt={current.name}
-                fill
-                className="object-cover group-hover:scale-110 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-              <div className="absolute bottom-6 left-6 right-6">
-                <div
-                  className="inline-block px-4 py-1.5 rounded-full text-white text-tiny font-semibold mb-2"
-                  style={{ backgroundColor: current.color }}
-                >
-                  {current.emoji} {current.name}
-                </div>
-                <div className="flex gap-3 mt-1">
-                  <span className="text-white/80 text-sm bg-white/15 backdrop-blur-sm px-3 py-1 rounded-full">
-                    {current.grades}
-                  </span>
-                  <span className="text-white/80 text-sm bg-white/15 backdrop-blur-sm px-3 py-1 rounded-full">
-                    {current.ages}
-                  </span>
-                </div>
-              </div>
-              <div
-                className="absolute -top-4 -right-4 w-24 h-24 rounded-full animate-blob opacity-25"
-                style={{ backgroundColor: current.color }}
-              />
+          {/* Section Header */}
+          <section className="bg-white py-16 px-6 relative overflow-hidden">
+            {/* Decorative star top-right */}
+            <div className="absolute top-8 right-8 opacity-15">
+              <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+                <path d="M30 5 L35 20 L50 20 L38 30 L42 45 L30 37 L18 45 L22 30 L10 20 L25 20 Z" stroke="var(--gold)" strokeWidth="1.5" fill="none" />
+              </svg>
             </div>
 
-            {/* Right: details */}
-            <div>
-              <div className="flex items-center gap-3 mb-1">
-                <h2 className="text-title font-display text-[var(--navy)]">
-                  {current.name}
+            <div className="max-w-6xl mx-auto">
+              {/* Label + Title */}
+              <div className="mb-12">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-1 h-6 bg-[#2e7d32] rounded-full" />
+                  <span className="text-[#FF6B35] font-semibold text-sm uppercase tracking-wider">
+                    {program.sectionLabel || "Our Program"}
+                  </span>
+                </div>
+                <h2 className="text-4xl md:text-5xl font-display text-[var(--navy)] leading-tight">
+                  {program.name} ({program.grades})
                 </h2>
               </div>
-              <div className="flex gap-3 mb-5">
-                <span
-                  className="text-tiny font-semibold px-3 py-1 rounded-full"
-                  style={{ backgroundColor: `${current.color}20`, color: current.color }}
-                >
-                  {current.grades}
-                </span>
-                <span
-                  className="text-tiny font-semibold px-3 py-1 rounded-full"
-                  style={{ backgroundColor: `${current.color}20`, color: current.color }}
-                >
-                  {current.ages}
-                </span>
-              </div>
-              <div
-                className="w-12 h-1 rounded-full mb-5"
-                style={{ backgroundColor: current.color }}
-              />
-              <p className="text-body text-[var(--muted)] mb-6">
-                {current.description}
-              </p>
 
-              {/* Highlights */}
-              <div className="space-y-4 mb-6">
-                {current.highlights.map((highlight, i) => {
-                  const [title, description] = highlight.split(" — ");
-                  return (
-                    <motion.div
-                      key={title}
-                      className="flex items-start gap-3 bg-white rounded-2xl px-5 py-4"
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.08 }}
+              {/* Feature Cards — 3 columns */}
+              {featureCards.length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                  {featureCards.map((card, i) => (
+                    <div
+                      key={i}
+                      className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow"
                     >
-                      <CheckCircleIcon
-                        className="w-5 h-5 flex-shrink-0 mt-0.5"
-                        style={{ color: current.color }}
-                      />
-                      <div>
-                        <span className="text-small text-[var(--charcoal)] font-semibold block">
-                          {title}
-                        </span>
-                        <span className="text-small text-[var(--muted)]">
-                          {description}
-                        </span>
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-10 h-10 rounded-xl bg-[#e8eaf6] flex items-center justify-center">
+                          <span className="text-lg">{program.emoji}</span>
+                        </div>
+                        <h3 className="font-display font-bold text-[var(--navy)] text-base">
+                          {card.title}
+                        </h3>
                       </div>
-                    </motion.div>
-                  );
-                })}
-              </div>
-
-              {/* Teaching approach badge */}
-              <div
-                className="rounded-2xl px-5 py-3 mb-6"
-                style={{ backgroundColor: `${current.color}10`, borderLeft: `3px solid ${current.color}` }}
-              >
-                <span className="text-tiny font-semibold text-[var(--navy)] block mb-1">
-                  Teaching Approach
-                </span>
-                <span className="text-small text-[var(--muted)]">
-                  {current.teaching}
-                </span>
-              </div>
-
-              <Link
-                href="/community"
-                className="btn-cta inline-flex items-center gap-2"
-              >
-                Apply for {current.name}
-              </Link>
-            </div>
-          </motion.div>
-        </AnimatePresence>
-      </div>
-    </section>
-  );
-}
-
-/* ──────────────────────────────────────────────
-   Section 4 — Special Features
-   ────────────────────────────────────────────── */
-
-function SpecialFeaturesSection({ specialFeatures }: { specialFeatures: SpecialFeatureItem[] }) {
-  return (
-    <section className="bg-white py-24 px-6 relative overflow-hidden">
-      <FloatingShape color="#A78BFA" size={60} top="8%" left="88%" shape="triangle" delay={0} />
-      <FloatingShape color="#FF6B6B" size={40} top="75%" left="5%" shape="star" delay={1} />
-
-      <div className="max-w-6xl mx-auto relative z-10">
-        <div className="text-center mb-16">
-          <SectionLabel>What Makes Us Special</SectionLabel>
-          <h2 className="text-title font-display text-[var(--navy)]">
-            The Aarambha Advantage
-          </h2>
-          <p className="text-body text-[var(--muted)] mt-3 max-w-lg mx-auto">
-            Every aspect of our school is designed with one goal — to provide
-            the best possible environment for your child to learn and grow.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          {specialFeatures.map((feature, index) => {
-            const IconComponent = getIcon(feature.icon);
-            return (
-              <motion.div
-                key={feature.title}
-                className="bg-[var(--cream)] rounded-3xl p-8 text-center relative overflow-hidden"
-                style={{ borderBottom: `3px solid ${feature.color}` }}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.08, type: "spring", stiffness: 200 }}
-                whileHover={{ y: -6, scale: 1.02 }}
-              >
-                <div
-                  className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5"
-                  style={{ backgroundColor: feature.bg }}
-                >
-                  {IconComponent && <IconComponent className="w-8 h-8" style={{ color: feature.color }} />}
+                      <p className="text-sm text-[#5a5a5a] leading-relaxed">
+                        {card.description}
+                      </p>
+                    </div>
+                  ))}
                 </div>
-                <h3 className="font-display text-[var(--navy)] text-lg font-semibold mb-3">
-                  {feature.title}
-                </h3>
-                <p className="text-small text-[var(--muted)] leading-relaxed">
-                  {feature.description}
-                </p>
-              </motion.div>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
-}
+              )}
 
-/* ──────────────────────────────────────────────
-   Section 5 — Key Benefits
-   ────────────────────────────────────────────── */
-
-function KeyBenefitsSection({ keyBenefits }: { keyBenefits: KeyBenefitItem[] }) {
-  return (
-    <section className="bg-[var(--cream)] py-24 px-6 relative overflow-hidden">
-      <FloatingShape color="#FBBF77" size={70} top="5%" left="3%" shape="circle" delay={0} />
-      <FloatingShape color="#4ECDC4" size={50} top="80%" left="92%" shape="square" delay={1} />
-
-      <div className="max-w-6xl mx-auto relative z-10">
-        <div className="text-center mb-16">
-          <SectionLabel>Why Aarambha</SectionLabel>
-          <h2 className="text-title font-display text-[var(--navy)]">
-            Key Benefits for Your Child
-          </h2>
-          <p className="text-body text-[var(--muted)] mt-3 max-w-lg mx-auto">
-            We go beyond academics to ensure every child is equipped with the
-            skills, confidence, and values they need to succeed in life.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          {keyBenefits.map((benefit, index) => (
-            <motion.div
-              key={benefit.title}
-              className="rounded-3xl p-8 relative overflow-hidden"
-              style={{
-                backgroundColor: benefit.bg,
-                border: `2px solid ${benefit.border}`,
-              }}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1, type: "spring", stiffness: 180 }}
-              whileHover={{ y: -4 }}
-            >
-              <span
-                className="absolute top-4 right-4 text-6xl opacity-10 select-none"
-                aria-hidden="true"
-              >
-                {benefit.emoji}
-              </span>
-
-              <div className="relative z-10">
-                <span className="text-3xl mb-4 block">{benefit.emoji}</span>
-                <h3 className="text-subtitle font-display text-[var(--navy)] mb-3">
-                  {benefit.title}
-                </h3>
-                <p className="text-small text-[var(--muted)] leading-relaxed">
-                  {benefit.description}
+              {/* Quote/Description block with gold left border */}
+              <div className="relative bg-gray-50 rounded-2xl p-8 mb-16">
+                <div className="absolute left-0 top-6 bottom-6 w-1 bg-[var(--gold)] rounded-full" />
+                <p className="text-base text-[#444] leading-relaxed pl-6">
+                  {program.description}
                 </p>
               </div>
-            </motion.div>
-          ))}
+
+              {/* Program Highlights */}
+              {programHighlights.length > 0 && (
+                <div>
+                  <h3 className="text-2xl font-display font-bold text-[var(--navy)] mb-8">
+                    Our Program Highlights
+                  </h3>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                    {/* Left: highlight items */}
+                    <div className="space-y-1">
+                      {programHighlights.map((hl, i) => (
+                        <div
+                          key={i}
+                          className="flex items-start gap-4 p-4 border-b border-gray-100 last:border-0"
+                        >
+                          <div className="w-10 h-10 rounded-xl bg-[#e8eaf6] flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <svg className="w-5 h-5 text-[var(--navy)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" />
+                            </svg>
+                          </div>
+                          <div>
+                            <h4 className="font-display font-bold text-[var(--navy)] text-sm mb-0.5">
+                              {hl.title}
+                            </h4>
+                            <p className="text-sm text-[#5a5a5a]">{hl.description}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Right: image grid */}
+                    <div className="relative">
+                      <div className="absolute -top-4 -right-4 opacity-20">
+                        <svg width="50" height="50" viewBox="0 0 50 50" fill="none">
+                          <path d="M25 5 L30 18 L43 18 L33 27 L36 40 L25 33 L14 40 L17 27 L7 18 L20 18 Z" stroke="var(--gold)" strokeWidth="1.5" fill="none" />
+                        </svg>
+                      </div>
+                      {(() => {
+                        const imgs = program.galleryImages.length > 0 ? program.galleryImages : [program.image];
+                        const topRow = imgs.slice(0, 3);
+                        const bottomRow = imgs.slice(3, 5);
+                        return (
+                          <>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                              {topRow.map((src, i) => (
+                                <SmartImage
+                                  key={i}
+                                  src={src}
+                                  alt={`${program.name} ${i + 1}`}
+                                  width={300}
+                                  height={200}
+                                  className="w-full h-[140px] object-cover rounded-xl"
+                                />
+                              ))}
+                            </div>
+                            {bottomRow.length > 0 && (
+                              <div className="grid grid-cols-2 gap-2 mt-2">
+                                {bottomRow.map((src, i) => (
+                                  <SmartImage
+                                    key={i}
+                                    src={src}
+                                    alt={`${program.name} ${i + 4}`}
+                                    width={400}
+                                    height={250}
+                                    className="w-full h-[180px] object-cover rounded-xl"
+                                  />
+                                ))}
+                              </div>
+                            )}
+                          </>
+                        );
+                      })()}
+                      <div className="absolute -bottom-4 -left-4 opacity-30">
+                        <svg width="50" height="25" viewBox="0 0 50 25" fill="none">
+                          <path d="M0 8 Q8 0 16 8 Q24 16 32 8 Q40 0 50 8" stroke="var(--teal)" strokeWidth="2" strokeLinecap="round" fill="none" />
+                          <path d="M0 18 Q8 10 16 18 Q24 26 32 18 Q40 10 50 18" stroke="var(--teal)" strokeWidth="2" strokeLinecap="round" fill="none" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </section>
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Special Features */}
+      {specialFeatures.length > 0 && (
+        <section className="bg-[var(--cream)] py-24 px-6">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-14">
+              <span className="text-[var(--gold)] font-semibold text-sm uppercase tracking-wider mb-3 block">
+                What Makes Us Special
+              </span>
+              <h2 className="text-3xl md:text-4xl font-display text-[var(--navy)]">
+                Special Features
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {specialFeatures.map((feature, i) => {
+                const Icon = getIcon(feature.icon);
+                return (
+                  <motion.div
+                    key={feature.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.08 }}
+                    className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+                  >
+                    <div
+                      className="w-12 h-12 rounded-xl flex items-center justify-center mb-4"
+                      style={{ backgroundColor: feature.bg || "#e8eaf6", color: feature.color }}
+                    >
+                      {Icon ? <Icon className="w-6 h-6" /> : <span className="text-xl">{feature.icon}</span>}
+                    </div>
+                    <h3 className="font-display font-bold text-[var(--navy)] text-base mb-2">
+                      {feature.title}
+                    </h3>
+                    <p className="text-sm text-[#5a5a5a] leading-relaxed">{feature.description}</p>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Key Benefits */}
+      {keyBenefits.length > 0 && (
+        <section className="bg-white py-24 px-6">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-14">
+              <span className="text-[var(--gold)] font-semibold text-sm uppercase tracking-wider mb-3 block">
+                Why Choose Aarambha
+              </span>
+              <h2 className="text-3xl md:text-4xl font-display text-[var(--navy)]">
+                Key Benefits
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {keyBenefits.map((benefit, i) => (
+                <motion.div
+                  key={benefit.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.08 }}
+                  className="rounded-2xl p-6 border-2 transition-shadow hover:shadow-md"
+                  style={{
+                    backgroundColor: benefit.bg,
+                    borderColor: benefit.border,
+                  }}
+                >
+                  <span className="text-3xl mb-3 block">{benefit.emoji}</span>
+                  <h3
+                    className="font-display font-bold text-base mb-2"
+                    style={{ color: benefit.color }}
+                  >
+                    {benefit.title}
+                  </h3>
+                  <p className="text-sm text-[#5a5a5a] leading-relaxed">{benefit.description}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* CTA */}
+      <section className="bg-[var(--navy)] py-20 px-6 text-center relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 left-10 w-32 h-32 rounded-full bg-[var(--gold)] animate-blob" />
+          <div className="absolute bottom-10 right-10 w-24 h-24 rounded-full bg-[var(--teal)] animate-blob" style={{ animationDelay: "1.5s" }} />
         </div>
-      </div>
-    </section>
-  );
-}
-
-/* ──────────────────────────────────────────────
-   Section 6 — CTA
-   ────────────────────────────────────────────── */
-
-function CTASection() {
-  return (
-    <section className="relative bg-[var(--navy)] py-28 px-6 overflow-hidden">
-      <FloatingShape color="#F5A623" size={120} top="10%" left="5%" shape="circle" delay={0} />
-      <FloatingShape color="#4ECDC4" size={80} top="60%" left="85%" shape="triangle" delay={0.5} />
-      <FloatingShape color="#FF6B6B" size={50} top="20%" left="75%" shape="star" delay={1} />
-      <FloatingShape color="#A78BFA" size={70} top="70%" left="15%" shape="square" delay={1.5} />
-      <FloatingShape color="#FBBF77" size={40} top="15%" left="45%" shape="circle" delay={2} />
-
-      <motion.div
-        className="max-w-3xl mx-auto text-center relative z-10"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-      >
-        <span className="text-5xl mb-4 block">🎓</span>
-        <h2 className="text-title font-display text-white mb-4">
-          Ready to Start Your Child&apos;s Journey?
-        </h2>
-        <p className="text-body text-white/70 mt-4 mb-10 max-w-xl mx-auto">
-          Join a community of learners where every child is encouraged to
-          explore, grow, and achieve their fullest potential through our
-          thematic, student-centered approach.
-        </p>
-        <div className="flex flex-wrap justify-center gap-4">
-          <Link href="/community" className="btn-cta">
-            Apply Now
-          </Link>
-          <Link href="/contact" className="btn-secondary">
-            Contact Us
-          </Link>
-        </div>
-      </motion.div>
-    </section>
+        <motion.div
+          className="relative z-10 max-w-2xl mx-auto"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          <h2 className="text-3xl md:text-4xl font-display text-white mb-4">
+            Ready to Join Aarambha?
+          </h2>
+          <p className="text-white/70 mb-8 text-lg">
+            Give your child the best start with our comprehensive programs.
+          </p>
+          <div className="flex flex-wrap gap-4 justify-center">
+            <Link
+              href="/community/form"
+              className="bg-[var(--orange)] text-white font-semibold px-8 py-3.5 rounded-full hover:bg-[#e55a2b] transition-colors shadow-lg"
+            >
+              Apply Now
+            </Link>
+            <Link
+              href="/contact"
+              className="bg-white/10 backdrop-blur-sm text-white font-semibold px-8 py-3.5 rounded-full hover:bg-white/20 transition-colors border border-white/20"
+            >
+              Contact Us
+            </Link>
+          </div>
+        </motion.div>
+      </section>
+    </>
   );
 }

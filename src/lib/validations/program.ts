@@ -10,6 +10,10 @@ export const programSchema = z.object({
   image: z.string().url('A valid image URL is required').max(500).or(z.literal('')).default(''),
   color: z.string().min(1, 'Color is required').max(50),
   emoji: z.string().min(1, 'Emoji is required').max(10),
+  sectionLabel: z.string().max(100).optional(),
+  featureCards: z.string().max(5000).optional(),
+  programHighlights: z.string().max(5000).optional(),
+  galleryImages: z.array(z.string().url()).max(5).optional().default([]),
 });
 
 export type ProgramInput = z.infer<typeof programSchema>;

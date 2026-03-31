@@ -1,6 +1,12 @@
 export const dynamic = 'force-dynamic';
 
+import type { Metadata } from "next";
 import { prisma } from "@/lib/db";
+
+export const metadata: Metadata = {
+  title: "Aarambha School | Progressive K-12 Education in Kathmandu",
+  description: "Aarambha Sanskar Vidyalaya is a progressive K-12 institution in Kathmandu blending Eastern wisdom with modern STEAM education. Nursery to Grade 10.",
+};
 import { serialize } from "@/lib/utils";
 import HomePageClient from "@/components/pages/HomePageClient";
 
@@ -13,6 +19,8 @@ export default async function HomePage() {
     partners,
     features,
     schoolLifeItems,
+    newsEvents,
+    blogPosts,
     settingsRows,
   ] = await Promise.all([
     prisma.stat.findMany({ orderBy: { sortOrder: "asc" } }),
@@ -22,12 +30,15 @@ export default async function HomePage() {
     prisma.partner.findMany({ orderBy: { sortOrder: "asc" } }),
     prisma.homepageFeature.findMany({ orderBy: { sortOrder: "asc" } }),
     prisma.schoolLifeItem.findMany({ orderBy: { sortOrder: "asc" } }),
+    prisma.newsEvent.findMany({ orderBy: { date: "desc" }, take: 8 }),
+    prisma.blogPost.findMany({ where: { published: true }, orderBy: { publishedAt: "desc" }, take: 9 }),
     prisma.siteSettings.findMany({
       where: {
         key: {
           in: [
             "principal_message",
             "principal_name",
+            "principal_title",
             "principal_image",
             "about_text",
           ],
@@ -45,8 +56,10 @@ export default async function HomePage() {
       settings.principal_message ??
       "At Aarambha Sanskar Vidyalaya, we blend traditional values with modern learning to nurture curious, creative, and compassionate leaders.",
     name: settings.principal_name ?? "Naresh Prasad Shrestha",
+    title: settings.principal_title ?? "Chairman & Principal",
     image: settings.principal_image ?? "/images/principal.webp",
   };
+
 
   let aboutText: string[];
   try {
@@ -68,6 +81,8 @@ export default async function HomePage() {
       features={serialize(features)}
       principalData={principalData}
       aboutText={aboutText}
+      newsEvents={serialize(newsEvents)}
+      blogPosts={JSON.parse(JSON.stringify(blogPosts))}
     />
   );
 }

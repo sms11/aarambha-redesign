@@ -47,19 +47,23 @@ model Partner {
 }
 
 model Program {
-  id          Int      @id @default(autoincrement())
-  name        String
-  ages        String
-  grades      String
-  description String
-  highlights  String[]
-  teaching    String
-  image       String
-  color       String
-  emoji       String
-  sortOrder   Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                Int      @id @default(autoincrement())
+  name              String
+  ages              String
+  grades            String
+  description       String
+  highlights        String[]
+  teaching          String
+  image             String
+  color             String
+  emoji             String
+  sectionLabel      String?
+  featureCards      String?
+  programHighlights String?
+  galleryImages     String[]
+  sortOrder         Int      @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
 
 model Stat {
@@ -218,6 +222,44 @@ model SiteSettings {
   key       String   @unique
   value     String
   updatedAt DateTime @updatedAt
+}
+
+model NewsEvent {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  content     String?
+  image       String?
+  date        DateTime @default(now())
+  category    String   @default("news")
+  featured    Boolean  @default(false)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model WhatWeOffer {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  image       String?
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model BlogPost {
+  id          Int      @id @default(autoincrement())
+  title       String
+  slug        String   @unique
+  excerpt     String
+  content     String
+  image       String?
+  author      String   @default("Aarambha School")
+  published   Boolean  @default(true)
+  publishedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model AdmissionEnquiry {

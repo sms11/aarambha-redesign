@@ -26,6 +26,7 @@ FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
+ENV NEXT_SHARP_PATH=/app/node_modules/sharp
 
 RUN apk add --no-cache openssl
 
@@ -45,6 +46,7 @@ COPY --from=builder /app/node_modules/pg ./node_modules/pg
 COPY --from=builder /app/node_modules/dotenv ./node_modules/dotenv
 COPY --from=builder /app/node_modules/bcryptjs ./node_modules/bcryptjs
 COPY --from=builder /app/node_modules/minio ./node_modules/minio
+COPY --from=builder /app/node_modules/sharp ./node_modules/sharp
 
 # Next.js standalone output
 RUN mkdir .next

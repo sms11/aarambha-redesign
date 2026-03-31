@@ -16,7 +16,7 @@ export const facilitySchema = z.object({
   subtitle: z.string().max(200).optional().default(''),
   description: z.string().min(1, 'Description is required').max(1000),
   image: z.string().url('A valid image URL is required').max(500).or(z.literal('')).default(''),
-  category: z.enum(['resource', 'lab', 'digital', 'health', 'convenience']),
+  category: z.enum(['beyond_textbooks', 'eca', 'resources']),
   icon: z.string().max(50).optional().default(''),
   color: z.string().max(50).optional().default(''),
 });

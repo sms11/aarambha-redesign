@@ -8,72 +8,20 @@ import ReCaptchaWidget from "@/components/ReCaptcha";
 import { submitEnquiry } from "@/lib/actions/admission";
 
 const GRADE_OPTIONS = [
-  { value: "Nursery", emoji: "🌱", label: "Nursery" },
-  { value: "LKG", emoji: "🌼", label: "LKG" },
-  { value: "UKG", emoji: "🌻", label: "UKG" },
-  { value: "Grade 1", emoji: "1️⃣", label: "Grade 1" },
-  { value: "Grade 2", emoji: "2️⃣", label: "Grade 2" },
-  { value: "Grade 3", emoji: "3️⃣", label: "Grade 3" },
-  { value: "Grade 4", emoji: "4️⃣", label: "Grade 4" },
-  { value: "Grade 5", emoji: "5️⃣", label: "Grade 5" },
-  { value: "Grade 6", emoji: "6️⃣", label: "Grade 6" },
-  { value: "Grade 7", emoji: "7️⃣", label: "Grade 7" },
-  { value: "Grade 8", emoji: "8️⃣", label: "Grade 8" },
-  { value: "Grade 9", emoji: "9️⃣", label: "Grade 9" },
-  { value: "Grade 10", emoji: "🔟", label: "Grade 10" },
+  "Nursery", "LKG", "UKG",
+  "Grade 1", "Grade 2", "Grade 3", "Grade 4", "Grade 5",
+  "Grade 6", "Grade 7", "Grade 8", "Grade 9", "Grade 10",
 ];
 
-const GENDER_OPTIONS = [
-  { value: "Male", emoji: "👦", label: "Boy" },
-  { value: "Female", emoji: "👧", label: "Girl" },
-  { value: "Other", emoji: "🧒", label: "Other" },
-];
+const inputClass =
+  "w-full rounded-xl border-2 border-gray-200 bg-white px-4 py-3 text-sm text-[#1B2A4A] placeholder:text-gray-400 outline-none transition-all focus:border-[#FF6B35] focus:ring-2 focus:ring-[#FF6B35]/15";
 
-const RELATION_OPTIONS = [
-  { value: "Mother", emoji: "👩", label: "Mother" },
-  { value: "Father", emoji: "👨", label: "Father" },
-  { value: "Other", emoji: "👤", label: "Other" },
-];
-
-function FloatingEmoji({ emoji, size, top, left, delay }: {
-  emoji: string; size: number; top: string; left: string; delay: number;
-}) {
-  return (
-    <motion.div
-      className="absolute pointer-events-none select-none"
-      style={{ top, left, fontSize: size }}
-      animate={{ y: [0, -20, 0], rotate: [0, 10, -10, 0] }}
-      transition={{ duration: 5 + delay, delay, repeat: Infinity, ease: "easeInOut" }}
-    >
-      <span className="opacity-20">{emoji}</span>
-    </motion.div>
-  );
-}
-
-function StepIndicator({ step, total }: { step: number; total: number }) {
-  return (
-    <div className="flex items-center justify-center gap-2 mb-8">
-      {Array.from({ length: total }, (_, i) => (
-        <motion.div
-          key={i}
-          className={`h-2 rounded-full transition-all duration-300 ${
-            i < step ? "bg-[var(--gold)]" : i === step ? "bg-[var(--coral)] w-8" : "bg-gray-200"
-          }`}
-          style={{ width: i === step ? 32 : i < step ? 24 : 16 }}
-          initial={false}
-          animate={{ scale: i === step ? 1.1 : 1 }}
-        />
-      ))}
-    </div>
-  );
-}
+const labelClass = "block text-sm font-semibold text-[#1B2A4A] mb-1.5";
 
 export default function AdmissionFormClient() {
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
-  const [step, setStep] = useState(0);
 
-  // Form state
   const [studentName, setStudentName] = useState("");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
@@ -82,27 +30,10 @@ export default function AdmissionFormClient() {
   const [previousSchool, setPreviousSchool] = useState("");
   const [guardianName, setGuardianName] = useState("");
   const [relation, setRelation] = useState("");
-  const [customRelation, setCustomRelation] = useState("");
   const [contactNumber, setContactNumber] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const captchaRef = useRef<ReCAPTCHA>(null);
-
-  const STEPS = [
-    { title: "About the Student", emoji: "🧒", subtitle: "Tell us about the little learner" },
-    { title: "School Details", emoji: "🏫", subtitle: "Which grade are they joining?" },
-    { title: "Guardian Info", emoji: "👨‍👩‍👧", subtitle: "How can we reach you?" },
-  ];
-
-  function canGoNext(): boolean {
-    if (step === 0) return studentName.trim() !== "" && age.trim() !== "" && gender !== "";
-    if (step === 1) return gradeApplied !== "" && address.trim() !== "";
-    if (step === 2) {
-      const hasRelation = relation === "Other" ? customRelation.trim() !== "" : relation !== "";
-      return guardianName.trim() !== "" && hasRelation && contactNumber.trim() !== "";
-    }
-    return false;
-  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -117,7 +48,7 @@ export default function AdmissionFormClient() {
     formData.set("address", address);
     formData.set("previousSchool", previousSchool);
     formData.set("guardianName", guardianName);
-    formData.set("relation", relation === "Other" ? customRelation : relation);
+    formData.set("relation", relation);
     formData.set("contactNumber", contactNumber);
     formData.set("recaptchaToken", captchaToken || "");
 
@@ -138,418 +69,379 @@ export default function AdmissionFormClient() {
   return (
     <>
       {/* Hero */}
-      <section className="relative bg-gradient-to-b from-[var(--navy)] via-[#1a2d4d] to-[#162340] pt-32 pb-20 px-6 overflow-hidden">
-        <FloatingEmoji emoji="📚" size={40} top="10%" left="5%" delay={0} />
-        <FloatingEmoji emoji="✏️" size={35} top="20%" left="90%" delay={0.5} />
-        <FloatingEmoji emoji="🎨" size={45} top="60%" left="8%" delay={1} />
-        <FloatingEmoji emoji="⭐" size={30} top="15%" left="75%" delay={1.5} />
-        <FloatingEmoji emoji="🌈" size={38} top="70%" left="88%" delay={2} />
-        <FloatingEmoji emoji="🎓" size={42} top="50%" left="3%" delay={0.8} />
-        <FloatingEmoji emoji="🔬" size={32} top="80%" left="70%" delay={1.2} />
-        <FloatingEmoji emoji="🎵" size={28} top="35%" left="95%" delay={0.3} />
-
+      <section className="relative overflow-hidden min-h-[50vh] md:min-h-[60vh] flex items-center justify-center">
+        <div className="absolute inset-0 bg-gradient-to-b from-[rgba(19,47,80,0.9)] via-[rgba(30,74,122,0.8)] to-[rgba(19,47,80,0.92)]" />
         <motion.div
-          className="max-w-2xl mx-auto text-center relative z-10"
-          initial={{ opacity: 0, y: 20 }}
+          className="relative z-10 text-center px-6 max-w-3xl mx-auto"
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.8 }}
         >
-          <motion.span
-            className="inline-block text-6xl mb-5"
-            animate={{ rotate: [0, -10, 10, -10, 0] }}
-            transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-          >
-            👋
-          </motion.span>
-          <h1 className="text-title font-display text-white">
-            Join the Aarambha Family!
+          <span className="text-[var(--gold)] font-semibold text-sm uppercase tracking-wider mb-4 block">
+            Begin Your Journey
+          </span>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-display text-white mb-6">
+            Admission Enquiry
           </h1>
-          <p className="text-lg text-white/60 mt-4 max-w-lg mx-auto leading-relaxed">
-            Every great journey starts with a single step. Fill out this quick form
-            and we&apos;ll help you take the next one!
+          <p className="text-white/70 text-lg max-w-xl mx-auto">
+            Take the first step towards a brighter future. Fill out the form below and our team will get in touch.
           </p>
-
-          {/* Fun stats */}
-          <div className="flex justify-center gap-8 mt-8">
-            {[
-              { emoji: "🎒", label: "3 easy steps" },
-              { emoji: "⏱️", label: "Takes 2 minutes" },
-              { emoji: "💚", label: "We respond fast" },
-            ].map((item) => (
-              <motion.div
-                key={item.label}
-                className="text-center"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-              >
-                <span className="text-2xl">{item.emoji}</span>
-                <p className="text-xs text-white/50 mt-1">{item.label}</p>
-              </motion.div>
-            ))}
-          </div>
         </motion.div>
       </section>
 
       {/* Form Section */}
-      <section className="relative bg-gradient-to-b from-[#162340] to-[var(--navy)] py-12 px-6 overflow-hidden -mt-1">
-        <div className="max-w-2xl mx-auto relative z-10">
+      <section className="bg-[#f9f8f6] py-20 px-6">
+        <div className="max-w-6xl mx-auto">
           {status === "success" ? (
             <motion.div
-              className="rounded-3xl overflow-hidden shadow-2xl"
-              initial={{ opacity: 0, scale: 0.9 }}
+              className="max-w-2xl mx-auto text-center"
+              initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, type: "spring" }}
+              transition={{ duration: 0.5 }}
             >
-              <div className="bg-gradient-to-br from-[var(--mint)] to-emerald-400 p-1">
-                <div className="bg-white rounded-[22px] p-10 md:p-14 text-center">
-                  <motion.div
-                    className="text-7xl mb-6"
-                    animate={{ scale: [1, 1.2, 1], rotate: [0, 5, -5, 0] }}
-                    transition={{ duration: 0.6 }}
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-12 md:p-16">
+                <div className="w-20 h-20 rounded-full bg-[#e8f5e9] mx-auto mb-6 flex items-center justify-center">
+                  <svg className="w-10 h-10 text-[#2e7d32]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                  </svg>
+                </div>
+                <h2 className="text-2xl font-display font-bold text-[#1B2A4A] mb-3">
+                  Enquiry Submitted Successfully
+                </h2>
+                <p className="text-[#5a5a5a] mb-2">
+                  We have received your admission enquiry for <strong className="text-[#1B2A4A]">{studentName}</strong>.
+                </p>
+                <p className="text-sm text-[#5a5a5a] mb-10">
+                  Our admissions team will contact you at <strong className="text-[#1B2A4A]">{contactNumber}</strong> within 24-48 hours.
+                </p>
+                <div className="flex flex-wrap justify-center gap-4">
+                  <Link
+                    href="/"
+                    className="inline-flex items-center gap-2 rounded-full border-2 border-[#1B2A4A] px-7 py-3 text-sm font-semibold text-[#1B2A4A] hover:bg-[#1B2A4A] hover:text-white transition-colors"
                   >
-                    🎉
-                  </motion.div>
-                  <h3 className="text-subtitle font-display text-[var(--navy)] mb-3">
-                    You&apos;re All Set!
-                  </h3>
-                  <p className="text-body text-[var(--muted)] mb-2">
-                    We&apos;ve received your enquiry for <strong>{studentName}</strong>.
-                  </p>
-                  <p className="text-sm text-[var(--muted)] mb-10">
-                    Our team will reach out to you at <strong>{contactNumber}</strong> shortly.
-                  </p>
-                  <div className="flex flex-wrap justify-center gap-4">
-                    <Link
-                      href="/"
-                      className="inline-flex items-center gap-2 rounded-2xl border-2 border-[var(--navy)] px-8 py-3 text-sm font-bold text-[var(--navy)] transition-all hover:bg-[var(--navy)] hover:text-white"
-                    >
-                      ← Back to Home
-                    </Link>
-                    <Link
-                      href="/community"
-                      className="inline-flex items-center gap-2 rounded-2xl bg-[var(--gold)] px-8 py-3 text-sm font-bold text-white shadow-lg shadow-[var(--gold)]/25 transition-all hover:shadow-xl hover:-translate-y-0.5"
-                    >
-                      Explore Our School →
-                    </Link>
-                  </div>
+                    Back to Home
+                  </Link>
+                  <Link
+                    href="/programs"
+                    className="inline-flex items-center gap-2 rounded-full bg-[#FF6B35] px-7 py-3 text-sm font-semibold text-white hover:bg-[#e55a2b] transition-colors shadow-md"
+                  >
+                    Explore Programs
+                  </Link>
                 </div>
               </div>
             </motion.div>
           ) : (
-            <motion.div
-              className="rounded-3xl overflow-hidden shadow-2xl"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              {/* Colorful top bar */}
-              <div className="h-2 bg-gradient-to-r from-[var(--gold)] via-[var(--coral)] via-[var(--mint)] to-[var(--lavender)]" />
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 lg:gap-12 items-start">
+              {/* Form */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                  <div className="h-1 bg-gradient-to-r from-[#FF6B35] via-[#14B8A6] to-[#1B2A4A]" />
 
-              <div className="bg-white p-8 md:p-10">
-                {/* Step header */}
-                <div className="text-center mb-2">
-                  <motion.span
-                    key={step}
-                    className="inline-block text-4xl mb-2"
-                    initial={{ scale: 0, rotate: -20 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    {STEPS[step].emoji}
-                  </motion.span>
-                  <h2 className="text-xl font-display font-bold text-[var(--navy)]">
-                    {STEPS[step].title}
-                  </h2>
-                  <p className="text-sm text-[var(--muted)] mt-1">
-                    {STEPS[step].subtitle}
-                  </p>
-                </div>
+                  <div className="p-5 sm:p-6 md:p-8 lg:p-10">
+                    <h2 className="text-xl font-display font-bold text-[#1B2A4A] mb-1">
+                      Student Enquiry Form
+                    </h2>
+                    <p className="text-sm text-[#5a5a5a] mb-8">
+                      Fields marked with <span className="text-red-500">*</span> are required.
+                    </p>
 
-                <StepIndicator step={step} total={3} />
+                    {status === "error" && (
+                      <motion.div
+                        className="mb-6 rounded-xl bg-red-50 border border-red-200 px-5 py-4 text-sm text-red-700"
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                      >
+                        {errorMessage}
+                      </motion.div>
+                    )}
 
-                {status === "error" && (
-                  <motion.div
-                    className="mb-6 rounded-2xl bg-red-50 border border-red-200 p-4 text-sm text-red-700 flex items-center gap-2"
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                  >
-                    <span>😟</span> {errorMessage}
-                  </motion.div>
-                )}
-
-                <form ref={formRef} onSubmit={handleSubmit}>
-                  {/* Step 1: Student Info */}
-                  {step === 0 && (
-                    <motion.div
-                      key="step0"
-                      className="space-y-5"
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
-                    >
-                      {/* Student Name */}
+                    <form ref={formRef} onSubmit={handleSubmit} className="space-y-8">
+                      {/* Section: Student Information */}
                       <div>
-                        <label className="flex items-center gap-2 text-sm font-semibold text-[var(--navy)] mb-2">
-                          <span>👤</span> Student&apos;s Full Name
-                        </label>
-                        <input
-                          type="text"
-                          value={studentName}
-                          onChange={(e) => setStudentName(e.target.value)}
-                          required
-                          placeholder="What's the student's name?"
-                          className="w-full rounded-2xl border-2 border-gray-100 bg-gray-50/50 px-5 py-3.5 text-sm text-[var(--navy)] placeholder:text-gray-400 transition-all focus:border-[var(--gold)] focus:bg-white focus:ring-4 focus:ring-[var(--gold)]/10 focus:outline-none"
-                        />
-                      </div>
-
-                      {/* Age */}
-                      <div>
-                        <label className="flex items-center gap-2 text-sm font-semibold text-[var(--navy)] mb-2">
-                          <span>🎂</span> Age
-                        </label>
-                        <input
-                          type="text"
-                          value={age}
-                          onChange={(e) => setAge(e.target.value)}
-                          required
-                          placeholder="How old are they?"
-                          className="w-full rounded-2xl border-2 border-gray-100 bg-gray-50/50 px-5 py-3.5 text-sm text-[var(--navy)] placeholder:text-gray-400 transition-all focus:border-[var(--gold)] focus:bg-white focus:ring-4 focus:ring-[var(--gold)]/10 focus:outline-none"
-                        />
-                      </div>
-
-                      {/* Gender - fun button picker */}
-                      <div>
-                        <label className="flex items-center gap-2 text-sm font-semibold text-[var(--navy)] mb-3">
-                          <span>✨</span> Gender
-                        </label>
-                        <div className="grid grid-cols-3 gap-3">
-                          {GENDER_OPTIONS.map((opt) => (
-                            <button
-                              key={opt.value}
-                              type="button"
-                              onClick={() => setGender(opt.value)}
-                              className={`flex flex-col items-center gap-1.5 rounded-2xl border-2 py-4 px-3 transition-all ${
-                                gender === opt.value
-                                  ? "border-[var(--gold)] bg-[var(--gold)]/5 shadow-md shadow-[var(--gold)]/10 scale-[1.02]"
-                                  : "border-gray-100 bg-gray-50/50 hover:border-gray-200 hover:bg-white"
-                              }`}
-                            >
-                              <span className="text-2xl">{opt.emoji}</span>
-                              <span className={`text-xs font-semibold ${gender === opt.value ? "text-[var(--gold)]" : "text-gray-500"}`}>
-                                {opt.label}
-                              </span>
-                            </button>
-                          ))}
+                        <div className="flex items-center gap-3 mb-5">
+                          <div className="w-8 h-8 rounded-lg bg-[#FF6B35]/10 flex items-center justify-center">
+                            <svg className="w-4 h-4 text-[#FF6B35]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                            </svg>
+                          </div>
+                          <h3 className="text-base font-bold text-[#1B2A4A]">Student Information</h3>
                         </div>
-                      </div>
-                    </motion.div>
-                  )}
 
-                  {/* Step 2: School Details */}
-                  {step === 1 && (
-                    <motion.div
-                      key="step1"
-                      className="space-y-5"
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
-                    >
-                      {/* Grade - visual grid */}
-                      <div>
-                        <label className="flex items-center gap-2 text-sm font-semibold text-[var(--navy)] mb-3">
-                          <span>🎓</span> Grade Applied For
-                        </label>
-                        <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
-                          {GRADE_OPTIONS.map((grade) => (
-                            <button
-                              key={grade.value}
-                              type="button"
-                              onClick={() => setGradeApplied(grade.value)}
-                              className={`flex flex-col items-center gap-1 rounded-xl border-2 py-3 px-2 transition-all ${
-                                gradeApplied === grade.value
-                                  ? "border-[var(--coral)] bg-[var(--coral)]/5 shadow-md shadow-[var(--coral)]/10 scale-[1.03]"
-                                  : "border-gray-100 bg-gray-50/50 hover:border-gray-200 hover:bg-white"
-                              }`}
-                            >
-                              <span className="text-lg">{grade.emoji}</span>
-                              <span className={`text-[10px] font-bold ${gradeApplied === grade.value ? "text-[var(--coral)]" : "text-gray-500"}`}>
-                                {grade.label}
-                              </span>
-                            </button>
-                          ))}
+                        <div className="grid gap-5 sm:grid-cols-2">
+                          <div className="sm:col-span-2">
+                            <label className={labelClass}>
+                              Full Name <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                              type="text"
+                              value={studentName}
+                              onChange={(e) => setStudentName(e.target.value)}
+                              required
+                              placeholder="Student's full name"
+                              className={inputClass}
+                            />
+                          </div>
+                          <div>
+                            <label className={labelClass}>
+                              Age <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                              type="text"
+                              value={age}
+                              onChange={(e) => setAge(e.target.value)}
+                              required
+                              placeholder="e.g. 5 years"
+                              className={inputClass}
+                            />
+                          </div>
+                          <div>
+                            <label className={labelClass}>
+                              Gender <span className="text-red-500">*</span>
+                            </label>
+                            <div className="flex gap-2">
+                              {["Male", "Female", "Other"].map((g) => (
+                                <button
+                                  key={g}
+                                  type="button"
+                                  onClick={() => setGender(g)}
+                                  className={`flex-1 rounded-xl border-2 py-3 text-sm font-semibold transition-all ${
+                                    gender === g
+                                      ? "border-[#FF6B35] bg-[#FF6B35]/5 text-[#FF6B35]"
+                                      : "border-gray-200 text-gray-500 hover:border-gray-300"
+                                  }`}
+                                >
+                                  {g}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
                         </div>
                       </div>
 
-                      {/* Address */}
-                      <div>
-                        <label className="flex items-center gap-2 text-sm font-semibold text-[var(--navy)] mb-2">
-                          <span>🏠</span> Home Address
-                        </label>
-                        <input
-                          type="text"
-                          value={address}
-                          onChange={(e) => setAddress(e.target.value)}
-                          required
-                          placeholder="Where does the family live?"
-                          className="w-full rounded-2xl border-2 border-gray-100 bg-gray-50/50 px-5 py-3.5 text-sm text-[var(--navy)] placeholder:text-gray-400 transition-all focus:border-[var(--gold)] focus:bg-white focus:ring-4 focus:ring-[var(--gold)]/10 focus:outline-none"
-                        />
-                      </div>
+                      {/* Divider */}
+                      <div className="border-t border-gray-100" />
 
-                      {/* Previous School */}
+                      {/* Section: Academic Details */}
                       <div>
-                        <label className="flex items-center gap-2 text-sm font-semibold text-[var(--navy)] mb-2">
-                          <span>🏫</span> Previous School
-                          <span className="text-xs font-normal text-gray-400 ml-1">(optional)</span>
-                        </label>
-                        <input
-                          type="text"
-                          value={previousSchool}
-                          onChange={(e) => setPreviousSchool(e.target.value)}
-                          placeholder="Skip if this is their first school"
-                          className="w-full rounded-2xl border-2 border-gray-100 bg-gray-50/50 px-5 py-3.5 text-sm text-[var(--navy)] placeholder:text-gray-400 transition-all focus:border-[var(--gold)] focus:bg-white focus:ring-4 focus:ring-[var(--gold)]/10 focus:outline-none"
-                        />
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {/* Step 3: Guardian Info */}
-                  {step === 2 && (
-                    <motion.div
-                      key="step2"
-                      className="space-y-5"
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
-                    >
-                      {/* Guardian Name */}
-                      <div>
-                        <label className="flex items-center gap-2 text-sm font-semibold text-[var(--navy)] mb-2">
-                          <span>👨‍👩‍👧</span> Guardian&apos;s Name
-                        </label>
-                        <input
-                          type="text"
-                          value={guardianName}
-                          onChange={(e) => setGuardianName(e.target.value)}
-                          required
-                          placeholder="Parent or guardian's full name"
-                          className="w-full rounded-2xl border-2 border-gray-100 bg-gray-50/50 px-5 py-3.5 text-sm text-[var(--navy)] placeholder:text-gray-400 transition-all focus:border-[var(--gold)] focus:bg-white focus:ring-4 focus:ring-[var(--gold)]/10 focus:outline-none"
-                        />
-                      </div>
-
-                      {/* Relation - fun button picker */}
-                      <div>
-                        <label className="flex items-center gap-2 text-sm font-semibold text-[var(--navy)] mb-3">
-                          <span>💛</span> Relation to Student
-                        </label>
-                        <div className="grid grid-cols-3 gap-3">
-                          {RELATION_OPTIONS.map((opt) => (
-                            <button
-                              key={opt.value}
-                              type="button"
-                              onClick={() => {
-                                setRelation(opt.value);
-                                if (opt.value !== "Other") setCustomRelation("");
-                              }}
-                              className={`flex flex-col items-center gap-1.5 rounded-2xl border-2 py-4 px-3 transition-all ${
-                                relation === opt.value
-                                  ? "border-[var(--mint)] bg-[var(--mint)]/5 shadow-md shadow-[var(--mint)]/10 scale-[1.02]"
-                                  : "border-gray-100 bg-gray-50/50 hover:border-gray-200 hover:bg-white"
-                              }`}
-                            >
-                              <span className="text-2xl">{opt.emoji}</span>
-                              <span className={`text-xs font-semibold ${relation === opt.value ? "text-[var(--mint)]" : "text-gray-500"}`}>
-                                {opt.label}
-                              </span>
-                            </button>
-                          ))}
+                        <div className="flex items-center gap-3 mb-5">
+                          <div className="w-8 h-8 rounded-lg bg-[#14B8A6]/10 flex items-center justify-center">
+                            <svg className="w-4 h-4 text-[#14B8A6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" />
+                            </svg>
+                          </div>
+                          <h3 className="text-base font-bold text-[#1B2A4A]">Academic Details</h3>
                         </div>
-                        {relation === "Other" && (
-                          <motion.input
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            type="text"
-                            value={customRelation}
-                            onChange={(e) => setCustomRelation(e.target.value)}
-                            placeholder="Please specify the relation"
-                            className="mt-3 w-full rounded-2xl border-2 border-gray-100 bg-gray-50/50 px-5 py-3.5 text-sm text-[var(--navy)] placeholder:text-gray-400 transition-all focus:border-[var(--mint)] focus:bg-white focus:ring-4 focus:ring-[var(--mint)]/10 focus:outline-none"
-                          />
-                        )}
+
+                        <div className="grid gap-5">
+                          <div>
+                            <label className={labelClass}>
+                              Grade Applied For <span className="text-red-500">*</span>
+                            </label>
+                            <select
+                              value={gradeApplied}
+                              onChange={(e) => setGradeApplied(e.target.value)}
+                              required
+                              className={inputClass + " appearance-none"}
+                            >
+                              <option value="">Select a grade</option>
+                              {GRADE_OPTIONS.map((g) => (
+                                <option key={g} value={g}>{g}</option>
+                              ))}
+                            </select>
+                          </div>
+                          <div>
+                            <label className={labelClass}>
+                              Address <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                              type="text"
+                              value={address}
+                              onChange={(e) => setAddress(e.target.value)}
+                              required
+                              placeholder="Home address"
+                              className={inputClass}
+                            />
+                          </div>
+                          <div>
+                            <label className={labelClass}>
+                              Previous School <span className="text-gray-400 font-normal">(optional)</span>
+                            </label>
+                            <input
+                              type="text"
+                              value={previousSchool}
+                              onChange={(e) => setPreviousSchool(e.target.value)}
+                              placeholder="Name of previous school, if any"
+                              className={inputClass}
+                            />
+                          </div>
+                        </div>
                       </div>
 
-                      {/* Contact Number */}
+                      {/* Divider */}
+                      <div className="border-t border-gray-100" />
+
+                      {/* Section: Guardian Information */}
                       <div>
-                        <label className="flex items-center gap-2 text-sm font-semibold text-[var(--navy)] mb-2">
-                          <span>📱</span> Contact Number
-                        </label>
-                        <input
-                          type="tel"
-                          value={contactNumber}
-                          onChange={(e) => setContactNumber(e.target.value)}
-                          required
-                          placeholder="Your phone number"
-                          className="w-full rounded-2xl border-2 border-gray-100 bg-gray-50/50 px-5 py-3.5 text-sm text-[var(--navy)] placeholder:text-gray-400 transition-all focus:border-[var(--gold)] focus:bg-white focus:ring-4 focus:ring-[var(--gold)]/10 focus:outline-none"
-                        />
+                        <div className="flex items-center gap-3 mb-5">
+                          <div className="w-8 h-8 rounded-lg bg-[#1B2A4A]/10 flex items-center justify-center">
+                            <svg className="w-4 h-4 text-[#1B2A4A]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
+                            </svg>
+                          </div>
+                          <h3 className="text-base font-bold text-[#1B2A4A]">Guardian Information</h3>
+                        </div>
+
+                        <div className="grid gap-5 sm:grid-cols-2">
+                          <div>
+                            <label className={labelClass}>
+                              Guardian Name <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                              type="text"
+                              value={guardianName}
+                              onChange={(e) => setGuardianName(e.target.value)}
+                              required
+                              placeholder="Parent or guardian name"
+                              className={inputClass}
+                            />
+                          </div>
+                          <div>
+                            <label className={labelClass}>
+                              Relation <span className="text-red-500">*</span>
+                            </label>
+                            <select
+                              value={relation}
+                              onChange={(e) => setRelation(e.target.value)}
+                              required
+                              className={inputClass + " appearance-none"}
+                            >
+                              <option value="">Select relation</option>
+                              <option value="Mother">Mother</option>
+                              <option value="Father">Father</option>
+                              <option value="Guardian">Guardian</option>
+                              <option value="Other">Other</option>
+                            </select>
+                          </div>
+                          <div className="sm:col-span-2">
+                            <label className={labelClass}>
+                              Contact Number <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                              type="tel"
+                              value={contactNumber}
+                              onChange={(e) => setContactNumber(e.target.value)}
+                              required
+                              placeholder="Your phone number"
+                              className={inputClass}
+                            />
+                          </div>
+                        </div>
                       </div>
 
                       {/* reCAPTCHA */}
-                      <div className="flex justify-center">
+                      <div className="flex justify-center pt-2">
                         <ReCaptchaWidget
                           ref={captchaRef}
                           onChange={(token) => setCaptchaToken(token)}
                         />
                       </div>
-                    </motion.div>
-                  )}
 
-                  {/* Navigation buttons */}
-                  <div className="flex items-center justify-between mt-8 pt-6 border-t border-gray-100">
-                    {step > 0 ? (
-                      <button
-                        type="button"
-                        onClick={() => setStep(step - 1)}
-                        className="flex items-center gap-2 rounded-2xl px-6 py-3 text-sm font-semibold text-gray-500 transition-all hover:bg-gray-50 hover:text-[var(--navy)]"
-                      >
-                        ← Back
-                      </button>
-                    ) : (
-                      <div />
-                    )}
-
-                    {step < 2 ? (
-                      <button
-                        type="button"
-                        onClick={() => canGoNext() && setStep(step + 1)}
-                        disabled={!canGoNext()}
-                        className="flex items-center gap-2 rounded-2xl bg-[var(--gold)] px-8 py-3 text-sm font-bold text-white shadow-lg shadow-[var(--gold)]/25 transition-all hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-40 disabled:shadow-none disabled:translate-y-0 disabled:cursor-not-allowed"
-                      >
-                        Next Step →
-                      </button>
-                    ) : (
+                      {/* Submit */}
                       <button
                         type="submit"
-                        disabled={!canGoNext() || status === "submitting" || !captchaToken}
-                        className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[var(--coral)] to-[var(--gold)] px-8 py-3 text-sm font-bold text-white shadow-lg shadow-[var(--coral)]/25 transition-all hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-40 disabled:shadow-none disabled:translate-y-0 disabled:cursor-not-allowed"
+                        disabled={status === "submitting" || !captchaToken}
+                        className="w-full rounded-xl bg-[#FF6B35] px-8 py-4 text-base font-bold text-white shadow-md hover:bg-[#e55a2b] hover:shadow-lg transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                       >
                         {status === "submitting" ? (
-                          <>
-                            <motion.span
-                              animate={{ rotate: 360 }}
-                              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                            >
-                              ⏳
-                            </motion.span>
+                          <span className="flex items-center justify-center gap-2">
+                            <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                            </svg>
                             Submitting...
-                          </>
+                          </span>
                         ) : (
-                          <>Submit Enquiry 🚀</>
+                          "Submit Enquiry"
                         )}
                       </button>
-                    )}
+                    </form>
                   </div>
-                </form>
-              </div>
-            </motion.div>
+                </div>
+              </motion.div>
+
+              {/* Sidebar */}
+              <motion.div
+                className="hidden lg:block space-y-6 sticky top-24"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                {/* Why Aarambha */}
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-7">
+                  <h3 className="text-base font-bold text-[#1B2A4A] mb-4">Why Choose Aarambha?</h3>
+                  <div className="space-y-4">
+                    {[
+                      { icon: "M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342", title: "STEAM-Based Curriculum", desc: "Hands-on learning through Science, Technology, Engineering, Arts & Mathematics" },
+                      { icon: "M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z", title: "Expert Faculty", desc: "Experienced educators committed to nurturing every student" },
+                      { icon: "M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0 0 12 9.75c-2.551 0-5.056.2-7.5.582V21", title: "Modern Facilities", desc: "Smart classrooms, labs, library, and sports facilities" },
+                    ].map((item) => (
+                      <div key={item.title} className="flex gap-3">
+                        <div className="w-9 h-9 rounded-lg bg-[#FF6B35]/10 flex items-center justify-center flex-shrink-0">
+                          <svg className="w-4.5 h-4.5 text-[#FF6B35]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d={item.icon} />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-[#1B2A4A]">{item.title}</p>
+                          <p className="text-xs text-[#5a5a5a] leading-relaxed">{item.desc}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Quick Info */}
+                <div className="bg-[#1B2A4A] rounded-2xl p-7 text-white">
+                  <h3 className="text-base font-bold mb-4">Admission Process</h3>
+                  <div className="space-y-3">
+                    {[
+                      { step: "1", text: "Submit this enquiry form" },
+                      { step: "2", text: "Our team will contact you" },
+                      { step: "3", text: "Schedule a campus visit" },
+                      { step: "4", text: "Complete the admission" },
+                    ].map((item) => (
+                      <div key={item.step} className="flex items-center gap-3">
+                        <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0 text-xs font-bold text-[#FF6B35]">
+                          {item.step}
+                        </div>
+                        <p className="text-sm text-white/80">{item.text}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Contact */}
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-7">
+                  <h3 className="text-base font-bold text-[#1B2A4A] mb-3">Need Help?</h3>
+                  <p className="text-sm text-[#5a5a5a] mb-4">
+                    Contact our admissions office for any questions.
+                  </p>
+                  <Link
+                    href="/contact"
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-[#FF6B35] hover:underline"
+                  >
+                    Contact Us
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                    </svg>
+                  </Link>
+                </div>
+              </motion.div>
+            </div>
           )}
         </div>
       </section>

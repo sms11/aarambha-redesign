@@ -169,19 +169,15 @@ function HexColorPicker({
 // ─── Category Options ────────────────────────────────────────────────────────
 
 const categoryOptions = [
-  { label: 'Resource', value: 'resource', emoji: '\u{1F4DA}' },
-  { label: 'Lab', value: 'lab', emoji: '\u{1F52C}' },
-  { label: 'Digital', value: 'digital', emoji: '\u{1F4BB}' },
-  { label: 'Health', value: 'health', emoji: '\u2764\uFE0F' },
-  { label: 'Convenience', value: 'convenience', emoji: '\u{1F68C}' },
+  { label: 'Learn Beyond Textbooks', value: 'beyond_textbooks', emoji: '📖' },
+  { label: 'ECA', value: 'eca', emoji: '🏆' },
+  { label: 'Learning Resources', value: 'resources', emoji: '🏫' },
 ];
 
 const categoryConfig: Record<string, { header: string; max: number }> = {
-  resource: { header: '\u{1F4DA} Resources', max: 4 },
-  lab: { header: '\u{1F52C} Labs', max: 3 },
-  digital: { header: '\u{1F4BB} Digital', max: 2 },
-  health: { header: '\u2764\uFE0F Health', max: 1 },
-  convenience: { header: '\u{1F68C} Convenience', max: 2 },
+  beyond_textbooks: { header: '📖 Learn Beyond Textbooks', max: 5 },
+  eca: { header: '🏆 ECA', max: 5 },
+  resources: { header: '🏫 Learning Resources', max: 5 },
 };
 
 const TOTAL_FACILITY_LIMIT = 12;
@@ -580,7 +576,7 @@ function FacilitiesSection() {
   }
 
   // Group facilities by category in display order
-  const categoryOrder = ['resource', 'lab', 'digital', 'health', 'convenience'];
+  const categoryOrder = ['beyond_textbooks', 'eca', 'resources'];
   const grouped = categoryOrder.map((cat) => {
     const config = categoryConfig[cat];
     const items = data.filter((f) => f.category === cat);

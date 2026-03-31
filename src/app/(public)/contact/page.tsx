@@ -1,7 +1,13 @@
 export const dynamic = 'force-dynamic';
 
+import type { Metadata } from "next";
 import { prisma } from "@/lib/db";
 import ContactPageClient from "@/components/pages/ContactPageClient";
+
+export const metadata: Metadata = {
+  title: "Contact Us | Aarambha School",
+  description: "Get in touch with Aarambha School. Located at Pipal Bot, Galko Pakha Marga, Ward 26, Kathmandu. Call, visit, or send us a message.",
+};
 
 export default async function ContactPage() {
   const [contactItems, settingsRows] = await Promise.all([

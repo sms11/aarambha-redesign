@@ -5,6 +5,8 @@ import FormField from '@/components/admin/FormField';
 import EmojiPicker from '@/components/admin/EmojiPicker';
 import IconPicker from '@/components/admin/IconPicker';
 import { getIcon } from '@/lib/icons';
+import ImageUpload from '@/components/admin/ImageUpload';
+import SmartImage from '@/components/SmartImage';
 import {
   getAllCoreValues,
   createCoreValue,
@@ -19,6 +21,12 @@ import {
   getMissionVision,
   updateMissionVision,
 } from '@/lib/actions/about';
+import {
+  getWhatWeOffer,
+  createWhatWeOffer,
+  updateWhatWeOffer,
+  deleteWhatWeOffer,
+} from '@/lib/actions/what-we-offer';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -40,7 +48,7 @@ interface Philosophy {
   sortOrder: number;
 }
 
-type ActiveTab = 'coreValues' | 'philosophy' | 'missionVision';
+type ActiveTab = 'coreValues' | 'philosophy' | 'missionVision' | 'whatWeOffer';
 
 // ─── Inline SVG Icons ────────────────────────────────────────────────────────
 
@@ -787,12 +795,173 @@ function MissionVisionSection() {
   );
 }
 
+// ─── What We Offer Section ───────────────────────────────────────────────────
+
+interface WhatWeOfferItem {
+  id: number;
+  title: string;
+  description: string;
+  image: string | null;
+  sortOrder: number;
+}
+
+function WhatWeOfferSection() {
+  const [items, setItems] = useState<WhatWeOfferItem[]>([]);
+  const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [image, setImage] = useState('');
+  const [errors, setErrors] = useState<Record<string, string[]>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  async function load() {
+    const data = await getWhatWeOffer();
+    setItems(data as WhatWeOfferItem[]);
+  }
+
+  useEffect(() => { load(); }, []);
+
+  function resetForm() {
+    setTitle(''); setDescription(''); setImage('');
+    setErrors({}); setEditingId(null); setShowForm(false);
+  }
+
+  function startEdit(item: WhatWeOfferItem) {
+    setTitle(item.title);
+    setDescription(item.description);
+    setImage(item.image || '');
+    setEditingId(item.id);
+    setShowForm(true);
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setErrors({});
+
+    const data = { title, description, image };
+    const result = editingId
+      ? await updateWhatWeOffer(editingId, data)
+      : await createWhatWeOffer(data);
+
+    if (result?.error) {
+      setErrors(result.error as Record<string, string[]>);
+      setIsSubmitting(false);
+      return;
+    }
+    setIsSubmitting(false);
+    resetForm();
+    load();
+  }
+
+  async function handleDelete(id: number) {
+    if (!confirm('Delete this item?')) return;
+    await deleteWhatWeOffer(id);
+    load();
+  }
+
+  const MAX_ITEMS = 8;
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-lg font-bold text-[#1B2A4A]">What We Offer</h2>
+          <p className="text-sm text-gray-500 mt-0.5">
+            Feature cards shown on the About page ({items.length}/{MAX_ITEMS})
+          </p>
+        </div>
+        {items.length < MAX_ITEMS && (
+          <button
+            onClick={() => { resetForm(); setShowForm(true); }}
+            className="flex items-center gap-2 rounded-xl bg-[#14B8A6] px-4 py-2 text-sm font-semibold text-white hover:bg-teal-600"
+          >
+            <PlusIcon className="h-4 w-4" /> Add
+          </button>
+        )}
+      </div>
+
+      {showForm && (
+        <form onSubmit={handleSubmit} className="rounded-2xl border border-teal-100 bg-white p-5 shadow-sm space-y-4">
+          <div>
+            <label className="mb-1 block text-sm font-medium text-[#1B2A4A]">
+              Title<span className="text-red-500">*</span>
+            </label>
+            <input type="text" value={title} onChange={(e) => setTitle(e.target.value)}
+              required maxLength={100} placeholder="e.g. Hands-on STEM Learning"
+              className="w-full rounded-xl border-2 border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-[#14B8A6] focus:ring-2 focus:ring-teal-100" />
+            {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title[0]}</p>}
+          </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium text-[#1B2A4A]">
+              Description<span className="text-red-500">*</span>
+            </label>
+            <textarea value={description} onChange={(e) => setDescription(e.target.value)}
+              required rows={3} maxLength={500} placeholder="Brief description..."
+              className="w-full rounded-xl border-2 border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-[#14B8A6] focus:ring-2 focus:ring-teal-100 resize-y" />
+            {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description[0]}</p>}
+          </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium text-[#1B2A4A]">Image</label>
+            <ImageUpload value={image} onChange={setImage} />
+          </div>
+          <div className="flex gap-3">
+            <button type="submit" disabled={isSubmitting}
+              className="rounded-xl bg-[#14B8A6] px-5 py-2 text-sm font-semibold text-white hover:bg-teal-600 disabled:opacity-50">
+              {isSubmitting ? 'Saving...' : editingId ? 'Update' : 'Create'}
+            </button>
+            <button type="button" onClick={resetForm}
+              className="rounded-xl border-2 border-gray-200 px-5 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-50">
+              Cancel
+            </button>
+          </div>
+        </form>
+      )}
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        {items.map((item) => (
+          <div key={item.id} className="rounded-2xl border border-gray-100 bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+            {item.image && (
+              <div className="relative h-36">
+                <SmartImage src={item.image} alt={item.title} fill className="object-cover" />
+              </div>
+            )}
+            <div className="p-4">
+              <h3 className="font-bold text-[#1B2A4A] text-sm mb-1">{item.title}</h3>
+              <p className="text-xs text-gray-500 line-clamp-2">{item.description}</p>
+              <div className="mt-3 flex gap-2">
+                <button onClick={() => startEdit(item)}
+                  className="rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-100">
+                  Edit
+                </button>
+                <button onClick={() => handleDelete(item.id)}
+                  className="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-100">
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {items.length === 0 && !showForm && (
+        <div className="text-center py-12">
+          <span className="text-4xl mb-3 block">🎓</span>
+          <p className="text-gray-500 text-sm">No items yet. Add what your school offers.</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Main Page ───────────────────────────────────────────────────────────────
 
 const TABS: { key: ActiveTab; label: string }[] = [
   { key: 'coreValues', label: '💎 Core Values' },
   { key: 'philosophy', label: '🌿 Philosophy' },
   { key: 'missionVision', label: '🎯 Mission & Vision' },
+  { key: 'whatWeOffer', label: '🎓 What We Offer' },
 ];
 
 export default function AboutAdminPage() {
@@ -835,6 +1004,7 @@ export default function AboutAdminPage() {
         {activeTab === 'coreValues' && <CoreValuesSection />}
         {activeTab === 'philosophy' && <PhilosophySection />}
         {activeTab === 'missionVision' && <MissionVisionSection />}
+        {activeTab === 'whatWeOffer' && <WhatWeOfferSection />}
       </div>
     </div>
   );

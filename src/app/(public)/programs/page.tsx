@@ -1,6 +1,12 @@
 export const dynamic = 'force-dynamic';
 
+import type { Metadata } from "next";
 import { prisma } from "@/lib/db";
+
+export const metadata: Metadata = {
+  title: "Academic Programs | Aarambha School",
+  description: "Explore our Pre-School, Primary, Lower Secondary, and Secondary programs. Comprehensive STEAM-based education for ages 3-16.",
+};
 import { serialize } from "@/lib/utils";
 import ProgramsPageClient from "@/components/pages/ProgramsPageClient";
 

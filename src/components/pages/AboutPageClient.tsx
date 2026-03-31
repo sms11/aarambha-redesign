@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import SmartImage from "@/components/SmartImage";
 import Link from "next/link";
@@ -8,6 +9,8 @@ import {
   StarIcon,
   EyeIcon,
   RocketLaunchIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
 } from "@heroicons/react/24/outline";
 import { getIcon } from "@/lib/icons";
 
@@ -38,6 +41,31 @@ interface TeamMemberItem {
   image: string;
 }
 
+interface WhatWeOfferItem {
+  id: number;
+  title: string;
+  description: string;
+  image: string | null;
+}
+
+interface NewsEventItem {
+  id: number;
+  title: string;
+  description: string;
+  image: string | null;
+}
+
+interface PrincipalData {
+  message: string;
+  name: string;
+  title: string;
+  image: string;
+}
+
+interface VicePrincipalData extends PrincipalData {
+  highlights: string[];
+}
+
 export interface AboutPageClientProps {
   coreValues: CoreValueItem[];
   philosophy: PhilosophyItem[];
@@ -45,6 +73,10 @@ export interface AboutPageClientProps {
   mission: string;
   vision: string;
   aboutText: string[];
+  principalData: PrincipalData;
+  vicePrincipalData: VicePrincipalData | null;
+  whatWeOffer: WhatWeOfferItem[];
+  newsEvents: NewsEventItem[];
 }
 
 /* ──────────────────────────────────────────────
@@ -140,6 +172,10 @@ export default function AboutPageClient({
   mission,
   vision,
   aboutText,
+  principalData,
+  vicePrincipalData,
+  whatWeOffer,
+  newsEvents,
 }: AboutPageClientProps) {
   return (
     <>
@@ -147,12 +183,18 @@ export default function AboutPageClient({
       <AboutSection aboutText={aboutText} />
       <WaveDivider color="var(--white)" />
       <MissionVisionSection mission={mission} vision={vision} />
+      {whatWeOffer.length > 0 && <WhatWeOfferSection items={whatWeOffer} />}
+      <PrincipalSection data={principalData} />
+      {vicePrincipalData && vicePrincipalData.message && (
+        <VicePrincipalSection data={vicePrincipalData} />
+      )}
       <WaveDivider flip color="var(--white)" />
       <CoreValuesSection coreValues={coreValues} />
       <WaveDivider color="var(--white)" />
       <PhilosophySection philosophy={philosophy} />
       <WaveDivider flip color="var(--white)" />
       <TeamSection teamMembers={teamMembers} />
+      {newsEvents.length > 0 && <NewsEventsAboutSection items={newsEvents} />}
       <WaveDivider color="var(--navy)" />
       <CTASection />
     </>
@@ -264,6 +306,314 @@ function AboutSection({ aboutText }: { aboutText: string[] }) {
               className="absolute -bottom-6 -right-6 w-32 h-32 rounded-full animate-blob opacity-30"
               style={{ backgroundColor: "var(--gold)" }}
             />
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ──────────────────────────────────────────────
+   What We Offer Section
+   ────────────────────────────────────────────── */
+
+function WhatWeOfferSection({ items }: { items: WhatWeOfferItem[] }) {
+  const [page, setPage] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(1);
+  const perPage = 4;
+  const totalPages = Math.ceil(items.length / perPage);
+  const visible = items.slice(page * perPage, (page + 1) * perPage);
+
+  return (
+    <section className="bg-[#f9f8f6] py-24 px-6 relative overflow-hidden">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 mb-14">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-1 h-6 bg-[#2e7d32] rounded-full" />
+              <span className="text-[#2e7d32] font-semibold text-sm uppercase tracking-wider">
+                What We Offer
+              </span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-display text-[var(--navy)] leading-tight">
+              Excellence Through Holistic Learning
+            </h2>
+          </motion.div>
+
+          <motion.p
+            className="lg:max-w-md text-base text-[#5a5a5a] leading-relaxed lg:pt-8"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+          >
+            At Aarambha School, we provide a thoughtfully designed learning environment that supports academic growth, character development, and creative exploration.
+          </motion.p>
+        </div>
+
+        {/* Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          {visible.map((item, i) => {
+            const isActive = i === activeIndex;
+            return (
+              <motion.div
+                key={`${page}-${item.id}`}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: i * 0.08 }}
+                onClick={() => setActiveIndex(i)}
+                className={`rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 ${
+                  isActive
+                    ? "bg-[var(--navy)] text-white shadow-xl scale-[1.02]"
+                    : "bg-white shadow-sm border border-gray-100 hover:shadow-md"
+                }`}
+              >
+                {item.image && (
+                  <div className={`overflow-hidden ${isActive ? "p-0" : "p-3 pb-0"}`}>
+                    <div className={`overflow-hidden ${isActive ? "" : "rounded-xl"}`}>
+                      <SmartImage
+                        src={item.image}
+                        alt={item.title}
+                        width={400}
+                        height={280}
+                        className={`w-full h-[200px] object-cover transition-transform duration-500 ${
+                          isActive ? "scale-105" : ""
+                        }`}
+                      />
+                    </div>
+                  </div>
+                )}
+                <div className="p-5">
+                  <h3 className={`font-display font-bold text-base mb-2 ${
+                    isActive ? "text-white" : "text-[var(--navy)]"
+                  }`}>
+                    {item.title}
+                  </h3>
+                  <p className={`text-sm leading-relaxed ${
+                    isActive ? "text-white/80" : "text-[#5a5a5a]"
+                  }`}>
+                    {item.description}
+                  </p>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between mt-10">
+            <div className="flex items-center gap-2">
+              {Array.from({ length: totalPages }).map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => { setPage(i); setActiveIndex(1); }}
+                  className={`w-3 h-3 rounded-full transition-all ${
+                    i === page
+                      ? "bg-[var(--navy)] ring-2 ring-[var(--navy)]/30"
+                      : "bg-gray-300 hover:bg-gray-400"
+                  }`}
+                  aria-label={`Page ${i + 1}`}
+                />
+              ))}
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => { setPage((p) => Math.max(0, p - 1)); setActiveIndex(1); }}
+                disabled={page === 0}
+                className="w-10 h-10 rounded-full border-2 border-gray-200 flex items-center justify-center text-gray-400 hover:border-[var(--navy)] hover:text-[var(--navy)] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <ChevronLeftIcon className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => { setPage((p) => Math.min(totalPages - 1, p + 1)); setActiveIndex(1); }}
+                disabled={page === totalPages - 1}
+                className="w-10 h-10 rounded-full border-2 border-[var(--navy)] flex items-center justify-center text-[var(--navy)] hover:bg-[var(--navy)] hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <ChevronRightIcon className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+/* ──────────────────────────────────────────────
+   Principal Section
+   ────────────────────────────────────────────── */
+
+function PrincipalSection({ data }: { data: PrincipalData }) {
+  return (
+    <section className="bg-[var(--cream)] py-24 px-6 relative overflow-hidden">
+      <div className="max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          {/* Image side */}
+          <motion.div
+            className="relative"
+            initial={{ opacity: 0, x: -40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="rounded-3xl overflow-hidden shadow-2xl relative">
+              <SmartImage
+                src={data.image}
+                alt={data.name}
+                width={600}
+                height={550}
+                className="w-full h-[280px] md:h-[400px] lg:h-[500px] object-cover object-top"
+              />
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-6 pt-16">
+                <p className="font-display text-white font-semibold text-xl">
+                  {data.name}
+                </p>
+                <p className="text-white/80 text-sm italic">
+                  {data.title}
+                </p>
+              </div>
+            </div>
+            <div
+              className="absolute -bottom-6 -left-6 w-32 h-32 rounded-full animate-blob opacity-20"
+              style={{ backgroundColor: "var(--gold)" }}
+            />
+          </motion.div>
+
+          {/* Text side */}
+          <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-1 h-6 bg-[var(--gold)] rounded-full" />
+              <span className="text-[var(--gold)] font-semibold text-sm uppercase tracking-wider">
+                Welcome
+              </span>
+            </div>
+
+            <h2 className="text-3xl md:text-4xl font-display text-[var(--navy)] mb-6 leading-tight">
+              Message from the Principal
+            </h2>
+
+            <div className="relative">
+              <span className="text-[72px] leading-none font-display text-[var(--gold)] opacity-30 absolute -top-6 -left-2">
+                &ldquo;
+              </span>
+              <p className="text-base text-[#5a5a5a] italic pl-6 leading-relaxed">
+                {data.message}
+              </p>
+            </div>
+
+            <div className="mt-8 flex items-center gap-4">
+              <div className="w-12 h-[2px] bg-[var(--gold)]" />
+              <div>
+                <p className="font-display text-[var(--navy)] font-semibold text-lg">
+                  {data.name}
+                </p>
+                <p className="text-small text-[var(--muted)]">{data.title}</p>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ──────────────────────────────────────────────
+   Vice Principal Section
+   ────────────────────────────────────────────── */
+
+function VicePrincipalSection({ data }: { data: VicePrincipalData }) {
+  return (
+    <section className="bg-[#f9f8f6] py-24 px-6 relative overflow-hidden">
+      <div className="max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          {/* Image with name overlay */}
+          <motion.div
+            className="relative"
+            initial={{ opacity: 0, x: -40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="rounded-3xl overflow-hidden shadow-2xl relative">
+              <SmartImage
+                src={data.image}
+                alt={data.name}
+                width={600}
+                height={550}
+                className="w-full h-[280px] md:h-[400px] lg:h-[500px] object-cover object-top"
+              />
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-6 pt-16">
+                <p className="font-display text-white font-semibold text-xl">
+                  {data.name}
+                </p>
+                <p className="text-white/80 text-sm italic">
+                  {data.title}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Text side */}
+          <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-1 h-6 bg-[#2e7d32] rounded-full" />
+              <span className="text-[#2e7d32] font-semibold text-sm uppercase tracking-wider">
+                Administrative Note
+              </span>
+            </div>
+
+            <h2 className="text-3xl md:text-4xl font-display text-[var(--navy)] mb-6 leading-tight">
+              Message from Our Vice-Principal
+            </h2>
+
+            {data.message.split("\n\n").map((paragraph, i) => (
+              <p key={i} className="text-base text-[#5a5a5a] leading-relaxed mb-5">
+                {paragraph}
+              </p>
+            ))}
+
+            {data.highlights.length > 0 && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 sm:gap-x-6 md:gap-x-8 gap-y-3 mt-6 mb-8">
+                {data.highlights.map((item, i) => (
+                  <div key={i} className="flex items-start gap-2.5">
+                    <svg
+                      className="w-5 h-5 text-[#2e7d32] mt-0.5 flex-shrink-0"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2.5}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                    </svg>
+                    <span className="text-sm text-[#333] leading-snug">{item}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-2 bg-[var(--navy)] text-white font-semibold px-7 py-3.5 rounded-full hover:bg-[#1a2744] transition-colors group"
+            >
+              Schedule a Visit
+              <ChevronRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </motion.div>
         </div>
       </div>
@@ -545,6 +895,123 @@ function TeamSection({ teamMembers }: { teamMembers: TeamMemberItem[] }) {
             </motion.div>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+/* ──────────────────────────────────────────────
+   News & Events Section (About page)
+   ────────────────────────────────────────────── */
+
+function NewsEventsAboutSection({ items }: { items: NewsEventItem[] }) {
+  const [page, setPage] = useState(0);
+  const perPage = 4;
+  const totalPages = Math.ceil(items.length / perPage);
+  const visible = items.slice(page * perPage, (page + 1) * perPage);
+
+  return (
+    <section className="bg-[#f9f8f6] py-24 px-6 relative overflow-hidden">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 mb-14">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-1 h-6 bg-[#2e7d32] rounded-full" />
+              <span className="text-[#2e7d32] font-semibold text-sm uppercase tracking-wider">
+                Involvement
+              </span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-display text-[var(--navy)] leading-tight">
+              News and Events
+            </h2>
+          </motion.div>
+
+          <motion.p
+            className="lg:max-w-md text-base text-[#5a5a5a] leading-relaxed lg:pt-8"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+          >
+            We promote active collaboration between parents, teachers, and the community through regular meetings, events, and initiatives, fostering a supportive environment for student success.
+          </motion.p>
+        </div>
+
+        {/* Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {visible.map((item, i) => (
+            <motion.div
+              key={`${page}-${item.id}`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: i * 0.08 }}
+              className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+            >
+              {item.image && (
+                <div className="p-3 pb-0">
+                  <div className="rounded-xl overflow-hidden">
+                    <SmartImage
+                      src={item.image}
+                      alt={item.title}
+                      width={400}
+                      height={280}
+                      className="w-full h-[180px] object-cover"
+                    />
+                  </div>
+                </div>
+              )}
+              <div className="p-4 pt-3">
+                <h3 className="font-display font-bold text-[var(--navy)] text-base mb-1.5">
+                  {item.title}
+                </h3>
+                <p className="text-sm text-[#5a5a5a] leading-relaxed">
+                  {item.description}
+                </p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between mt-10">
+            <div className="flex items-center gap-2">
+              {Array.from({ length: totalPages }).map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setPage(i)}
+                  className={`w-3 h-3 rounded-full transition-all ${
+                    i === page
+                      ? "bg-[var(--navy)] ring-2 ring-[var(--navy)]/30"
+                      : "bg-gray-300 hover:bg-gray-400"
+                  }`}
+                  aria-label={`Page ${i + 1}`}
+                />
+              ))}
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setPage((p) => Math.max(0, p - 1))}
+                disabled={page === 0}
+                className="w-10 h-10 rounded-full border-2 border-gray-200 flex items-center justify-center text-gray-400 hover:border-[var(--navy)] hover:text-[var(--navy)] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <ChevronLeftIcon className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+                disabled={page === totalPages - 1}
+                className="w-10 h-10 rounded-full border-2 border-[var(--navy)] flex items-center justify-center text-[var(--navy)] hover:bg-[var(--navy)] hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <ChevronRightIcon className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );

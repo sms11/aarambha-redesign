@@ -1,18 +1,35 @@
 export const dynamic = 'force-dynamic';
 
+import type { Metadata } from "next";
 import { prisma } from "@/lib/db";
+
+export const metadata: Metadata = {
+  title: "About Us | Aarambha School",
+  description: "Learn about Aarambha School's mission, vision, core values, philosophy, and leadership team. A progressive K-12 institution in Kathmandu.",
+};
 import { serialize } from "@/lib/utils";
 import AboutPageClient from "@/components/pages/AboutPageClient";
 
 export default async function AboutPage() {
-  const [teamMembers, coreValues, philosophy, settingsRows] =
+  const [teamMembers, coreValues, philosophy, whatWeOffer, newsEvents, settingsRows] =
     await Promise.all([
       prisma.teamMember.findMany({ orderBy: { sortOrder: "asc" } }),
       prisma.coreValue.findMany({ orderBy: { sortOrder: "asc" } }),
       prisma.philosophy.findMany({ orderBy: { sortOrder: "asc" } }),
+      prisma.whatWeOffer.findMany({ orderBy: { sortOrder: "asc" } }),
+      prisma.newsEvent.findMany({ orderBy: { date: "desc" }, take: 8 }),
       prisma.siteSettings.findMany({
         where: {
-          key: { in: ["mission", "vision", "about_text"] },
+          key: {
+            in: [
+              "mission", "vision", "about_text",
+              "principal_message", "principal_name",
+              "principal_title", "principal_image",
+              "vice_principal_message", "vice_principal_name",
+              "vice_principal_title", "vice_principal_image",
+              "vice_principal_highlights",
+            ],
+          },
         },
       }),
     ]);
@@ -41,6 +58,32 @@ export default async function AboutPage() {
     ];
   }
 
+  const principalData = {
+    message:
+      settings.principal_message ??
+      "At Aarambha Sanskar Vidyalaya, we blend traditional values with modern learning to nurture curious, creative, and compassionate leaders.",
+    name: settings.principal_name ?? "Naresh Prasad Shrestha",
+    title: settings.principal_title ?? "Chairman & Principal",
+    image: settings.principal_image ?? "/images/principal.webp",
+  };
+
+  let vpHighlights: string[] = [];
+  try {
+    vpHighlights = JSON.parse(settings.vice_principal_highlights ?? "[]");
+  } catch {
+    vpHighlights = [];
+  }
+
+  const vicePrincipalData = settings.vice_principal_name
+    ? {
+        message: settings.vice_principal_message ?? "",
+        name: settings.vice_principal_name,
+        title: settings.vice_principal_title ?? "Vice Principal, Aarambha School",
+        image: settings.vice_principal_image ?? "",
+        highlights: vpHighlights,
+      }
+    : null;
+
   return (
     <AboutPageClient
       coreValues={serialize(coreValues)}
@@ -49,6 +92,10 @@ export default async function AboutPage() {
       mission={mission}
       vision={vision}
       aboutText={aboutText}
+      principalData={principalData}
+      vicePrincipalData={vicePrincipalData}
+      whatWeOffer={serialize(whatWeOffer)}
+      newsEvents={serialize(newsEvents)}
     />
   );
 }

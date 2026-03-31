@@ -1,6 +1,12 @@
 export const dynamic = 'force-dynamic';
 
+import type { Metadata } from "next";
 import { prisma } from "@/lib/db";
+
+export const metadata: Metadata = {
+  title: "Community | Aarambha School",
+  description: "Join the Aarambha School community. Parent-teacher involvement, activities, and partnerships that support student success.",
+};
 import { serialize } from "@/lib/utils";
 import AdmissionsPageClient from "@/components/pages/AdmissionsPageClient";
 

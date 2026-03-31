@@ -805,12 +805,129 @@ function SchoolLifeSection() {
   );
 }
 
-// ─── Principal Message Section ───────────────────────────────────────────────
+// ─── Leadership Messages Section ─────────────────────────────────────────────
+
+function LeaderCard({
+  prefix,
+  label,
+  emoji,
+  accentColor,
+  name,
+  setName,
+  title,
+  setTitle,
+  message,
+  setMessage,
+  image,
+  setImage,
+  errors,
+  required,
+}: {
+  prefix: string;
+  label: string;
+  emoji: string;
+  accentColor: string;
+  name: string;
+  setName: (v: string) => void;
+  title: string;
+  setTitle: (v: string) => void;
+  message: string;
+  setMessage: (v: string) => void;
+  image: string;
+  setImage: (v: string) => void;
+  errors: Record<string, string[]>;
+  required: boolean;
+}) {
+  return (
+    <div className="overflow-hidden rounded-2xl border border-orange-100 bg-white shadow-md shadow-black/5">
+      <div className="h-1" style={{ backgroundColor: accentColor }} />
+      <div className="p-6">
+        <h3 className="text-base font-bold text-[#1B2A4A] mb-4 flex items-center gap-2">
+          <span className="text-xl">{emoji}</span> {label}
+        </h3>
+        <div className="grid gap-6 md:grid-cols-[auto_1fr]">
+          <div className="flex flex-col items-center gap-3">
+            <div className="relative h-28 w-28 overflow-hidden rounded-full border-4 border-orange-100 bg-orange-50">
+              {image ? (
+                <SmartImage src={image} alt={label} fill className="object-cover" />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center">
+                  <span className="text-3xl">{emoji}</span>
+                </div>
+              )}
+            </div>
+            <ImageUpload value={image} onChange={setImage} hidePreview />
+            {errors[`${prefix}_image`] && (
+              <p className="text-sm text-red-600">{errors[`${prefix}_image`][0]}</p>
+            )}
+          </div>
+
+          <div className="grid gap-4">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-[#1B2A4A]">
+                  Name{required && <span className="ml-0.5 text-red-500">*</span>}
+                </label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required={required}
+                  placeholder="e.g. Dr. Ram Sharma"
+                  className="w-full rounded-xl border-2 border-gray-200 px-4 py-2.5 text-sm text-[#1B2A4A] placeholder-gray-400 outline-none transition-all focus:border-[#FF6B35] focus:ring-2 focus:ring-[#FF6B35]/20"
+                />
+                {errors[`${prefix}_name`] && (
+                  <p className="mt-1 text-sm text-red-600">{errors[`${prefix}_name`][0]}</p>
+                )}
+              </div>
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-[#1B2A4A]">
+                  Title
+                </label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="e.g. Chairman & Principal"
+                  className="w-full rounded-xl border-2 border-gray-200 px-4 py-2.5 text-sm text-[#1B2A4A] placeholder-gray-400 outline-none transition-all focus:border-[#FF6B35] focus:ring-2 focus:ring-[#FF6B35]/20"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-[#1B2A4A]">
+                Message{required && <span className="ml-0.5 text-red-500">*</span>}
+              </label>
+              <textarea
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                required={required}
+                rows={5}
+                placeholder={`Write the ${label.toLowerCase()}'s message...`}
+                className="w-full resize-y rounded-xl border-2 border-gray-200 px-4 py-2.5 text-sm text-[#1B2A4A] placeholder-gray-400 outline-none transition-all focus:border-[#FF6B35] focus:ring-2 focus:ring-[#FF6B35]/20"
+              />
+              {errors[`${prefix}_message`] && (
+                <p className="mt-1 text-sm text-red-600">{errors[`${prefix}_message`][0]}</p>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function PrincipalMessageSection() {
   const [principalMessage, setPrincipalMessage] = useState('');
   const [principalName, setPrincipalName] = useState('');
+  const [principalTitle, setPrincipalTitle] = useState('Chairman & Principal');
   const [principalImage, setPrincipalImage] = useState('');
+
+  const [vpMessage, setVpMessage] = useState('');
+  const [vpName, setVpName] = useState('');
+  const [vpTitle, setVpTitle] = useState('Vice Principal');
+  const [vpImage, setVpImage] = useState('');
+  const [vpHighlights, setVpHighlights] = useState('');
+
   const [errors, setErrors] = useState<Record<string, string[]>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -820,7 +937,18 @@ function PrincipalMessageSection() {
       const data = await getPrincipalMessage();
       setPrincipalMessage(data.principal_message || '');
       setPrincipalName(data.principal_name || '');
+      setPrincipalTitle(data.principal_title || 'Chairman & Principal');
       setPrincipalImage(data.principal_image || '');
+      setVpMessage(data.vice_principal_message || '');
+      setVpName(data.vice_principal_name || '');
+      setVpTitle(data.vice_principal_title || 'Vice Principal');
+      setVpImage(data.vice_principal_image || '');
+      try {
+        const hl = JSON.parse(data.vice_principal_highlights || '[]');
+        setVpHighlights(Array.isArray(hl) ? hl.join('\n') : '');
+      } catch {
+        setVpHighlights('');
+      }
     }
     load();
   }, []);
@@ -834,7 +962,13 @@ function PrincipalMessageSection() {
     const result = await updatePrincipalMessage({
       principal_message: principalMessage,
       principal_name: principalName,
+      principal_title: principalTitle,
       principal_image: principalImage,
+      vice_principal_message: vpMessage,
+      vice_principal_name: vpName,
+      vice_principal_title: vpTitle,
+      vice_principal_image: vpImage,
+      vice_principal_highlights: JSON.stringify(vpHighlights.split('\n').map(s => s.trim()).filter(Boolean)),
     });
 
     if (result?.error) {
@@ -850,99 +984,81 @@ function PrincipalMessageSection() {
 
   return (
     <div>
-      <h2 className="text-lg font-bold text-[#1B2A4A]">Principal&apos;s Message</h2>
-      <form
-        onSubmit={handleSubmit}
-        className="mt-4 overflow-hidden rounded-2xl border border-orange-100 bg-white shadow-md shadow-black/5"
-      >
-        <div className="h-1 bg-[#FF6B35]" />
-        <div className="p-6">
-          <div className="grid gap-6 md:grid-cols-[auto_1fr]">
-            {/* Left column: Photo */}
-            <div className="flex flex-col items-center gap-3">
-              <div className="relative h-32 w-32 overflow-hidden rounded-full border-4 border-orange-100 bg-orange-50">
-                {principalImage ? (
-                  <SmartImage
-                    src={principalImage}
-                    alt="Principal"
-                    fill
-                    className="object-cover"
-                  />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center">
-                    <span className="text-4xl">👨‍🏫</span>
-                  </div>
-                )}
-              </div>
-              <ImageUpload value={principalImage} onChange={setPrincipalImage} hidePreview />
-              {errors.principal_image && (
-                <p className="text-sm text-red-600">{errors.principal_image[0]}</p>
-              )}
-            </div>
+      <h2 className="text-lg font-bold text-[#1B2A4A]">Leadership Messages</h2>
+      <p className="text-sm text-gray-500 mt-1 mb-4">
+        Manage messages from the Principal and Vice Principal. Vice Principal is optional.
+      </p>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <LeaderCard
+          prefix="principal"
+          label="Principal"
+          emoji="👨‍🏫"
+          accentColor="#FF6B35"
+          name={principalName}
+          setName={setPrincipalName}
+          title={principalTitle}
+          setTitle={setPrincipalTitle}
+          message={principalMessage}
+          setMessage={setPrincipalMessage}
+          image={principalImage}
+          setImage={setPrincipalImage}
+          errors={errors}
+          required
+        />
 
-            {/* Right column: Name & Message */}
-            <div className="grid gap-4">
-              <div>
-                <label
-                  htmlFor="principal_name"
-                  className="mb-1.5 block text-sm font-medium text-[#1B2A4A]"
-                >
-                  Principal Name<span className="ml-0.5 text-red-500">*</span>
-                </label>
-                <input
-                  id="principal_name"
-                  type="text"
-                  value={principalName}
-                  onChange={(e) => setPrincipalName(e.target.value)}
-                  required
-                  placeholder="e.g. Dr. Ram Sharma"
-                  className="w-full rounded-xl border-2 border-gray-200 px-4 py-2.5 text-sm text-[#1B2A4A] placeholder-gray-400 outline-none transition-all focus:border-[#FF6B35] focus:ring-2 focus:ring-[#FF6B35]/20"
-                />
-                {errors.principal_name && (
-                  <p className="mt-1 text-sm text-red-600">{errors.principal_name[0]}</p>
-                )}
-              </div>
+        <LeaderCard
+          prefix="vice_principal"
+          label="Vice Principal"
+          emoji="👩‍🏫"
+          accentColor="#4EAED8"
+          name={vpName}
+          setName={setVpName}
+          title={vpTitle}
+          setTitle={setVpTitle}
+          message={vpMessage}
+          setMessage={setVpMessage}
+          image={vpImage}
+          setImage={setVpImage}
+          errors={errors}
+          required={false}
+        />
 
-              <div>
-                <label
-                  htmlFor="principal_message"
-                  className="mb-1.5 block text-sm font-medium text-[#1B2A4A]"
-                >
-                  Message<span className="ml-0.5 text-red-500">*</span>
-                </label>
-                <textarea
-                  id="principal_message"
-                  value={principalMessage}
-                  onChange={(e) => setPrincipalMessage(e.target.value)}
-                  required
-                  rows={6}
-                  placeholder="Write the principal's message..."
-                  className="w-full resize-y rounded-xl border-2 border-gray-200 px-4 py-2.5 text-sm text-[#1B2A4A] placeholder-gray-400 outline-none transition-all focus:border-[#FF6B35] focus:ring-2 focus:ring-[#FF6B35]/20"
-                />
-                {errors.principal_message && (
-                  <p className="mt-1 text-sm text-red-600">{errors.principal_message[0]}</p>
-                )}
-              </div>
-            </div>
+        {/* VP Highlights */}
+        <div className="overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-md shadow-black/5">
+          <div className="h-1 bg-[#4EAED8]" />
+          <div className="p-6">
+            <h3 className="text-base font-bold text-[#1B2A4A] mb-1 flex items-center gap-2">
+              <span className="text-xl">✅</span> Vice Principal Highlights
+            </h3>
+            <p className="text-sm text-gray-500 mb-4">
+              Key focus areas shown as checkmarks. One per line.
+            </p>
+            <textarea
+              value={vpHighlights}
+              onChange={(e) => setVpHighlights(e.target.value)}
+              rows={6}
+              placeholder={"Academic Excellence & Continuous Progress\nStudent Mentorship & Guidance\nStructured and Disciplined Learning Environment\nStrong School–Parent Partnership\nSafe, Inclusive, and Supportive Campus\nHolistic Development through Academics"}
+              className="w-full resize-y rounded-xl border-2 border-gray-200 px-4 py-2.5 text-sm text-[#1B2A4A] placeholder-gray-400 outline-none transition-all focus:border-[#4EAED8] focus:ring-2 focus:ring-[#4EAED8]/20"
+            />
           </div>
+        </div>
 
-          <div className="mt-6 flex items-center gap-3">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="rounded-xl bg-[#FF6B35] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#e55a2b] hover:shadow-md disabled:opacity-50"
-            >
-              {isSubmitting ? 'Saving...' : 'Save Changes'}
-            </button>
-            {saved && (
-              <span className="flex items-center gap-1.5 text-sm font-medium text-green-600">
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                </svg>
-                Saved!
-              </span>
-            )}
-          </div>
+        <div className="flex items-center gap-3">
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="rounded-xl bg-[#FF6B35] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#e55a2b] hover:shadow-md disabled:opacity-50"
+          >
+            {isSubmitting ? 'Saving...' : 'Save All Changes'}
+          </button>
+          {saved && (
+            <span className="flex items-center gap-1.5 text-sm font-medium text-green-600">
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+              </svg>
+              Saved!
+            </span>
+          )}
         </div>
       </form>
     </div>
@@ -955,7 +1071,7 @@ const tabs: { key: ActiveTab; label: string }[] = [
   { key: 'stats', label: '📊 Stats' },
   { key: 'features', label: '✨ Features' },
   { key: 'schoolLife', label: '🎒 School Life' },
-  { key: 'principal', label: '👨‍🏫 Principal' },
+  { key: 'principal', label: '👨‍🏫 Leadership' },
 ];
 
 export default function HomepageAdminPage() {

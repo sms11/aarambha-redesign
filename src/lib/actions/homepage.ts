@@ -302,7 +302,10 @@ export async function reorderSchoolLifeItem(id: number, direction: 'up' | 'down'
 // ─── Principal Message (SiteSettings) ────────────────────────────────────────
 
 export async function getPrincipalMessage() {
-  const keys = ['principal_message', 'principal_name', 'principal_image'];
+  const keys = [
+    'principal_message', 'principal_name', 'principal_title', 'principal_image',
+    'vice_principal_message', 'vice_principal_name', 'vice_principal_title', 'vice_principal_image', 'vice_principal_highlights',
+  ];
   const settings = await prisma.siteSettings.findMany({
     where: { key: { in: keys } },
   });
@@ -317,7 +320,13 @@ export async function getPrincipalMessage() {
 export async function updatePrincipalMessage(data: {
   principal_message: string;
   principal_name: string;
+  principal_title?: string;
   principal_image: string;
+  vice_principal_message?: string;
+  vice_principal_name?: string;
+  vice_principal_title?: string;
+  vice_principal_image?: string;
+  vice_principal_highlights?: string;
 }) {
   await requireAuth();
   const parsed = principalMessageSchema.safeParse(data);

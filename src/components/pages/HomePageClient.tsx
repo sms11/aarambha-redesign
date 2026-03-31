@@ -73,7 +73,24 @@ interface FeatureItem {
 interface PrincipalData {
   message: string;
   name: string;
+  title: string;
   image: string;
+}
+
+interface NewsEventItem {
+  id: number;
+  title: string;
+  description: string;
+  image: string | null;
+}
+
+interface BlogPostItem {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string;
+  image: string | null;
+  publishedAt: string;
 }
 
 export interface HomePageClientProps {
@@ -86,6 +103,8 @@ export interface HomePageClientProps {
   features: FeatureItem[];
   principalData: PrincipalData;
   aboutText: string[];
+  newsEvents: NewsEventItem[];
+  blogPosts: BlogPostItem[];
 }
 
 /* ──────────────────────────────────────────────
@@ -197,6 +216,8 @@ export default function HomePageClient({
   features,
   principalData,
   aboutText,
+  newsEvents,
+  blogPosts,
 }: HomePageClientProps) {
   return (
     <>
@@ -206,6 +227,8 @@ export default function HomePageClient({
       <AboutSection aboutText={aboutText} />
       <StatsBar stats={stats} />
       <WhyDifferentSection features={features} />
+      {newsEvents.length > 0 && <NewsEventsSection items={newsEvents} />}
+      {blogPosts.length > 0 && <BlogSection posts={blogPosts} />}
       <SchoolLifeSection schoolLifeItems={schoolLifeItems} />
       <TeamSection teamMembers={teamMembers} />
       <TestimonialSection testimonials={testimonials} />
@@ -429,7 +452,7 @@ function ProgramsSection({ programs }: { programs: ProgramItem[] }) {
 }
 
 /* ──────────────────────────────────────────────
-   Section 3 — Principal Message (alternating layout)
+   Section 3 — Principal Message
    ────────────────────────────────────────────── */
 
 function PrincipalMessage({ principalData }: { principalData: PrincipalData }) {
@@ -456,7 +479,6 @@ function PrincipalMessage({ principalData }: { principalData: PrincipalData }) {
                 className="w-full h-[400px] lg:h-[480px] object-cover object-top"
               />
             </div>
-            {/* Decorative blob behind */}
             <div
               className="absolute -bottom-6 -left-6 w-32 h-32 rounded-full animate-blob opacity-30"
               style={{ backgroundColor: "var(--gold)" }}
@@ -489,7 +511,7 @@ function PrincipalMessage({ principalData }: { principalData: PrincipalData }) {
                   {principalData.name}
                 </p>
                 <p className="text-small text-[var(--muted)]">
-                  Chairman &amp; Principal
+                  {principalData.title}
                 </p>
               </div>
             </div>
@@ -506,13 +528,10 @@ function PrincipalMessage({ principalData }: { principalData: PrincipalData }) {
 
 function AboutSection({ aboutText }: { aboutText: string[] }) {
   return (
-    <section className="bg-white py-24 px-6 relative overflow-hidden">
-      <FloatingShape color="#FF6B6B" size={50} top="15%" left="5%" shape="triangle" delay={0.5} />
-      <FloatingShape color="#4EAED8" size={40} top="75%" left="90%" shape="circle" delay={1} />
-
+    <section className="bg-[#f9f8f6] py-24 px-6 relative overflow-hidden">
       <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          {/* Text side first (reverse of principal) */}
+          {/* Text side */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -520,41 +539,30 @@ function AboutSection({ aboutText }: { aboutText: string[] }) {
             transition={{ duration: 0.6 }}
             className="order-2 lg:order-1"
           >
-            <SectionLabel>About Us</SectionLabel>
-            <h2 className="text-title font-display text-[var(--navy)] mb-6">
-              A Progressive K-12 Institution
+            {/* Green bar + label */}
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-1 h-6 bg-[#2e7d32] rounded-full" />
+              <span className="text-[#2e7d32] font-semibold text-sm uppercase tracking-wider">
+                Our Life
+              </span>
+            </div>
+
+            <h2 className="text-4xl md:text-5xl font-display text-[var(--navy)] mb-6 leading-tight">
+              About Us
             </h2>
+
             {aboutText.map((paragraph, i) => (
-              <p key={i} className="text-body text-[var(--muted)] mb-6">
+              <p key={i} className="text-base text-[#5a5a5a] leading-relaxed mb-5">
                 {paragraph}
               </p>
             ))}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
-              <div className="bg-[var(--cream)] rounded-2xl p-5">
-                <h3 className="font-display text-[var(--navy)] font-semibold mb-2">
-                  Vision
-                </h3>
-                <p className="text-small text-[var(--muted)]">
-                  To create a transformative educational experience that blends
-                  Eastern values with 21st-century digital innovation.
-                </p>
-              </div>
-              <div className="bg-[var(--cream)] rounded-2xl p-5">
-                <h3 className="font-display text-[var(--navy)] font-semibold mb-2">
-                  Mission
-                </h3>
-                <p className="text-small text-[var(--muted)]">
-                  To cultivate a learning environment that combines advanced digital
-                  technology with the timeless wisdom of Eastern philosophy.
-                </p>
-              </div>
-            </div>
+
             <Link
               href="/about"
-              className="inline-flex items-center gap-2 text-[var(--navy)] font-semibold hover:gap-3 transition-all"
+              className="inline-flex items-center gap-2 bg-[var(--navy)] text-white font-semibold px-7 py-3.5 rounded-full hover:bg-[#1a2744] transition-colors mt-2 group"
             >
-              Learn More
-              <ChevronRightIcon className="w-4 h-4" />
+              Learn more
+              <ChevronRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </motion.div>
 
@@ -566,7 +574,7 @@ function AboutSection({ aboutText }: { aboutText: string[] }) {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <div className="rounded-3xl overflow-hidden shadow-2xl">
+            <div className="rounded-3xl overflow-hidden shadow-lg">
               <SmartImage
                 src="/images/about-1.webp"
                 alt="Aarambha School campus life"
@@ -575,12 +583,61 @@ function AboutSection({ aboutText }: { aboutText: string[] }) {
                 className="w-full h-[400px] lg:h-[480px] object-cover"
               />
             </div>
-            <div
-              className="absolute -top-4 -right-4 w-24 h-24 rounded-full animate-blob opacity-25"
-              style={{ backgroundColor: "var(--mint)" }}
-            />
+
+            {/* Trusted by badge — top right */}
+            <motion.div
+              className="absolute -top-3 -right-3 lg:top-2 lg:-right-5 z-10"
+              initial={{ scale: 0 }}
+              whileInView={{ scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4, type: "spring", stiffness: 200 }}
+            >
+              <div className="w-24 h-24 rounded-full bg-[var(--navy)] text-white flex flex-col items-center justify-center shadow-lg border-4 border-white">
+                <span className="text-[10px] uppercase tracking-wide font-medium opacity-80">
+                  Trusted by
+                </span>
+                <span className="text-xl font-display font-bold leading-none">
+                  30K +
+                </span>
+              </div>
+            </motion.div>
+
+            {/* 10+ Years badge — bottom center */}
+            <motion.div
+              className="absolute -bottom-5 left-1/2 -translate-x-1/2 z-10"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.5, duration: 0.5 }}
+            >
+              <div className="bg-white rounded-xl px-5 py-3 shadow-md border border-dashed border-[#c5cae9] flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-[#e8eaf6] flex items-center justify-center">
+                  <svg className="w-4 h-4 text-[var(--navy)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <span className="text-sm font-semibold text-[var(--navy)] whitespace-nowrap">
+                  10+ Years of Excellence
+                </span>
+              </div>
+            </motion.div>
           </motion.div>
         </div>
+      </div>
+
+      {/* Decorative wave elements at bottom */}
+      <div className="flex justify-center mt-16">
+        <svg width="80" height="40" viewBox="0 0 80 40" fill="none" className="text-[#f5a623]">
+          <path d="M5 30 Q20 5 40 20 Q55 32 70 15" stroke="currentColor" strokeWidth="3" strokeLinecap="round" fill="none" />
+          <path d="M65 12 L72 8 L68 16" fill="currentColor" />
+        </svg>
+      </div>
+      {/* Decorative teal waves — bottom right */}
+      <div className="absolute bottom-8 right-8 opacity-40">
+        <svg width="60" height="30" viewBox="0 0 60 30" fill="none">
+          <path d="M0 8 Q10 0 20 8 Q30 16 40 8 Q50 0 60 8" stroke="var(--teal)" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+          <path d="M0 18 Q10 10 20 18 Q30 26 40 18 Q50 10 60 18" stroke="var(--teal)" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+        </svg>
       </div>
     </section>
   );
@@ -675,6 +732,272 @@ function WhyDifferentSection({ features }: { features: FeatureItem[] }) {
             );
           })}
         </div>
+      </div>
+    </section>
+  );
+}
+
+/* ──────────────────────────────────────────────
+   Section — News & Events Carousel
+   ────────────────────────────────────────────── */
+
+function NewsEventsSection({ items }: { items: NewsEventItem[] }) {
+  const [page, setPage] = useState(0);
+  const itemsPerPage = 4;
+  const totalPages = Math.ceil(items.length / itemsPerPage);
+  const visibleItems = items.slice(page * itemsPerPage, (page + 1) * itemsPerPage);
+
+  return (
+    <section className="bg-[#f9f8f6] py-24 px-6 relative overflow-hidden">
+      {/* Decorative element top-right */}
+      <div className="absolute top-8 right-8 opacity-20">
+        <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+          <path d="M40 10 L50 30 L70 30 L55 45 L60 65 L40 55 L20 65 L25 45 L10 30 L30 30 Z" stroke="var(--teal)" strokeWidth="1.5" fill="none" />
+        </svg>
+      </div>
+
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 mb-14">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-1 h-6 bg-[#2e7d32] rounded-full" />
+              <span className="text-[#2e7d32] font-semibold text-sm uppercase tracking-wider">
+                Involvement
+              </span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-display text-[var(--navy)] leading-tight">
+              News and Events
+            </h2>
+          </motion.div>
+
+          <motion.p
+            className="lg:max-w-md text-base text-[#5a5a5a] leading-relaxed lg:pt-8"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+          >
+            We promote active collaboration between parents, teachers, and the community through regular meetings, events, and initiatives, fostering a supportive environment for student success.
+          </motion.p>
+        </div>
+
+        {/* Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          <AnimatePresence mode="wait">
+            {visibleItems.map((item, i) => (
+              <motion.div
+                key={`${page}-${item.id}`}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.4, delay: i * 0.08 }}
+                className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+              >
+                {item.image && (
+                  <div className="p-3 pb-0">
+                    <div className="rounded-xl overflow-hidden">
+                      <SmartImage
+                        src={item.image}
+                        alt={item.title}
+                        width={400}
+                        height={280}
+                        className="w-full h-[150px] md:h-[180px] object-cover"
+                      />
+                    </div>
+                  </div>
+                )}
+                <div className="p-4 pt-3">
+                  <h3 className="font-display font-bold text-[var(--navy)] text-base mb-1.5">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm text-[#5a5a5a] leading-relaxed">
+                    {item.description}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
+
+        {/* Pagination + Navigation */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between mt-10">
+            {/* Dots */}
+            <div className="flex items-center gap-2">
+              {Array.from({ length: totalPages }).map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setPage(i)}
+                  className={`w-3 h-3 rounded-full transition-all ${
+                    i === page
+                      ? "bg-[var(--navy)] ring-2 ring-[var(--navy)]/30"
+                      : "bg-gray-300 hover:bg-gray-400"
+                  }`}
+                  aria-label={`Page ${i + 1}`}
+                />
+              ))}
+            </div>
+
+            {/* Arrows */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setPage((p) => Math.max(0, p - 1))}
+                disabled={page === 0}
+                className="w-10 h-10 rounded-full border-2 border-gray-200 flex items-center justify-center text-gray-400 hover:border-[var(--navy)] hover:text-[var(--navy)] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                aria-label="Previous"
+              >
+                <ChevronLeftIcon className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+                disabled={page === totalPages - 1}
+                className="w-10 h-10 rounded-full border-2 border-[var(--navy)] flex items-center justify-center text-[var(--navy)] hover:bg-[var(--navy)] hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                aria-label="Next"
+              >
+                <ChevronRightIcon className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+/* ──────────────────────────────────────────────
+   Section — Blog / Latest Insights
+   ────────────────────────────────────────────── */
+
+function BlogSection({ posts }: { posts: BlogPostItem[] }) {
+  const [page, setPage] = useState(0);
+  const perPage = 3;
+  const totalPages = Math.ceil(posts.length / perPage);
+  const visible = posts.slice(page * perPage, (page + 1) * perPage);
+
+  function formatDate(d: string) {
+    return new Date(d).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" });
+  }
+
+  return (
+    <section className="bg-white py-24 px-6 relative overflow-hidden">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 mb-14">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-1 h-6 bg-[#FF6B35] rounded-full" />
+              <span className="text-[#FF6B35] font-semibold text-sm uppercase tracking-wider">
+                Blogs
+              </span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-display text-[var(--navy)] leading-tight">
+              Latest Insights of Aarambha
+            </h2>
+          </motion.div>
+
+          <motion.p
+            className="lg:max-w-md text-base text-[#5a5a5a] leading-relaxed lg:pt-8"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+          >
+            Stay updated with the latest developments, innovative teaching methods, and inspiring stories from Aarambha.
+          </motion.p>
+        </div>
+
+        {/* Cards — 3 per row */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+          <AnimatePresence mode="wait">
+            {visible.map((post, i) => (
+              <motion.article
+                key={`${page}-${post.id}`}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.4, delay: i * 0.08 }}
+                className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg transition-shadow group"
+              >
+                {post.image && (
+                  <div className="overflow-hidden">
+                    <SmartImage
+                      src={post.image}
+                      alt={post.title}
+                      width={500}
+                      height={300}
+                      className="w-full h-[180px] md:h-[220px] object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  </div>
+                )}
+                <div className="p-4 md:p-5">
+                  <span className="text-xs text-[#FF6B35] font-medium flex items-center gap-1 mb-2">
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                    </svg>
+                    {formatDate(post.publishedAt)}
+                  </span>
+                  <h3 className="font-display font-bold text-[var(--navy)] text-base leading-snug mb-1">
+                    {post.title}
+                  </h3>
+                  <p className="text-sm text-[#5a5a5a] leading-relaxed line-clamp-3 mb-4">
+                    {post.excerpt}
+                  </p>
+                  <Link
+                    href={`/blog/${post.slug}`}
+                    className="text-[var(--navy)] font-semibold text-sm hover:underline"
+                  >
+                    Read More
+                  </Link>
+                </div>
+              </motion.article>
+            ))}
+          </AnimatePresence>
+        </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between mt-10">
+            <div className="flex items-center gap-2">
+              {Array.from({ length: totalPages }).map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setPage(i)}
+                  className={`w-3 h-3 rounded-full transition-all ${
+                    i === page
+                      ? "bg-[var(--navy)] ring-2 ring-[var(--navy)]/30"
+                      : "bg-gray-300 hover:bg-gray-400"
+                  }`}
+                  aria-label={`Page ${i + 1}`}
+                />
+              ))}
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setPage((p) => Math.max(0, p - 1))}
+                disabled={page === 0}
+                className="w-10 h-10 rounded-full border-2 border-gray-200 flex items-center justify-center text-gray-400 hover:border-[var(--navy)] hover:text-[var(--navy)] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <ChevronLeftIcon className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+                disabled={page === totalPages - 1}
+                className="w-10 h-10 rounded-full border-2 border-[var(--navy)] flex items-center justify-center text-[var(--navy)] hover:bg-[var(--navy)] hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <ChevronRightIcon className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );

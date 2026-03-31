@@ -29,7 +29,13 @@ export type SchoolLifeItemInput = z.infer<typeof schoolLifeItemSchema>;
 export const principalMessageSchema = z.object({
   principal_message: z.string().min(1, 'Principal message is required').max(2000),
   principal_name: z.string().min(1, 'Principal name is required').max(100),
+  principal_title: z.string().max(100).optional().default('Chairman & Principal'),
   principal_image: z.string().url('A valid image URL is required').max(500).or(z.literal('')).default(''),
+  vice_principal_message: z.string().max(2000).optional().default(''),
+  vice_principal_name: z.string().max(100).optional().default(''),
+  vice_principal_title: z.string().max(100).optional().default('Vice Principal'),
+  vice_principal_image: z.string().url('A valid image URL is required').max(500).or(z.literal('')).optional().default(''),
+  vice_principal_highlights: z.string().max(2000).optional().default(''),
 });
 
 export type PrincipalMessageInput = z.infer<typeof principalMessageSchema>;
